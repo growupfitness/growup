@@ -7,7 +7,7 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #121212; color: #ffffff; padding: 40px 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .container { background-color: #1e1e1e; padding: 30px; border-radius: 12px; width: 100%; max-width: 600px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); border-top: 5px solid #ffcc00; }
+        .container { background-color: #1e1e1e; padding: 30px; border-radius: 12px; width: 100%; max-width: 600px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); border-top: 5px solid #ffcc00; transition: 0.3s; }
         h1 { text-align: center; color: #ffcc00; margin-bottom: 5px; font-size: 28px; text-transform: uppercase; letter-spacing: 1px; }
         p.subtitle { text-align: center; color: #aaaaaa; margin-bottom: 25px; font-size: 14px; }
         .form-row { display: flex; gap: 15px; }
@@ -15,120 +15,127 @@
         label { display: block; margin-bottom: 8px; color: #ffcc00; font-weight: bold; font-size: 14px; }
         input, select, textarea { width: 100%; padding: 12px; background-color: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #fff; font-size: 15px; transition: 0.3s; }
         input:focus, select:focus, textarea:focus { border-color: #ffcc00; outline: none; }
-        input:disabled { background-color: #1a1a1a; color: #888; cursor: not-allowed; }
         button { width: 100%; padding: 14px; background-color: #ffcc00; border: none; border-radius: 6px; color: #121212; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
         button:hover { background-color: #e6b800; }
-        #responseMessage { margin-top: 15px; text-align: center; font-weight: bold; font-size: 14px; }
-        .success { color: #00ff88; }
-        .error { color: #ff3333; }
         .loading-text { color: #ffcc00; font-size: 12px; margin-top: 4px; display: none; }
+        
+        /* WhatsApp Success Popup Design */
+        .whatsapp-box { display: none; text-align: center; padding: 20px 10px; animation: fadeIn 0.5s ease-in-out; }
+        .whatsapp-box h2 { color: #00ff88; margin-bottom: 10px; font-size: 24px; }
+        .whatsapp-box p { color: #dddddd; margin-bottom: 25px; font-size: 15px; line-height: 1.5; }
+        .whatsapp-btn { display: inline-block; width: 100%; max-width: 320px; padding: 15px; background-color: #25D366; color: white; text-decoration: none; font-size: 18px; font-weight: bold; border-radius: 30px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); transition: 0.3s; text-transform: uppercase; }
+        .whatsapp-btn:hover { background-color: #128C7E; transform: translateY(-2px); }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         @media (max-width: 480px) { .form-row { flex-direction: column; gap: 0; } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Grow Up Fitness</h1>
-    <p class="subtitle">100% Authentic Supplements Store</p>
-    
-    <form id="submit-to-google-sheet">
-        <!-- Basic Info -->
-        <div class="form-group">
-            <label for="name">Customer Name</label>
-            <input type="text" id="name" name="Customer Name" placeholder="Enter your full name" required>
-        </div>
+    <div id="formSection">
+        <h1>Grow Up Fitness</h1>
+        <p class="subtitle">100% Authentic Supplements Store</p>
         
-        <div class="form-group">
-            <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" name="Phone Number" placeholder="Enter 10-digit mobile number" required>
-        </div>
-
-        <!-- Pin Code shifted right after Phone Number -->
-        <div class="form-group">
-            <label for="pincode">Pin Code</label>
-            <input type="text" id="pincode" name="Pincode" placeholder="e.g. 313001" maxlength="6" required>
-            <div id="pinLoading" class="loading-text">Fetching City & State...</div>
-        </div>
-        
-        <!-- Location Section (Auto-filled by Pincode) -->
-        <div class="form-group">
-            <label for="area">Area / Colony</label>
-            <input type="text" id="area" name="Area" placeholder="e.g. Shobhagpura" required>
-        </div>
-
-        <div class="form-row">
+        <form id="submit-to-google-sheet">
             <div class="form-group">
-                <label for="city">City</label>
-                <input type="text" id="city" name="City" placeholder="City name" required readonly>
+                <label for="name">Customer Name</label>
+                <input type="text" id="name" name="Customer Name" placeholder="Enter your full name" required>
             </div>
+            
             <div class="form-group">
-                <label for="state">State</label>
-                <input type="text" id="state" name="State" placeholder="State name" required readonly>
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="Phone Number" placeholder="Enter 10-digit mobile number" required>
             </div>
-        </div>
-        
-        <!-- Brand & Product Selection -->
-        <div class="form-group">
-            <label for="brand">Which Brand are you looking for?</label>
-            <select id="brand" name="Preferred Brand">
-                <option value="MuscleBlaze">MuscleBlaze</option>
-                <option value="Optimum Nutrition (ON)">Optimum Nutrition (ON)</option>
-                <option value="Bolt Nutrition">Bolt Nutrition</option>
-                <option value="MyLife Nutrition">MyLife Nutrition</option>
-                <option value="Asitis Nutrition">Asitis</option>
-                <option value="Other Brand">Other / Not Sure</option>
-            </select>
-        </div>
 
-        <div class="form-group">
-            <label for="product">What do you want to buy in this brand?</label>
-            <select id="product" name="Product/Inquiry">
-                <option value="Whey Protein">Whey Protein</option>
-                <option value="Mass Gainer">Mass Gainer</option>
-                <option value="Pre-Workout">Pre-Workout</option>
-                <option value="BCAA / Amino / Creatine">BCAA / Amino / Creatine</option>
-                <option value="Isolate Protein">Isolate Protein</option>
-                <option value="Multivitamins / Fish Oil">Multivitamins / Fish Oil</option>
-            </select>
-        </div>
+            <div class="form-group">
+                <label for="pincode">Pin Code</label>
+                <input type="text" id="pincode" name="Pincode" placeholder="e.g. 313001" maxlength="6" required>
+                <div id="pinLoading" class="loading-text">Fetching City & State...</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="area">Area / Colony</label>
+                <input type="text" id="area" name="Area" placeholder="e.g. Shobhagpura" required>
+            </div>
 
-        <!-- Market Survey Info -->
-        <div class="form-group">
-            <label for="onlinePlatform">Where were you buying from till now?</label>
-            <select id="onlinePlatform" name="Current Online Platform">
-                <option value="Amazon">Amazon</option>
-                <option value="Flipkart">Flipkart</option>
-                <option value="HealthKart">HealthKart</option>
-                <option value="Direct from Brand Website">Direct from Brand Website</option>
-                <option value="Local Store / Offline Shop">Other Local Store / Offline Shop</option>
-                <option value="First Time Buying">Buying for the First Time</option>
-            </select>
-        </div>
-        
-        <!-- Custom Message -->
-        <div class="form-group">
-            <label for="message">Specific Requirement / Message</label>
-            <textarea id="message" name="Message" rows="3" placeholder="Any specific flavor, size, or target budget?"></textarea>
-        </div>
-        
-        <button type="submit" id="submitBtn">Submit Requirement</button>
-    </form>
-    
-    <p id="responseMessage"></p>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="City" placeholder="City name" required readonly>
+                </div>
+                <div class="form-group">
+                    <label for="state">State</label>
+                    <input type="text" id="state" name="State" placeholder="State name" required readonly>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="brand">Which Brand are you looking for?</label>
+                <select id="brand" name="Preferred Brand">
+                    <option value="MuscleBlaze">MuscleBlaze</option>
+                    <option value="Optimum Nutrition (ON)">Optimum Nutrition (ON)</option>
+                    <option value="Bolt Nutrition">Bolt Nutrition</option>
+                    <option value="MyLife Nutrition">MyLife Nutrition</option>
+                    <option value="Asitis Nutrition">Asitis</option>
+                    <option value="Other Brand">Other / Not Sure</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="product">What do you want to buy?</label>
+                <select id="product" name="Product/Inquiry">
+                    <option value="Whey Protein">Whey Protein</option>
+                    <option value="Mass Gainer">Mass Gainer</option>
+                    <option value="Pre-Workout">Pre-Workout</option>
+                    <option value="BCAA / Amino / Creatine">BCAA / Amino / Creatine</option>
+                    <option value="Isolate Protein">Isolate Protein</option>
+                    <option value="Multivitamins / Fish Oil">Multivitamins / Fish Oil</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="onlinePlatform">Where were you buying from till now?</label>
+                <select id="onlinePlatform" name="Current Online Platform">
+                    <option value="Amazon">Amazon</option>
+                    <option value="Flipkart">Flipkart</option>
+                    <option value="HealthKart">HealthKart</option>
+                    <option value="Direct from Brand Website">Direct from Brand Website</option>
+                    <option value="Local Store / Offline Shop">Other Local Store / Offline Shop</option>
+                    <option value="First Time Buying">Buying for the First Time</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Specific Requirement / Message</label>
+                <textarea id="message" name="Message" rows="3" placeholder="Any specific flavor, size, or target budget?"></textarea>
+            </div>
+            
+            <button type="submit" id="submitBtn">Submit Requirement</button>
+        </form>
+    </div>
+
+    <div id="whatsappSection" class="whatsapp-box">
+        <h2>🎉 Inquiry Submitted Successfully!</h2>
+        <p>Thank you for choosing Grow Up Fitness. Your details are saved in our secure server.<br><br><strong>Important:</strong> Click below to join our Official WhatsApp Community for daily fitness tips, exclusive supplement offers, and stock updates!</p>
+        <a href="https://chat.whatsapp.com/Jut9x2tf7s1DCKIota5DYh" target="_blank" class="whatsapp-btn">💬 Join WhatsApp Community</a>
+    </div>
 </div>
 
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwjpu4olgDnXHNg7aJOoN9igPCXh8adtO1cwtF6CC_MKhLPyk-UfKqP5i6PUQhoJY3uMA/exec';
     const form = document.forms['submit-to-google-sheet'];
-    const msg = document.getElementById("responseMessage");
     const btn = document.getElementById("submitBtn");
     
+    const formSection = document.getElementById("formSection");
+    const whatsappSection = document.getElementById("whatsappSection");
+
     const pincodeInput = document.getElementById("pincode");
     const cityInput = document.getElementById("city");
     const stateInput = document.getElementById("state");
     const pinLoading = document.getElementById("pinLoading");
 
-    // Pincode Auto-Fetch Logic
+    // Pincode Logic
     pincodeInput.addEventListener("input", () => {
         const pin = pincodeInput.value;
         if (pin.length === 6) {
@@ -142,39 +149,33 @@
                         cityInput.value = postOffice.District;
                         stateInput.value = postOffice.State;
                     } else {
-                        alert("Invalid Pin Code! Please check again.");
+                        alert("Invalid Pin Code!");
                         cityInput.value = "";
                         stateInput.value = "";
                     }
                 })
-                .catch(err => {
-                    pinLoading.style.display = "none";
-                    console.error("Error fetching pincode data", err);
-                });
+                .catch(err => { pinLoading.style.display = "none"; });
         } else {
             cityInput.value = "";
             stateInput.value = "";
         }
     });
 
-    // Google Sheet Submission Logic
+    // Form Submit to Sheet + Show WhatsApp Button
     form.addEventListener('submit', e => {
         e.preventDefault();
         btn.disabled = true;
-        btn.innerText = "Sending Options...";
-        msg.innerHTML = "";
+        btn.innerText = "Saving Details...";
         
         fetch(scriptURL, { method: 'POST', body: new FormData(form)})
             .then(response => {
-                msg.innerHTML = "Success! Your details have been shared with Grow Up Fitness.";
-                msg.className = "success";
-                btn.disabled = false;
-                btn.innerText = "Submit Requirement";
+                // Form section ko chupao aur WhatsApp section ko dikhao
+                formSection.style.display = "none";
+                whatsappSection.style.display = "block";
                 form.reset();
             })
             .catch(error => {
-                msg.innerHTML = "Error! Connection issue.";
-                msg.className = "error";
+                alert("Something went wrong! Connection error.");
                 btn.disabled = false;
                 btn.innerText = "Submit Requirement";
                 console.error('Error!', error.message);
