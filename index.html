@@ -15,11 +15,13 @@
         label { display: block; margin-bottom: 8px; color: #ffcc00; font-weight: bold; font-size: 14px; }
         input, select, textarea { width: 100%; padding: 12px; background-color: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #fff; font-size: 15px; transition: 0.3s; }
         input:focus, select:focus, textarea:focus { border-color: #ffcc00; outline: none; }
+        input:disabled { background-color: #1a1a1a; color: #888; cursor: not-allowed; }
         button { width: 100%; padding: 14px; background-color: #ffcc00; border: none; border-radius: 6px; color: #121212; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
         button:hover { background-color: #e6b800; }
         #responseMessage { margin-top: 15px; text-align: center; font-weight: bold; font-size: 14px; }
         .success { color: #00ff88; }
         .error { color: #ff3333; }
+        .loading-text { color: #ffcc00; font-size: 12px; margin-top: 4px; display: none; }
         @media (max-width: 480px) { .form-row { flex-direction: column; gap: 0; } }
     </style>
 </head>
@@ -40,27 +42,28 @@
             <label for="phone">Phone Number</label>
             <input type="tel" id="phone" name="Phone Number" placeholder="Enter 10-digit mobile number" required>
         </div>
-        
-        <!-- Location Section -->
-        <div class="form-row">
-            <div class="form-group">
-                <label for="area">Area / Colony</label>
-                <input type="text" id="area" name="Area" placeholder="e.g. Shobhagpura" required>
-            </div>
-            <div class="form-group">
-                <label for="city">City</label>
-                <input type="text" id="city" name="City" placeholder="e.g. Udaipur" required>
-            </div>
+
+        <!-- Pin Code shifted right after Phone Number -->
+        <div class="form-group">
+            <label for="pincode">Pin Code</label>
+            <input type="text" id="pincode" name="Pincode" placeholder="e.g. 313001" maxlength="6" required>
+            <div id="pinLoading" class="loading-text">Fetching City & State...</div>
         </div>
         
+        <!-- Location Section (Auto-filled by Pincode) -->
+        <div class="form-group">
+            <label for="area">Area / Colony</label>
+            <input type="text" id="area" name="Area" placeholder="e.g. Shobhagpura" required>
+        </div>
+
         <div class="form-row">
             <div class="form-group">
-                <label for="state">State</label>
-                <input type="text" id="state" name="State" placeholder="e.g. Rajasthan" required>
+                <label for="city">City</label>
+                <input type="text" id="city" name="City" placeholder="City name" required readonly>
             </div>
             <div class="form-group">
-                <label for="pincode">Pin Code</label>
-                <input type="text" id="pincode" name="Pincode" placeholder="e.g. 313001" required>
+                <label for="state">State</label>
+                <input type="text" id="state" name="State" placeholder="State name" required readonly>
             </div>
         </div>
         
@@ -119,7 +122,42 @@
     const form = document.forms['submit-to-google-sheet'];
     const msg = document.getElementById("responseMessage");
     const btn = document.getElementById("submitBtn");
+    
+    const pincodeInput = document.getElementById("pincode");
+    const cityInput = document.getElementById("city");
+    const stateInput = document.getElementById("state");
+    const pinLoading = document.getElementById("pinLoading");
 
+    // Pincode Auto-Fetch Logic
+    pincodeInput.addEventListener("input", () => {
+        const pin = pincodeInput.value;
+        if (pin.length === 6) {
+            pinLoading.style.display = "block";
+            fetch(`https://api.postalpincode.in/pincode/${pin}`)
+                .then(res => res.json())
+                .then(data => {
+                    pinLoading.style.display = "none";
+                    if (data[0].Status === "Success") {
+                        const postOffice = data[0].PostOffice[0];
+                        cityInput.value = postOffice.District;
+                        stateInput.value = postOffice.State;
+                    } else {
+                        alert("Invalid Pin Code! Please check again.");
+                        cityInput.value = "";
+                        stateInput.value = "";
+                    }
+                })
+                .catch(err => {
+                    pinLoading.style.display = "none";
+                    console.error("Error fetching pincode data", err);
+                });
+        } else {
+            cityInput.value = "";
+            stateInput.value = "";
+        }
+    });
+
+    // Google Sheet Submission Logic
     form.addEventListener('submit', e => {
         e.preventDefault();
         btn.disabled = true;
