@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grow Up Fitness - Authentic Supplements Store</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #121212; color: #ffffff; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background-color: #1e1e1e; padding: 30px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); border-top: 5px solid #ffcc00; }
+        h1 { text-align: center; color: #ffcc00; margin-bottom: 10px; font-size: 28px; text-transform: uppercase; letter-spacing: 1px; }
+        p.subtitle { text-align: center; color: #aaaaaa; margin-bottom: 25px; font-size: 14px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #ffcc00; font-weight: 6px; font-size: 14px; }
+        input, select, textarea { width: 100%; padding: 12px; background-color: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #fff; font-size: 16px; transition: 0.3s; }
+        input:focus, select:focus, textarea:focus { border-color: #ffcc00; outline: none; }
+        button { width: 100%; padding: 14px; background-color: #ffcc00; border: none; border-radius: 6px; color: #121212; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+        button:hover { background-color: #e6b800; }
+        #responseMessage { margin-top: 15px; text-align: center; font-weight: bold; font-size: 14px; }
+        .success { color: #00ff88; }
+        .error { color: #ff3333; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Grow Up Fitness</h1>
+    <p class="subtitle">100% Authentic Supplements Store</p>
+    
+    <form id="submit-to-google-sheet">
+        <div class="form-group">
+            <label for="name">Customer Name</label>
+            <input type="text" id="name" name="Customer Name" placeholder="Enter your full name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="Phone Number" placeholder="Enter 10-digit mobile number" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="product">Product/Inquiry Category</label>
+            <select id="product" name="Product/Inquiry">
+                <option value="Whey Protein">Whey Protein</option>
+                <option value="Mass Gainer">Mass Gainer</option>
+                <option value="Pre-Workout">Pre-Workout</option>
+                <option value="BCAA / Amino">BCAA / Amino</option>
+                <option value="Other Inquiry">Other Inquiry</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="Message" rows="4" placeholder="Type your requirement here..."></textarea>
+        </div>
+        
+        <button type="submit" id="submitBtn">Submit Inquiry</button>
+    </form>
+    
+    <p id="responseMessage"></p>
+</div>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwjpu4olgDnXHNg7aJOoN9igPCXh8adtO1cwtF6CC_MKhLPyk-UfKqP5i6PUQhoJY3uMA/exec';
+    const form = document.forms['submit-to-google-sheet'];
+    const msg = document.getElementById("responseMessage");
+    const btn = document.getElementById("submitBtn");
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        btn.disabled = true;
+        btn.innerText = "Sending...";
+        msg.innerHTML = "";
+        
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                msg.innerHTML = "Success! Your inquiry has been sent.";
+                msg.className = "success";
+                btn.disabled = false;
+                btn.innerText = "Submit Inquiry";
+                form.reset();
+            })
+            .catch(error => {
+                msg.innerHTML = "Error! Something went wrong.";
+                msg.className = "error";
+                btn.disabled = false;
+                btn.innerText = "Submit Inquiry";
+                console.error('Error!', error.message);
+            });
+    });
+</script>
+
+</body>
+</html>
