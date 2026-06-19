@@ -11,12 +11,10 @@
         h1 { text-align: center; color: #ffcc00; margin-bottom: 5px; font-size: 28px; text-transform: uppercase; letter-spacing: 1px; }
         p.subtitle { text-align: center; color: #aaaaaa; margin-bottom: 25px; font-size: 14px; }
         .form-row { display: flex; gap: 15px; }
-        .form-group { margin-bottom: 20px; flex: 1; }
+        .form-group { margin-bottom: 20px; flex: 1; position: relative; }
         label { display: block; margin-bottom: 8px; color: #ffcc00; font-weight: bold; font-size: 14px; }
         input, select, textarea { width: 100%; padding: 12px; background-color: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #fff; font-size: 15px; transition: 0.3s; }
         input:focus, select:focus, textarea:focus { border-color: #ffcc00; outline: none; }
-        button { width: 100%; padding: 14px; background-color: #ffcc00; border: none; border-radius: 6px; color: #121212; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
-        button:hover { background-color: #e6b800; }
         .loading-text { color: #ffcc00; font-size: 12px; margin-top: 4px; display: none; }
         
         /* WhatsApp Success Popup Design */
@@ -33,6 +31,7 @@
 <body>
 
 <div class="container">
+    <!-- Main Form Section -->
     <div id="formSection">
         <h1>Grow Up Fitness</h1>
         <p class="subtitle">100% Authentic Supplements Store</p>
@@ -70,28 +69,54 @@
                 </div>
             </div>
             
+            <!-- Brand Selection with Search Option -->
             <div class="form-group">
                 <label for="brand">Which Brand are you looking for?</label>
-                <select id="brand" name="Preferred Brand">
-                    <option value="MuscleBlaze">MuscleBlaze</option>
-                    <option value="Optimum Nutrition (ON)">Optimum Nutrition (ON)</option>
-                    <option value="Bolt Nutrition">Bolt Nutrition</option>
-                    <option value="MyLife Nutrition">MyLife Nutrition</option>
-                    <option value="Asitis Nutrition">Asitis</option>
-                    <option value="Other Brand">Other / Not Sure</option>
-                </select>
+                <input type="text" id="brand" name="Preferred Brand" list="brandList" placeholder="Type to search brand... e.g. Bolt, Avvtar" required>
+                <datalist id="brandList">
+                    <option value="Mylife Nutrition"></option>
+                    <option value="Bolt Nutrition"></option>
+                    <option value="Muscleblaze"></option>
+                    <option value="Muscletech"></option>
+                    <option value="Optimum Nutrition (ON)"></option>
+                    <option value="Big Muscle"></option>
+                    <option value="Wellcore"></option>
+                    <option value="Carbamide"></option>
+                    <option value="Nutrabay"></option>
+                    <option value="Isopure"></option>
+                    <option value="Avvtar"></option>
+                    <option value="Other / Local Brand"></option>
+                </datalist>
             </div>
 
+            <!-- Product Selection with Search Option -->
             <div class="form-group">
-                <label for="product">What do you want to buy?</label>
-                <select id="product" name="Product/Inquiry">
-                    <option value="Whey Protein">Whey Protein</option>
-                    <option value="Mass Gainer">Mass Gainer</option>
-                    <option value="Pre-Workout">Pre-Workout</option>
-                    <option value="BCAA / Amino / Creatine">BCAA / Amino / Creatine</option>
-                    <option value="Isolate Protein">Isolate Protein</option>
-                    <option value="Multivitamins / Fish Oil">Multivitamins / Fish Oil</option>
-                </select>
+                <label for="product">What do you want to buy in this brand?</label>
+                <input type="text" id="product" name="Product/Inquiry" list="productList" placeholder="Type to search product... e.g. Whey, Creatine" required>
+                <datalist id="productList">
+                    <option value="Whey Protein"></option>
+                    <option value="Whey Isolate"></option>
+                    <option value="Nitro Whey"></option>
+                    <option value="Yeast Protein"></option>
+                    <option value="Peanut Butter"></option>
+                    <option value="Creatine"></option>
+                    <option value="Mass Gainer"></option>
+                    <option value="Fish Oil"></option>
+                    <option value="Multivitamin"></option>
+                    <option value="EAA"></option>
+                    <option value="BCAA's"></option>
+                    <option value="Pre Workout"></option>
+                    <option value="L Carnitine"></option>
+                    <option value="L Glutamine"></option>
+                    <option value="L Arginine"></option>
+                    <option value="L Glutathione"></option>
+                    <option value="Ashwagandha"></option>
+                    <option value="D3 + K2"></option>
+                    <option value="Energy Drink"></option>
+                    <option value="Protein Bar"></option>
+                    <option value="Protein Oats"></option>
+                    <option value="Shilajit"></option>
+                </datalist>
             </div>
 
             <div class="form-group">
@@ -115,6 +140,7 @@
         </form>
     </div>
 
+    <!-- WhatsApp Success Redirect Section -->
     <div id="whatsappSection" class="whatsapp-box">
         <h2>🎉 Inquiry Submitted Successfully!</h2>
         <p>Thank you for choosing Grow Up Fitness. Your details are saved in our secure server.<br><br><strong>Important:</strong> Click below to join our Official WhatsApp Community for daily fitness tips, exclusive supplement offers, and stock updates!</p>
@@ -169,7 +195,6 @@
         
         fetch(scriptURL, { method: 'POST', body: new FormData(form)})
             .then(response => {
-                // Form section ko chupao aur WhatsApp section ko dikhao
                 formSection.style.display = "none";
                 whatsappSection.style.display = "block";
                 form.reset();
