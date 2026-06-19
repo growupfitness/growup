@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grow Up Fitness - Official Store</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #121212; color: #ffffff; padding: 20px; min-height: 100vh; }
+        
+        /* Header & Logo Section */
+        header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #222; }
+        header img { max-width: 150px; filter: drop-shadow(0 0 8px rgba(0, 162, 255, 0.5)); }
+        h1 { color: #00a2ff; font-size: 24px; text-transform: uppercase; margin-top: 10px; }
+        
+        /* Product Grid Setup */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
+        
+        /* Premium Product Card Design */
+        .product-card { background-color: #1e1e1e; border-radius: 12px; border: 1px solid #333; overflow: hidden; display: flex; flex-direction: column; transition: 0.3s; position: relative; }
+        .product-card:hover { border-color: #00a2ff; box-shadow: 0 0 15px rgba(0, 162, 255, 0.3); transform: translateY(-3px); }
+        
+        /* Discount Tag */
+        .discount-tag { position: absolute; top: 10px; left: 10px; background: #ff3333; color: white; padding: 5px 10px; font-size: 12px; font-weight: bold; border-radius: 4px; z-index: 10; }
+        
+        /* Image Slider Area */
+        .image-container { position: relative; width: 100%; height: 250px; background-color: #2a2a2a; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .product-img { max-width: 100%; max-height: 100%; object-fit: contain; display: none; }
+        .product-img.active { display: block; }
+        
+        /* Slider Dots */
+        .slider-dots { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; }
+        .dot { inline-block; width: 8px; height: 8px; background: #555; border-radius: 50%; margin: 0 4px; display: inline-block; cursor: pointer; }
+        .dot.active { background: #00a2ff; box-shadow: 0 0 5px #00a2ff; }
+        
+        /* Details Styling */
+        .product-details { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
+        .brand-name { color: #00a2ff; font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
+        .product-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; min-height: 44px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .weight-tag { font-size: 13px; color: #aaa; margin-bottom: 12px; }
+        
+        /* Pricing Section */
+        .price-box { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; margin-top: auto; }
+        .selling-price { font-size: 20px; font-weight: bold; color: #00ff88; }
+        .mrp-price { font-size: 14px; color: #ff3333; text-decoration: line-through; }
+        
+        /* Buy Now / WhatsApp Button */
+        .buy-btn { width: 100%; padding: 12px; background: linear-gradient(45deg, #0088cc, #00a2ff); color: white; border: none; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-decoration: none; text-align: center; text-transform: uppercase; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,162,255,0.2); }
+        .buy-btn:hover { background: linear-gradient(45deg, #00a2ff, #00e5ff); box-shadow: 0 4px 15px rgba(0,162,255,0.4); }
+        .out-of-stock { background: #444 !important; color: #888 !important; cursor: not-allowed; box-shadow: none !important; }
+        
+        /* Loading Text */
+        #loading { text-align: center; font-size: 18px; color: #00a2ff; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="https://raw.githubusercontent.com/growupfitness/growup/main/logo.png" alt="Grow Up Fitness Logo" onerror="this.style.display='none';">
+        <h1>Grow Up Fitness Supplements Store</h1>
+    </header>
+
+    <div id="loading">Loading Authentic Supplements...</div>
+    <div class="products-grid" id="productsContainer"></div>
+
+<script>
+    // Aapka naya upgraded Apps Script Web App URL
+    const apiURL = 'https://script.google.com/macros/s/AKfycbzd3hMZ8aNAG0QOQoKYVtx3e7kOFtAaCBWEPE2YUtB1v1sK5WPRXdfbygQlfVpBmZm99w/exec';
+
+    // Google Drive links ko direct display link me convert karne ka automatic logic
+    function cleanDriveUrl(url) {
+        if (!url) return '';
+        if (url.includes('drive.google.com')) {
+            var parts = url.split('/d/');
+            if (parts.length > 1) {
+                var id = parts[1].split('/')[0];
+                return 'https://lh3.googleusercontent.com/d/' + id;
+            }
+        }
+        return url;
+    }
+
+    // Database se data fetch karke dynamic layout banana
+    fetch(apiURL)
+        .then(res => res.json())
+        .then(products => {
+            document.getElementById('loading').style.display = 'none';
+            const container = document.getElementById('productsContainer');
+            
+            products.forEach((prod, index) => {
+                // Discount Percentage Calculation
+                const mrp = parseFloat(prod.MRP);
+                const sp = parseFloat(prod.Selling Price);
+                let discountPercent = 0;
+                if(mrp > sp) {
+                    discountPercent = Math.round(((mrp - sp) / mrp) * 100);
+                }
+
+                // Images Processing
+                const img1 = cleanDriveUrl(prod["Image 1"]);
+                const img2 = cleanDriveUrl(prod["Image 2"]);
+                const img3 = cleanDriveUrl(prod["Image 3"]);
+
+                let imagesHtml = `<img src="${img1}" class="product-img active img-set-${index}" data-idx="0">`;
+                let dotsHtml = `<span class="dot active" onclick="switchImg(${index}, 0)"></span>`;
+                
+                if(img2) {
+                    imagesHtml += `<img src="${img2}" class="product-img img-set-${index}" data-idx="1">`;
+                    dotsHtml += `<span class="dot" onclick="switchImg(${index}, 1)"></span>`;
+                }
+                if(img3) {
+                    imagesHtml += `<img src="${img3}" class="product-img img-set-${index}" data-idx="2">`;
+                    dotsHtml += `<span class="dot" onclick="switchImg(${index}, 2)"></span>`;
+                }
+
+                // WhatsApp Custom Order Message
+                const whatsappNo = "919571214461"; // Aapka number joda gaya hai
+                const msg = encodeURIComponent(`Hello Grow Up Fitness! I want to order:\n\n*Product:* ${prod["Product Name"]}\n*Brand:* ${prod.Brand}\n*Size/Weight:* ${prod["Weight / Size"]}\n*Price:* ₹${prod["Selling Price"]}\n\nPlease confirm availability.`);
+                const waLink = `https://wa.me/${whatsappNo}?text=${msg}`;
+
+                const isStock = prod["Stock Status"] === "In Stock";
+
+                // Card Template Generation
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    ${discountPercent > 0 ? `<div class="discount-tag">${discountPercent}% OFF</div>` : ''}
+                    <div class="image-container">
+                        ${imagesHtml}
+                        <div class="slider-dots">${dotsHtml}</div>
+                    </div>
+                    <div class="product-details">
+                        <span class="brand-name">${prod.Brand}</span>
+                        <h3 class="product-title">${prod["Product Name"]}</h3>
+                        <span class="weight-tag">📦 Size/Weight: ${prod["Weight / Size"]}</span>
+                        <div class="price-box">
+                            <span class="selling-price">₹${prod["Selling Price"]}</span>
+                            ${mrp > sp ? `<span class="mrp-price">₹${prod.MRP}</span>` : ''}
+                        </div>
+                        ${isStock ? 
+                            `<a href="${waLink}" target="_blank" class="buy-btn">⚡ Buy Now</a>` : 
+                            `<button class="buy-btn out-of-stock" disabled>Out Of Stock</button>`
+                        }
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        })
+        .catch(err => {
+            document.getElementById('loading').innerText = 'Error loading products. Check your network or connection.';
+            console.error(err);
+        });
+
+    // Image Slider Switcher Function
+    function switchImg(cardIdx, imgIdx) {
+        const imgs = document.querySelectorAll(`.img-set-${cardIdx}`);
+        const dots = document.querySelectorAll(`.img-set-${cardIdx} ~ .slider-dots .dot`);
+        
+        imgs.forEach(img => img.classList.remove('active'));
+        imgs.forEach(img => {
+            if(parseInt(img.getAttribute('data-idx')) === imgIdx) img.classList.add('active');
+        });
+        
+        // Dot Activation logic
+        const cardDots = imgs[0].parentElement.querySelectorAll('.dot');
+        cardDots.forEach(dot => dot.classList.remove('active'));
+        cardDots[imgIdx].classList.add('active');
+    }
+</script>
+
+</body>
+</html>
