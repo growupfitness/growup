@@ -8,48 +8,42 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #121212; color: #ffffff; padding: 20px; min-height: 100vh; }
         
-        /* Header & Logo Section */
-        header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #222; }
+        header { text-align: center; margin-bottom: 20px; padding-bottom: 10px; }
         header img { max-width: 150px; filter: drop-shadow(0 0 8px rgba(0, 162, 255, 0.5)); }
         h1 { color: #00a2ff; font-size: 24px; text-transform: uppercase; margin-top: 10px; }
         
-        /* Product Grid Setup */
+        /* Navigation Tabs Style */
+        .navbar { display: flex; justify-content: center; gap: 15px; margin: 0 auto 35px auto; background: #1e1e1e; padding: 8px; border-radius: 50px; border: 1px solid rgba(0, 162, 255, 0.5); max-width: 400px; }
+        .navbar a { color: #fff; text-decoration: none; font-weight: bold; font-size: 14px; padding: 8px 16px; border-radius: 25px; transition: 0.3s; }
+        .navbar a:hover { background: rgba(0, 162, 255, 0.3); }
+        .active-nav { background: #00a2ff !important; box-shadow: 0 0 10px #00a2ff; color: #fff !important; }
+
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
-        
-        /* Premium Product Card Design */
         .product-card { background-color: #1e1e1e; border-radius: 12px; border: 1px solid #333; overflow: hidden; display: flex; flex-direction: column; transition: 0.3s; position: relative; }
         .product-card:hover { border-color: #00a2ff; box-shadow: 0 0 15px rgba(0, 162, 255, 0.3); transform: translateY(-3px); }
         
-        /* Discount Tag */
         .discount-tag { position: absolute; top: 10px; left: 10px; background: #ff3333; color: white; padding: 5px 10px; font-size: 12px; font-weight: bold; border-radius: 4px; z-index: 10; }
-        
-        /* Image Slider Area */
         .image-container { position: relative; width: 100%; height: 250px; background-color: #2a2a2a; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .product-img { max-width: 90%; max-height: 90%; object-fit: contain; display: none; }
         .product-img.active { display: block; }
         
-        /* Slider Dots */
         .slider-dots { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; }
         .dot { width: 8px; height: 8px; background: #555; border-radius: 50%; margin: 0 4px; display: inline-block; cursor: pointer; }
         .dot.active { background: #00a2ff; box-shadow: 0 0 5px #00a2ff; }
         
-        /* Details Styling */
         .product-details { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
         .brand-name { color: #00a2ff; font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
         .product-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; min-height: 44px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .weight-tag { font-size: 13px; color: #aaa; margin-bottom: 12px; }
         
-        /* Pricing Section */
         .price-box { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; margin-top: auto; }
         .selling-price { font-size: 20px; font-weight: bold; color: #00ff88; }
         .mrp-price { font-size: 14px; color: #ff3333; text-decoration: line-through; }
         
-        /* Buy Now / WhatsApp Button */
         .buy-btn { width: 100%; padding: 12px; background: linear-gradient(45deg, #0088cc, #00a2ff); color: white; border: none; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-decoration: none; text-align: center; text-transform: uppercase; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,162,255,0.2); }
         .buy-btn:hover { background: linear-gradient(45deg, #00a2ff, #00e5ff); box-shadow: 0 4px 15px rgba(0,162,255,0.4); }
         .out-of-stock { background: #444 !important; color: #888 !important; cursor: not-allowed; box-shadow: none !important; }
         
-        /* Loading Text */
         #loading { text-align: center; font-size: 18px; color: #00a2ff; margin-top: 50px; }
     </style>
 </head>
@@ -60,21 +54,21 @@
         <h1>Grow Up Fitness Supplements Store</h1>
     </header>
 
+    <div class="navbar">
+        <a href="index.html">📋 Inquiry Form</a>
+        <a href="store.html" class="active-nav">🛍️ Supplements Store</a>
+    </div>
+
     <div id="loading">Loading Authentic Supplements...</div>
     <div class="products-grid" id="productsContainer"></div>
 
 <script>
     const apiURL = 'https://script.google.com/macros/s/AKfycbzd3hMZ8aNAG0QOQoKYVtx3e7kOFtAaCBWEPE2YUtB1v1sK5WPRXdfbygQlfVpBmZm99w/exec';
 
-    // Ultimate Universal Image URL Clean-up Engine
     function cleanDriveUrl(url) {
         if (!url) return '';
         url = url.trim();
-        
-        // Agar pehle se hi sahi direct stream ya uc link h to direct return karein
-        if (url.includes('drive.google.com/uc?')) {
-            return url;
-        }
+        if (url.includes('drive.google.com/uc?')) return url;
         
         var id = '';
         if (url.includes('id=')) {
@@ -96,8 +90,7 @@
             const container = document.getElementById('productsContainer');
             
             if (!products || products.length === 0) {
-                document.getElementById('loading').innerText = 'No products found in Google Sheet.';
-                document.getElementById('loading').style.display = 'block';
+                document.getElementById('loading').innerText = 'No products found.';
                 return;
             }
 
@@ -173,6 +166,5 @@
         if(cardDots[imgIdx]) cardDots[imgIdx].classList.add('active');
     }
 </script>
-
 </body>
 </html>
