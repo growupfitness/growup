@@ -3,55 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grow Up Fitness - Official Store</title>
+    <title>Grow Up Fitness - Ultimate Store</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #121212; color: #ffffff; padding: 20px; min-height: 100vh; }
         
-        header { text-align: center; margin-bottom: 20px; padding-bottom: 10px; }
-        header img { max-width: 150px; filter: drop-shadow(0 0 8px rgba(0, 162, 255, 0.5)); }
-        h1 { color: #00a2ff; font-size: 24px; text-transform: uppercase; margin-top: 10px; }
+        /* Deep Premium Dark Gym Background with Soft Blur */
+        body { 
+            background: linear-gradient(rgba(15, 15, 15, 0.88), rgba(15, 15, 15, 0.92)), 
+                        url('https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=1200&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #ffffff; 
+            padding: 30px 20px; 
+            min-height: 100vh; 
+        }
         
-        /* Navigation Tabs Style */
-        .navbar { display: flex; justify-content: center; gap: 15px; margin: 0 auto 35px auto; background: #1e1e1e; padding: 8px; border-radius: 50px; border: 1px solid rgba(0, 162, 255, 0.5); max-width: 400px; }
-        .navbar a { color: #fff; text-decoration: none; font-weight: bold; font-size: 14px; padding: 8px 16px; border-radius: 25px; transition: 0.3s; }
-        .navbar a:hover { background: rgba(0, 162, 255, 0.3); }
-        .active-nav { background: #00a2ff !important; box-shadow: 0 0 10px #00a2ff; color: #fff !important; }
+        header { text-align: center; margin-bottom: 25px; }
+        header img { max-width: 160px; filter: drop-shadow(0 0 12px rgba(0, 162, 255, 0.6)); }
+        
+        /* Modern App Style Navigation Tabs */
+        .navbar { display: flex; justify-content: center; gap: 10px; margin: 0 auto 30px auto; background: rgba(30, 30, 30, 0.7); backdrop-filter: blur(10px); padding: 8px; border-radius: 50px; border: 1px solid rgba(0, 162, 255, 0.3); max-width: 420px; }
+        .navbar a { color: #aaa; text-decoration: none; font-weight: bold; font-size: 14px; padding: 10px 20px; border-radius: 25px; transition: 0.3s; }
+        .navbar a:hover { color: #fff; background: rgba(0, 162, 255, 0.1); }
+        .active-nav { background: linear-gradient(45deg, #0088cc, #00a2ff) !important; box-shadow: 0 0 15px rgba(0, 162, 255, 0.5); color: #fff !important; }
 
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
-        .product-card { background-color: #1e1e1e; border-radius: 12px; border: 1px solid #333; overflow: hidden; display: flex; flex-direction: column; transition: 0.3s; position: relative; }
-        .product-card:hover { border-color: #00a2ff; box-shadow: 0 0 15px rgba(0, 162, 255, 0.3); transform: translateY(-3px); }
+        /* Advanced Brand Filter Category Layout */
+        .filter-section { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; max-width: 1000px; margin: 0 auto 35px auto; }
+        .filter-btn { background: #1e1e1e; border: 1px solid #333; color: #bbb; padding: 8px 18px; font-weight: 600; font-size: 13px; border-radius: 30px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+        .filter-btn:hover, .filter-btn.active-filter { border-color: #00a2ff; color: #fff; background: rgba(0, 162, 255, 0.1); box-shadow: 0 0 10px rgba(0, 162, 255, 0.2); }
+
+        /* Advanced Product Grid */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
         
-        .discount-tag { position: absolute; top: 10px; left: 10px; background: #ff3333; color: white; padding: 5px 10px; font-size: 12px; font-weight: bold; border-radius: 4px; z-index: 10; }
-        .image-container { position: relative; width: 100%; height: 250px; background-color: #2a2a2a; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .product-img { max-width: 90%; max-height: 90%; object-fit: contain; display: none; }
+        /* Glassmorphism Product Card */
+        .product-card { background: rgba(25, 25, 25, 0.85); backdrop-filter: blur(15px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; display: flex; flex-direction: column; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
+        .product-card:hover { border-color: #00a2ff; box-shadow: 0 0 25px rgba(0, 162, 255, 0.4); transform: translateY(-5px); }
+        
+        /* Modern Badges */
+        .discount-tag { position: absolute; top: 12px; left: 12px; background: linear-gradient(45deg, #ff3333, #ff5555); color: white; padding: 6px 12px; font-size: 11px; font-weight: 800; border-radius: 6px; z-index: 10; letter-spacing: 0.5px; box-shadow: 0 4px 8px rgba(255,51,51,0.3); }
+        
+        /* Image Showcase Box */
+        .image-container { position: relative; width: 100%; height: 260px; background-color: #171717; display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .product-img { max-width: 85%; max-height: 85%; object-fit: contain; display: none; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)); transition: 0.3s; }
         .product-img.active { display: block; }
         
-        .slider-dots { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; }
-        .dot { width: 8px; height: 8px; background: #555; border-radius: 50%; margin: 0 4px; display: inline-block; cursor: pointer; }
-        .dot.active { background: #00a2ff; box-shadow: 0 0 5px #00a2ff; }
+        .slider-dots { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; }
+        .dot { width: 7px; height: 7px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 4px; display: inline-block; cursor: pointer; transition: 0.3s; }
+        .dot.active { background: #00a2ff; box-shadow: 0 0 8px #00a2ff; transform: scale(1.3); }
         
-        .product-details { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
-        .brand-name { color: #00a2ff; font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
-        .product-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; min-height: 44px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .weight-tag { font-size: 13px; color: #aaa; margin-bottom: 12px; }
+        /* Deep Details Design */
+        .product-details { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+        .brand-name { color: #00a2ff; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+        .product-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; min-height: 44px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #f0f0f0; }
+        .weight-tag { font-size: 12px; color: #888; margin-bottom: 15px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
         
-        .price-box { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; margin-top: auto; }
-        .selling-price { font-size: 20px; font-weight: bold; color: #00ff88; }
-        .mrp-price { font-size: 14px; color: #ff3333; text-decoration: line-through; }
+        /* Price Display Zone */
+        .price-box { display: flex; align-items: baseline; gap: 8px; margin-bottom: 20px; margin-top: auto; }
+        .selling-price { font-size: 22px; font-weight: 800; color: #00ff88; text-shadow: 0 0 10px rgba(0,255,136,0.1); }
+        .mrp-price { font-size: 13px; color: #888; text-decoration: line-through; font-weight: 500; }
         
-        .buy-btn { width: 100%; padding: 12px; background: linear-gradient(45deg, #0088cc, #00a2ff); color: white; border: none; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-decoration: none; text-align: center; text-transform: uppercase; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,162,255,0.2); }
-        .buy-btn:hover { background: linear-gradient(45deg, #00a2ff, #00e5ff); box-shadow: 0 4px 15px rgba(0,162,255,0.4); }
-        .out-of-stock { background: #444 !important; color: #888 !important; cursor: not-allowed; box-shadow: none !important; }
+        /* Pro Glow Order Button */
+        .buy-btn { width: 100%; padding: 13px; background: linear-gradient(45deg, #0088cc, #00a2ff); color: white; border: none; font-size: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; text-decoration: none; text-align: center; text-transform: uppercase; transition: 0.3s; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(0,162,255,0.25); }
+        .buy-btn:hover { background: linear-gradient(45deg, #00a2ff, #00e5ff); box-shadow: 0 6px 20px rgba(0,162,255,0.45); transform: translateY(-1px); }
+        .out-of-stock { background: #333 !important; color: #666 !important; cursor: not-allowed; box-shadow: none !important; border: 1px solid #444; }
         
-        #loading { text-align: center; font-size: 18px; color: #00a2ff; margin-top: 50px; }
+        /* Loading & Shimmer State */
+        #loading { text-align: center; font-size: 16px; color: #00a2ff; margin-top: 60px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
     <header>
         <img src="https://raw.githubusercontent.com/growupfitness/growup/main/logo.png" alt="Grow Up Fitness Logo" onerror="this.style.display='none';">
-        <h1>Grow Up Fitness Supplements Store</h1>
     </header>
 
     <div class="navbar">
@@ -59,98 +83,134 @@
         <a href="store.html" class="active-nav">🛍️ Supplements Store</a>
     </div>
 
-    <div id="loading">Loading Authentic Supplements...</div>
+    <div class="filter-section" id="filterContainer" style="display: none;">
+        <button class="filter-btn active-filter" onclick="filterProducts('All', this)">All Brands</button>
+    </div>
+
+    <div id="loading">Syncing Authentic Inventory...</div>
     <div class="products-grid" id="productsContainer"></div>
 
 <script>
     const apiURL = 'https://script.google.com/macros/s/AKfycbzd3hMZ8aNAG0QOQoKYVtx3e7kOFtAaCBWEPE2YUtB1v1sK5WPRXdfbygQlfVpBmZm99w/exec';
+    let allProductsData = [];
 
     function cleanDriveUrl(url) {
         if (!url) return '';
         url = url.trim();
         if (url.includes('drive.google.com/uc?')) return url;
-        
         var id = '';
         if (url.includes('id=')) {
             id = url.split('id=')[1].split('&')[0];
         } else if (url.includes('/d/')) {
             id = url.split('/d/')[1].split('/')[0];
         }
-        
-        if (id) {
-            return 'https://drive.google.com/uc?export=view&id=' + id;
-        }
+        if (id) return 'https://drive.google.com/uc?export=view&id=' + id;
         return url;
     }
 
+    // Main Engine to Render Advanced Cards
+    function renderCards(products) {
+        const container = document.getElementById('productsContainer');
+        container.innerHTML = '';
+        
+        products.forEach((prod, index) => {
+            const mrp = parseFloat(prod.MRP || 0);
+            const sp = parseFloat(prod["Selling Price"] || 0);
+            let discountPercent = 0;
+            if(mrp > sp && mrp > 0) {
+                discountPercent = Math.round(((mrp - sp) / mrp) * 100);
+            }
+
+            const img1 = cleanDriveUrl(prod["Image 1"]);
+            const img2 = cleanDriveUrl(prod["Image 2"]);
+            const img3 = cleanDriveUrl(prod["Image 3"]);
+
+            let imagesHtml = `<img src="${img1}" class="product-img active img-set-${index}" data-idx="0" onerror="this.src='https://via.placeholder.com/250x250?text=Grow+Up+Fitness';">`;
+            let dotsHtml = `<span class="dot active" onclick="switchImg(${index}, 0)"></span>`;
+            
+            if(prod["Image 2"]) {
+                imagesHtml += `<img src="${img2}" class="product-img img-set-${index}" data-idx="1" onerror="this.style.display='none';">`;
+                dotsHtml += `<span class="dot" onclick="switchImg(${index}, 1)"></span>`;
+            }
+            if(prod["Image 3"]) {
+                imagesHtml += `<img src="${img3}" class="product-img img-set-${index}" data-idx="2" onerror="this.style.display='none';">`;
+                dotsHtml += `<span class="dot" onclick="switchImg(${index}, 2)"></span>`;
+            }
+
+            const whatsappNo = "919571214461";
+            const msg = encodeURIComponent(`Hello Grow Up Fitness! I want to order:\n\n*Brand:* ${prod.Brand}\n*Product:* ${prod["Product Name"]}\n*Size/Weight:* ${prod["Weight / Size"]}\n*Price:* ₹${prod["Selling Price"]}\n\nPlease dispatch my order.`);
+            const waLink = `https://wa.me/${whatsappNo}?text=${msg}`;
+
+            const isStock = prod["Stock Status"] === "In Stock" || prod["Stock Status"] === "";
+
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.setAttribute('data-brand', prod.Brand || '');
+            card.innerHTML = `
+                ${discountPercent > 0 ? `<div class="discount-tag">${discountPercent}% OFF</div>` : ''}
+                <div class="image-container">
+                    ${imagesHtml}
+                    <div class="slider-dots" style="${!prod["Image 2"] ? 'display:none;' : ''}">${dotsHtml}</div>
+                </div>
+                <div class="product-details">
+                    <span class="brand-name">${prod.Brand || 'Premium Brand'}</span>
+                    <h3 class="product-title">${prod["Product Name"]}</h3>
+                    <span class="weight-tag">📦 Net WT: ${prod["Weight / Size"] || 'Standard'}</span>
+                    <div class="price-box">
+                        <span class="selling-price">₹${prod["Selling Price"] || '0'}</span>
+                        ${mrp > sp ? `<span class="mrp-price">₹${prod.MRP}</span>` : ''}
+                    </div>
+                    ${isStock ? 
+                        `<a href="${waLink}" target="_blank" class="buy-btn">⚡ Secure Order</a>` : 
+                        `<button class="buy-btn out-of-stock" disabled>Sold Out</button>`
+                    }
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // Smart Categories Filtering Mechanism
+    function filterProducts(brandName, btnElement) {
+        // Active Filter Button Class Toggle
+        const buttons = document.querySelectorAll('.filter-btn');
+        buttons.forEach(btn => btn.classList.remove('active-filter'));
+        btnElement.classList.add('active-filter');
+
+        if(brandName === 'All') {
+            renderCards(allProductsData);
+        } else {
+            const filtered = allProductsData.filter(p => p.Brand === brandName);
+            renderCards(filtered);
+        }
+    }
+
+    // Dynamic Filter Generator from Sheet Unique Value
+    function generateFilters(products) {
+        const filterContainer = document.getElementById('filterContainer');
+        const uniqueBrands = [...new Set(products.map(p => p.Brand).filter(b => b))];
+        
+        uniqueBrands.forEach(brand => {
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn';
+            btn.innerText = brand;
+            btn.onclick = function() { filterProducts(brand, btn); };
+            filterContainer.appendChild(btn);
+        });
+        filterContainer.style.display = 'flex';
+    }
+
+    // Initial Database Pull Hook
     fetch(apiURL)
         .then(res => res.json())
         .then(products => {
             document.getElementById('loading').style.display = 'none';
-            const container = document.getElementById('productsContainer');
-            
-            if (!products || products.length === 0) {
-                document.getElementById('loading').innerText = 'No products found.';
-                return;
-            }
-
-            products.forEach((prod, index) => {
-                const mrp = parseFloat(prod.MRP || 0);
-                const sp = parseFloat(prod["Selling Price"] || 0);
-                let discountPercent = 0;
-                if(mrp > sp && mrp > 0) {
-                    discountPercent = Math.round(((mrp - sp) / mrp) * 100);
-                }
-
-                const img1 = cleanDriveUrl(prod["Image 1"]);
-                const img2 = cleanDriveUrl(prod["Image 2"]);
-                const img3 = cleanDriveUrl(prod["Image 3"]);
-
-                let imagesHtml = `<img src="${img1}" class="product-img active img-set-${index}" data-idx="0" onerror="this.src='https://via.placeholder.com/250x250?text=Grow+Up+Fitness';">`;
-                let dotsHtml = `<span class="dot active" onclick="switchImg(${index}, 0)"></span>`;
-                
-                if(prod["Image 2"]) {
-                    imagesHtml += `<img src="${img2}" class="product-img img-set-${index}" data-idx="1" onerror="this.style.display='none';">`;
-                    dotsHtml += `<span class="dot" onclick="switchImg(${index}, 1)"></span>`;
-                }
-                if(prod["Image 3"]) {
-                    imagesHtml += `<img src="${img3}" class="product-img img-set-${index}" data-idx="2" onerror="this.style.display='none';">`;
-                    dotsHtml += `<span class="dot" onclick="switchImg(${index}, 2)"></span>`;
-                }
-
-                const whatsappNo = "919571214461";
-                const msg = encodeURIComponent(`Hello Grow Up Fitness! I want to order:\n\n*Product:* ${prod["Product Name"]}\n*Brand:* ${prod.Brand}\n*Size/Weight:* ${prod["Weight / Size"]}\n*Price:* ₹${prod["Selling Price"]}\n\nPlease confirm availability.`);
-                const waLink = `https://wa.me/${whatsappNo}?text=${msg}`;
-
-                const isStock = prod["Stock Status"] === "In Stock" || prod["Stock Status"] === "";
-
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.innerHTML = `
-                    ${discountPercent > 0 ? `<div class="discount-tag">${discountPercent}% OFF</div>` : ''}
-                    <div class="image-container">
-                        ${imagesHtml}
-                        <div class="slider-dots" style="${!prod["Image 2"] ? 'display:none;' : ''}">${dotsHtml}</div>
-                    </div>
-                    <div class="product-details">
-                        <span class="brand-name">${prod.Brand || 'Supplement'}</span>
-                        <h3 class="product-title">${prod["Product Name"]}</h3>
-                        <span class="weight-tag">📦 Size/Weight: ${prod["Weight / Size"] || 'N/A'}</span>
-                        <div class="price-box">
-                            <span class="selling-price">₹${prod["Selling Price"] || '0'}</span>
-                            ${mrp > sp ? `<span class="mrp-price">₹${prod.MRP}</span>` : ''}
-                        </div>
-                        ${isStock ? 
-                            `<a href="${waLink}" target="_blank" class="buy-btn">⚡ Buy Now</a>` : 
-                            `<button class="buy-btn out-of-stock" disabled>Out Of Stock</button>`
-                        }
-                    </div>
-                `;
-                container.appendChild(card);
-            });
+            allProductsData = products;
+            generateFilters(products);
+            renderCards(products);
         })
         .catch(err => {
-            document.getElementById('loading').innerText = 'Error loading products.';
+            document.getElementById('loading').innerText = 'Syncing Failed. Refresh Sheet API.';
             console.error(err);
         });
 
