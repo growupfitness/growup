@@ -66,15 +66,23 @@
 <script>
     const apiURL = 'https://script.google.com/macros/s/AKfycbzd3hMZ8aNAG0QOQoKYVtx3e7kOFtAaCBWEPE2YUtB1v1sK5WPRXdfbygQlfVpBmZm99w/exec';
 
-    // Sabhi tarah ki Google Drive links ko convert karne ka super advanced logic
+    // Ultimate Universal Image URL Clean-up Engine
     function cleanDriveUrl(url) {
         if (!url) return '';
+        url = url.trim();
+        
+        // Agar pehle se hi sahi direct stream ya uc link h to direct return karein
+        if (url.includes('drive.google.com/uc?')) {
+            return url;
+        }
+        
         var id = '';
         if (url.includes('id=')) {
             id = url.split('id=')[1].split('&')[0];
         } else if (url.includes('/d/')) {
             id = url.split('/d/')[1].split('/')[0];
         }
+        
         if (id) {
             return 'https://drive.google.com/uc?export=view&id=' + id;
         }
@@ -105,7 +113,7 @@
                 const img2 = cleanDriveUrl(prod["Image 2"]);
                 const img3 = cleanDriveUrl(prod["Image 3"]);
 
-                let imagesHtml = `<img src="${img1}" class="product-img active img-set-${index}" data-idx="0" onerror="this.src='https://via.placeholder.com/250x250?text=No+Image';">`;
+                let imagesHtml = `<img src="${img1}" class="product-img active img-set-${index}" data-idx="0" onerror="this.src='https://via.placeholder.com/250x250?text=Grow+Up+Fitness';">`;
                 let dotsHtml = `<span class="dot active" onclick="switchImg(${index}, 0)"></span>`;
                 
                 if(prod["Image 2"]) {
@@ -133,7 +141,7 @@
                     </div>
                     <div class="product-details">
                         <span class="brand-name">${prod.Brand || 'Supplement'}</span>
-                        <h3 class="product-title">${prod["Product Name"] || 'Product Title'}</h3>
+                        <h3 class="product-title">${prod["Product Name"]}</h3>
                         <span class="weight-tag">📦 Size/Weight: ${prod["Weight / Size"] || 'N/A'}</span>
                         <div class="price-box">
                             <span class="selling-price">₹${prod["Selling Price"] || '0'}</span>
@@ -149,7 +157,7 @@
             });
         })
         .catch(err => {
-            document.getElementById('loading').innerText = 'Error loading products. Please check if Google Sheet Web App is deployed as Anyone.';
+            document.getElementById('loading').innerText = 'Error loading products.';
             console.error(err);
         });
 
