@@ -7,9 +7,13 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', sans-serif; }
         
-        /* Ultra-Premium Cinematic Dark Theme */
+        /* 🏋️‍♂️ Dynamic Premium Gym Background (As Requested) */
         body { 
-            background: radial-gradient(circle at top, #1a233a 0%, #0d0f14 70%);
+            background: linear-gradient(rgba(10, 15, 26, 0.85), rgba(10, 15, 26, 0.90)), 
+                        url('https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1200&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: #ffffff; 
             padding: 40px 20px; 
             min-height: 100vh; 
@@ -38,13 +42,13 @@
             justify-content: center; 
             gap: 15px; 
             margin: 0 auto 40px auto; 
-            background: rgba(20, 26, 38, 0.6); 
-            backdrop-filter: blur(12px); 
+            background: rgba(20, 26, 38, 0.75); 
+            backdrop-filter: blur(15px); 
             padding: 10px; 
             border-radius: 50px; 
-            border: 1px solid rgba(0, 162, 255, 0.2); 
+            border: 1px solid rgba(0, 162, 255, 0.3); 
             max-width: 450px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
         .navbar a { 
             color: #8fa0b5; 
@@ -59,11 +63,11 @@
         }
         .navbar a:hover { 
             color: #ffffff; 
-            background: rgba(0, 162, 255, 0.1); 
+            background: rgba(0, 162, 255, 0.15); 
         }
         .active-nav { 
             background: linear-gradient(135deg, #0072ff, #00f2fe) !important; 
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.4); 
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.5); 
             color: #ffffff !important; 
         }
 
@@ -77,8 +81,9 @@
             margin: 0 auto 40px auto; 
         }
         .filter-btn { 
-            background: #141a26; 
-            border: 1px solid rgba(255,255,255,0.05); 
+            background: rgba(20, 26, 38, 0.85); 
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1); 
             color: #92a1b3; 
             padding: 10px 22px; 
             font-weight: 700; 
@@ -92,8 +97,8 @@
         .filter-btn:hover, .filter-btn.active-filter { 
             border-color: #00f2fe; 
             color: #ffffff; 
-            background: rgba(0, 242, 254, 0.1); 
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.3); 
+            background: rgba(0, 242, 254, 0.2); 
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4); 
         }
 
         /* Advanced Premium Showcase Grid */
@@ -105,21 +110,22 @@
             margin: 0 auto; 
         }
         
-        /* Ultra Premium Cyber-Glow Card */
+        /* Ultra Premium Cyber-Glow Card with Deep Glass Effect */
         .product-card { 
-            background: linear-gradient(145deg, #151b27, #0e121a); 
+            background: linear-gradient(145deg, rgba(21, 27, 39, 0.92), rgba(14, 18, 26, 0.96)); 
+            backdrop-filter: blur(10px);
             border-radius: 20px; 
-            border: 1px solid rgba(255,255,255,0.03); 
+            border: 1px solid rgba(255,255,255,0.06); 
             overflow: hidden; 
             display: flex; 
             flex-direction: column; 
             transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
             position: relative; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
         .product-card:hover { 
-            border-color: rgba(0, 242, 254, 0.5); 
-            box-shadow: 0 20px 40px rgba(0, 162, 255, 0.25), 0 0 30px rgba(0, 242, 254, 0.15); 
+            border-color: rgba(0, 242, 254, 0.6); 
+            box-shadow: 0 20px 40px rgba(0, 162, 255, 0.3), 0 0 30px rgba(0, 242, 254, 0.2); 
             transform: translateY(-8px); 
         }
         
@@ -139,7 +145,7 @@
             box-shadow: 0 5px 15px rgba(255,8,68,0.4); 
         }
         
-        /* Image Showcase Box with Inner Gradient Shadow */
+        /* Image Showcase Box */
         .image-container { 
             position: relative; 
             width: 100%; 
@@ -166,9 +172,9 @@
             transform: scale(1.06);
         }
         
-        /* Futuristic Slide Dots */
+        /* Slide Dots */
         .slider-dots { position: absolute; bottom: 15px; left: 0; right: 0; text-align: center; }
-        .dot { width: 6px; height: 6px; background: rgba(255,255,255,0.15); border-radius: 50%; margin: 0 5px; display: inline-block; cursor: pointer; transition: 0.3s; }
+        .dot { width: 6px; height: 6px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 5px; display: inline-block; cursor: pointer; transition: 0.3s; }
         .dot.active { background: #00f2fe; box-shadow: 0 0 10px #00f2fe; transform: scale(1.4); }
         
         /* Premium Typography Details */
@@ -198,11 +204,11 @@
             text-transform: uppercase; 
             transition: 0.3s; 
             letter-spacing: 1px; 
-            box-shadow: 0 5px 20px rgba(0,114,255,0.3); 
+            box-shadow: 0 5px 20px rgba(0,114,255,0.4); 
         }
         .buy-btn:hover { 
             background: linear-gradient(135deg, #00f2fe, #0072ff); 
-            box-shadow: 0 8px 25px rgba(0,242,254,0.5); 
+            box-shadow: 0 8px 25px rgba(0,242,254,0.6); 
             transform: translateY(-2px); 
         }
         .out-of-stock { background: #1c2330 !important; color: #4e5d73 !important; cursor: not-allowed; box-shadow: none !important; border: 1px solid rgba(255,255,255,0.03); }
@@ -248,7 +254,6 @@
         return url;
     }
 
-    // Engine to construct High-End App UI Cards
     function renderCards(products) {
         const container = document.getElementById('productsContainer');
         container.innerHTML = '';
@@ -265,7 +270,6 @@
             const img2 = cleanDriveUrl(prod["Image 2"]);
             const img3 = cleanDriveUrl(prod["Image 3"]);
 
-            // Beautiful Premium Modern Black Matte Placeholder Graphics for products without images
             const fallbackGraphic = `https://via.placeholder.com/400x400/0d0f14/00f2fe?text=${encodeURIComponent(prod.Brand || 'GrowUp')}+Premium`;
 
             let imagesHtml = `<img src="${img1}" class="product-img active img-set-${index}" data-idx="0" onerror="this.src='${fallbackGraphic}';">`;
@@ -337,6 +341,7 @@
             btn.onclick = function() { filterProducts(brand, btn); };
             filterContainer.appendChild(btn);
         });
+        filterContainer.style.add = 'display', 'flex';
         filterContainer.style.display = 'flex';
     }
 
