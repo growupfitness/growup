@@ -7,21 +7,18 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', sans-serif; }
         
-        /* 🏋️‍♂️ Dynamic Background Container */
+        /* 🚨 NO OVERLAY MASK - 100% FULL BRIGHTNESS DYNAMIC BACKGROUND */
         body { 
-            background-image: linear-gradient(rgba(10, 16, 26, 0.50), rgba(7, 11, 18, 0.75)), 
-                              url('https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1600&auto=format&fit=crop'); 
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
             background-attachment: fixed;
-            background-blend-mode: multiply;
             background-color: #0d1117;
             color: #ffffff; 
             padding: 40px 20px; 
             min-height: 100vh; 
             letter-spacing: 0.5px;
-            transition: background 0.5s ease-in-out;
+            transition: background 0.3s ease-in-out;
         }
         
         /* Glowing Header Banner Section */
@@ -46,7 +43,7 @@
             justify-content: center; 
             gap: 15px; 
             margin: 0 auto 40px auto; 
-            background: rgba(13, 20, 33, 0.9); 
+            background: rgba(13, 20, 33, 0.95); 
             backdrop-filter: blur(20px); 
             padding: 10px; 
             border-radius: 50px; 
@@ -262,14 +259,16 @@
         const container = document.getElementById('productsContainer');
         container.innerHTML = '';
         
-        // Dynamic Sheet Background Trigger: Agar kisi product ka Brand "BACKGROUND" likha hai, toh uski Image 1 body ka background ban jayegi
+        // ⚡ Dynamic Sheet Background Loader
         const bgProduct = products.find(p => p.Brand && p.Brand.toUpperCase() === 'BACKGROUND');
         if (bgProduct && bgProduct["Image 1"]) {
             const dynamicBgUrl = cleanDriveUrl(bgProduct["Image 1"]);
-            document.body.style.backgroundImage = `linear-gradient(rgba(10, 16, 26, 0.45), rgba(7, 11, 18, 0.65)), url('${dynamicBgUrl}')`;
+            document.body.style.backgroundImage = `url('${dynamicBgUrl}')`;
+        } else {
+            // Fallback unsplash image if no row configured
+            document.body.style.backgroundImage = `url('https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1600&auto=format&fit=crop')`;
         }
 
-        // Filter out the background configurations row from products view
         const displayProducts = products.filter(p => !p.Brand || p.Brand.toUpperCase() !== 'BACKGROUND');
 
         displayProducts.forEach((prod, index) => {
@@ -316,74 +315,4 @@
                 <div class="product-details">
                     <span class="brand-name">${prod.Brand || 'Premium Tier'}</span>
                     <h3 class="product-title">${prod["Product Name"]}</h3>
-                    <span class="weight-tag">📦 Net Weight: ${prod["Weight / Size"] || 'Standard'}</span>
-                    <div class="price-box">
-                        <span class="selling-price">₹${prod["Selling Price"] || '0'}</span>
-                        ${mrp > sp ? `<span class="mrp-price">₹${prod.MRP}</span>` : ''}
-                    </div>
-                    ${isStock ? 
-                        `<a href="${waLink}" target="_blank" class="buy-btn">⚡ INITIATE PURCHASE</a>` : 
-                        `<button class="buy-btn out-of-stock" disabled>BATCH SOLD OUT</button>`
-                    }
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    function filterProducts(brandName, btnElement) {
-        const buttons = document.querySelectorAll('.filter-btn');
-        buttons.forEach(btn => btn.classList.remove('active-filter'));
-        btnElement.classList.add('active-filter');
-
-        const displayProducts = allProductsData.filter(p => !p.Brand || p.Brand.toUpperCase() !== 'BACKGROUND');
-
-        if(brandName === 'All') {
-            renderCards(allProductsData);
-        } else {
-            const filtered = displayProducts.filter(p => p.Brand === brandName);
-            renderCards(allProductsData.filter(p => p.Brand === brandName || p.Brand.toUpperCase() === 'BACKGROUND'));
-        }
-    }
-
-    function generateFilters(products) {
-        const filterContainer = document.getElementById('filterContainer');
-        const uniqueBrands = [...new Set(products.map(p => p.Brand).filter(b => b && b.toUpperCase() !== 'BACKGROUND'))];
-        
-        uniqueBrands.forEach(brand => {
-            const btn = document.createElement('button');
-            btn.className = 'filter-btn';
-            btn.innerText = brand;
-            btn.onclick = function() { filterProducts(brand, btn); };
-            filterContainer.appendChild(btn);
-        });
-        filterContainer.style.display = 'flex';
-    }
-
-    fetch(apiURL)
-        .then(res => res.json())
-        .then(products => {
-            document.getElementById('loading').style.display = 'none';
-            allProductsData = products;
-            generateFilters(products);
-            renderCards(products);
-        })
-        .catch(err => {
-            document.getElementById('loading').innerText = 'Data Sync Pipeline Interrupted.';
-            console.error(err);
-        });
-
-    function switchImg(cardIdx, imgIdx) {
-        const imgs = document.querySelectorAll(`.img-set-${cardIdx}`);
-        imgs.forEach(img => img.classList.remove('active'));
-        imgs.forEach(img => {
-            if(parseInt(img.getAttribute('data-idx')) === imgIdx) img.classList.add('active');
-        });
-        
-        const cardDots = imgs[0].parentElement.querySelectorAll('.dot');
-        cardDots.forEach(dot => dot.classList.remove('active'));
-        if(cardDots[imgIdx]) cardDots[imgIdx].classList.add('active');
-    }
-</script>
-</body>
-</html>
+                    <span class="weight-tag">📦 Net Weight: ${prod
