@@ -7,9 +7,9 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', sans-serif; }
         
-        /* 🏋️‍♂️ 100% High-Visibility Crystal Clear Background (Fixed Overlay) */
+        /* 🏋️‍♂️ Dynamic Background Container */
         body { 
-            background-image: linear-gradient(rgba(10, 10, 10, 0.70), rgba(10, 10, 10, 0.85)), 
+            background-image: linear-gradient(rgba(10, 16, 26, 0.50), rgba(7, 11, 18, 0.75)), 
                               url('https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1600&auto=format&fit=crop'); 
             background-size: cover;
             background-position: center center;
@@ -21,6 +21,7 @@
             padding: 40px 20px; 
             min-height: 100vh; 
             letter-spacing: 0.5px;
+            transition: background 0.5s ease-in-out;
         }
         
         /* Glowing Header Banner Section */
@@ -261,7 +262,17 @@
         const container = document.getElementById('productsContainer');
         container.innerHTML = '';
         
-        products.forEach((prod, index) => {
+        // Dynamic Sheet Background Trigger: Agar kisi product ka Brand "BACKGROUND" likha hai, toh uski Image 1 body ka background ban jayegi
+        const bgProduct = products.find(p => p.Brand && p.Brand.toUpperCase() === 'BACKGROUND');
+        if (bgProduct && bgProduct["Image 1"]) {
+            const dynamicBgUrl = cleanDriveUrl(bgProduct["Image 1"]);
+            document.body.style.backgroundImage = `linear-gradient(rgba(10, 16, 26, 0.45), rgba(7, 11, 18, 0.65)), url('${dynamicBgUrl}')`;
+        }
+
+        // Filter out the background configurations row from products view
+        const displayProducts = products.filter(p => !p.Brand || p.Brand.toUpperCase() !== 'BACKGROUND');
+
+        displayProducts.forEach((prod, index) => {
             const mrp = parseFloat(prod.MRP || 0);
             const sp = parseFloat(prod["Selling Price"] || 0);
             let discountPercent = 0;
@@ -325,17 +336,19 @@
         buttons.forEach(btn => btn.classList.remove('active-filter'));
         btnElement.classList.add('active-filter');
 
+        const displayProducts = allProductsData.filter(p => !p.Brand || p.Brand.toUpperCase() !== 'BACKGROUND');
+
         if(brandName === 'All') {
             renderCards(allProductsData);
         } else {
-            const filtered = allProductsData.filter(p => p.Brand === brandName);
-            renderCards(filtered);
+            const filtered = displayProducts.filter(p => p.Brand === brandName);
+            renderCards(allProductsData.filter(p => p.Brand === brandName || p.Brand.toUpperCase() === 'BACKGROUND'));
         }
     }
 
     function generateFilters(products) {
         const filterContainer = document.getElementById('filterContainer');
-        const uniqueBrands = [...new Set(products.map(p => p.Brand).filter(b => b))];
+        const uniqueBrands = [...new Set(products.map(p => p.Brand).filter(b => b && b.toUpperCase() !== 'BACKGROUND'))];
         
         uniqueBrands.forEach(brand => {
             const btn = document.createElement('button');
