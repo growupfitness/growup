@@ -7,12 +7,12 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', sans-serif; }
         
-        /* 🏋️‍♂️ Responsive HD Background Setup - Model Centered & Fully Visible */
+        /* 🏋️‍♂️ Responsive Gym Background - Model Forced into View */
         body { 
             background-image: linear-gradient(rgba(13, 20, 33, 0.4), rgba(13, 20, 33, 0.6)), 
                               url('https://i.postimg.cc/SxHN50tQ/gym-bg.jpg'); 
             background-size: cover;
-            background-position: center top; /* Keeps the model centered vertically and horizontally */
+            background-position: 72% center; /* Desktop par perfect adjust rakhega */
             background-repeat: no-repeat;
             background-attachment: fixed;
             background-color: #0d1117;
@@ -22,9 +22,10 @@
             letter-spacing: 0.5px;
         }
 
+        /* 📱 Mobile Specific Adjustment - Pulls the Model to Center */
         @media (max-width: 768px) {
             body {
-                background-position: 35% top; /* Mobile screen par model ko focus me rakhne ke liye adjust kiya hai */
+                background-position: 78% center !important; /* Mobile screens par model ko left me khinch kar samne layega */
             }
         }
         
@@ -266,7 +267,7 @@
         const container = document.getElementById('productsContainer');
         container.innerHTML = '';
         
-        // 🚨 CRITICAL FIX: Filtering out any BACKGROUND rows from becoming cards
+        // 🚨 SOLID FILTER: Blocks any 'BACKGROUND' entries from rendering into visual catalog cards
         const displayProducts = products.filter(p => p.Brand && p.Brand.toUpperCase() !== 'BACKGROUND');
 
         displayProducts.forEach((prod, index) => {
@@ -333,18 +334,19 @@
         buttons.forEach(btn => btn.classList.remove('active-filter'));
         btnElement.classList.add('active-filter');
 
+        const activeProducts = allProductsData.filter(p => p.Brand && p.Brand.toUpperCase() !== 'BACKGROUND');
+
         if(brandName === 'All') {
-            const activeProducts = allProductsData.filter(p => p.Brand && p.Brand.toUpperCase() !== 'BACKGROUND');
             renderCards(activeProducts);
         } else {
-            const filtered = allProductsData.filter(p => p.Brand === brandName);
+            const filtered = activeProducts.filter(p => p.Brand === brandName);
             renderCards(filtered);
         }
     }
 
     function generateFilters(products) {
         const filterContainer = document.getElementById('filterContainer');
-        // Filter out BACKGROUND from category list too
+        // Clean out BACKGROUND category button 
         const uniqueBrands = [...new Set(products.map(p => p.Brand).filter(b => b && b.toUpperCase() !== 'BACKGROUND'))];
         
         uniqueBrands.forEach(brand => {
