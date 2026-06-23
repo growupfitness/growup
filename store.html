@@ -3,74 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grow Up Fitness - Ultimate Store</title>
+    <title>Grow Up Fitness - Ultimate E-Store</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', sans-serif; }
         
-        /* Deep Premium Dark Gym Background with Soft Blur */
+        /* 🏋️‍♂️ 100% Fixed Full-Glow High-Quality Background Embedded Directly */
         body { 
-            background: linear-gradient(rgba(15, 15, 15, 0.88), rgba(15, 15, 15, 0.92)), 
-                        url('https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=1200&auto=format&fit=crop');
+            background-image: linear-gradient(rgba(10, 16, 26, 0.75), rgba(7, 11, 18, 0.85)), 
+                              url('https://i.postimg.cc/SxHN50tQ/gym-bg.jpg'); 
             background-size: cover;
-            background-position: center;
+            background-position: center center;
+            background-repeat: no-repeat;
             background-attachment: fixed;
+            background-blend-mode: multiply;
+            background-color: #0d1117;
             color: #ffffff; 
-            padding: 30px 20px; 
+            padding: 40px 20px; 
             min-height: 100vh; 
+            letter-spacing: 0.5px;
         }
         
-        header { text-align: center; margin-bottom: 25px; }
-        header img { max-width: 160px; filter: drop-shadow(0 0 12px rgba(0, 162, 255, 0.6)); }
+        /* Glowing Header Banner Section */
+        header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            position: relative;
+        }
+        header img { 
+            max-width: 200px; 
+            filter: drop-shadow(0 0 20px rgba(0, 162, 255, 0.8));
+            transition: 0.5s;
+        }
+        header img:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 30px rgba(0, 229, 255, 0.9));
+        }
         
-        /* Modern App Style Navigation Tabs */
-        .navbar { display: flex; justify-content: center; gap: 10px; margin: 0 auto 30px auto; background: rgba(30, 30, 30, 0.7); backdrop-filter: blur(10px); padding: 8px; border-radius: 50px; border: 1px solid rgba(0, 162, 255, 0.3); max-width: 420px; }
-        .navbar a { color: #aaa; text-decoration: none; font-weight: bold; font-size: 14px; padding: 10px 20px; border-radius: 25px; transition: 0.3s; }
-        .navbar a:hover { color: #fff; background: rgba(0, 162, 255, 0.1); }
-        .active-nav { background: linear-gradient(45deg, #0088cc, #00a2ff) !important; box-shadow: 0 0 15px rgba(0, 162, 255, 0.5); color: #fff !important; }
+        /* Futuristic Navigation Bar (Glassmorphism Tabs) */
+        .navbar { 
+            display: flex; 
+            justify-content: center; 
+            gap: 15px; 
+            margin: 0 auto 40px auto; 
+            background: rgba(13, 20, 33, 0.95); 
+            backdrop-filter: blur(20px); 
+            padding: 10px; 
+            border-radius: 50px; 
+            border: 1px solid rgba(0, 162, 255, 0.4); 
+            max-width: 450px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.8);
+        }
+        .navbar a { 
+            color: #b0c2d9; 
+            text-decoration: none; 
+            font-weight: 700; 
+            font-size: 13px; 
+            padding: 12px 24px; 
+            border-radius: 25px; 
+            transition: 0.4s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .navbar a:hover { 
+            color: #ffffff; 
+            background: rgba(0, 162, 255, 0.2); 
+        }
+        .active-nav { 
+            background: linear-gradient(135deg, #0072ff, #00f2fe) !important; 
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.6); 
+            color: #ffffff !important; 
+        }
 
         /* Advanced Brand Filter Category Layout */
-        .filter-section { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; max-width: 1000px; margin: 0 auto 35px auto; }
-        .filter-btn { background: #1e1e1e; border: 1px solid #333; color: #bbb; padding: 8px 18px; font-weight: 600; font-size: 13px; border-radius: 30px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
-        .filter-btn:hover, .filter-btn.active-filter { border-color: #00a2ff; color: #fff; background: rgba(0, 162, 255, 0.1); box-shadow: 0 0 10px rgba(0, 162, 255, 0.2); }
+        .filter-section { 
+            display: flex; 
+            justify-content: center; 
+            gap: 12px; 
+            flex-wrap: wrap; 
+            max-width: 1100px; 
+            margin: 0 auto 40px auto; 
+        }
+        .filter-btn { 
+            background: rgba(13, 20, 33, 0.95); 
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.15); 
+            color: #b0c2d9; 
+            padding: 10px 22px; 
+            font-weight: 700; 
+            font-size: 12px; 
+            border-radius: 30px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+        }
+        .filter-btn:hover, .filter-btn.active-filter { 
+            border-color: #00f2fe; 
+            color: #ffffff; 
+            background: rgba(0, 242, 254, 0.25); 
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.5); 
+        }
 
-        /* Advanced Product Grid */
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        /* Advanced Premium Showcase Grid */
+        .products-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); 
+            gap: 35px; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
         
-        /* Glassmorphism Product Card */
-        .product-card { background: rgba(25, 25, 25, 0.85); backdrop-filter: blur(15px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; display: flex; flex-direction: column; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
-        .product-card:hover { border-color: #00a2ff; box-shadow: 0 0 25px rgba(0, 162, 255, 0.4); transform: translateY(-5px); }
+        /* Ultra Premium Cyber-Glow Card with Deep Glass Effect */
+        .product-card { 
+            background: linear-gradient(145deg, rgba(18, 25, 38, 0.96), rgba(10, 14, 23, 0.99)); 
+            backdrop-filter: blur(15px);
+            border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
+            position: relative; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        }
+        .product-card:hover { 
+            border-color: rgba(0, 242, 254, 0.7); 
+            box-shadow: 0 20px 40px rgba(0, 162, 255, 0.4), 0 0 30px rgba(0, 242, 254, 0.3); 
+            transform: translateY(-8px); 
+        }
         
-        /* Modern Badges */
-        .discount-tag { position: absolute; top: 12px; left: 12px; background: linear-gradient(45deg, #ff3333, #ff5555); color: white; padding: 6px 12px; font-size: 11px; font-weight: 800; border-radius: 6px; z-index: 10; letter-spacing: 0.5px; box-shadow: 0 4px 8px rgba(255,51,51,0.3); }
+        /* High Energy Discount Tag */
+        .discount-tag { 
+            position: absolute; 
+            top: 15px; 
+            left: 15px; 
+            background: linear-gradient(135deg, #ff0844, #ffb199); 
+            color: white; 
+            padding: 6px 14px; 
+            font-size: 11px; 
+            font-weight: 800; 
+            border-radius: 8px; 
+            z-index: 10; 
+            letter-spacing: 0.5px; 
+            box-shadow: 0 5px 15px rgba(255,8,68,0.4); 
+        }
         
         /* Image Showcase Box */
-        .image-container { position: relative; width: 100%; height: 260px; background-color: #171717; display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.03); }
-        .product-img { max-width: 85%; max-height: 85%; object-fit: contain; display: none; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)); transition: 0.3s; }
-        .product-img.active { display: block; }
+        .image-container { 
+            position: relative; 
+            width: 100%; 
+            height: 270px; 
+            background: #090b10; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            border-bottom: 1px solid rgba(255,255,255,0.02); 
+        }
+        .product-img { 
+            max-width: 80%; 
+            max-height: 80%; 
+            object-fit: contain; 
+            display: none; 
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.7)); 
+            transition: 0.4s; 
+        }
+        .product-img.active { 
+            display: block; 
+        }
+        .product-card:hover .product-img {
+            transform: scale(1.06);
+        }
         
-        .slider-dots { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; }
-        .dot { width: 7px; height: 7px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 4px; display: inline-block; cursor: pointer; transition: 0.3s; }
-        .dot.active { background: #00a2ff; box-shadow: 0 0 8px #00a2ff; transform: scale(1.3); }
+        /* Slide Dots */
+        .slider-dots { position: absolute; bottom: 15px; left: 0; right: 0; text-align: center; }
+        .dot { width: 6px; height: 6px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 5px; display: inline-block; cursor: pointer; transition: 0.3s; }
+        .dot.active { background: #00f2fe; box-shadow: 0 0 10px #00f2fe; transform: scale(1.4); }
         
-        /* Deep Details Design */
-        .product-details { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
-        .brand-name { color: #00a2ff; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-        .product-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; min-height: 44px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #f0f0f0; }
-        .weight-tag { font-size: 12px; color: #888; margin-bottom: 15px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+        /* Premium Typography Details */
+        .product-details { padding: 25px; display: flex; flex-direction: column; flex-grow: 1; }
+        .brand-name { color: #00f2fe; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; text-shadow: 0 0 10px rgba(0,242,254,0.2); }
+        .product-title { font-size: 17px; font-weight: 700; margin-bottom: 12px; min-height: 48px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #ffffff; }
+        .weight-tag { font-size: 12px; color: #a4b3c6; margin-bottom: 20px; font-weight: 600; }
         
-        /* Price Display Zone */
-        .price-box { display: flex; align-items: baseline; gap: 8px; margin-bottom: 20px; margin-top: auto; }
-        .selling-price { font-size: 22px; font-weight: 800; color: #00ff88; text-shadow: 0 0 10px rgba(0,255,136,0.1); }
-        .mrp-price { font-size: 13px; color: #888; text-decoration: line-through; font-weight: 500; }
+        /* Cyberpunk Pricing Layout */
+        .price-box { display: flex; align-items: baseline; gap: 10px; margin-bottom: 22px; margin-top: auto; }
+        .selling-price { font-size: 24px; font-weight: 800; color: #00ff88; text-shadow: 0 0 15px rgba(0,255,136,0.2); }
+        .mrp-price { font-size: 14px; color: #a4b3c6; text-decoration: line-through; font-weight: 500; }
         
-        /* Pro Glow Order Button */
-        .buy-btn { width: 100%; padding: 13px; background: linear-gradient(45deg, #0088cc, #00a2ff); color: white; border: none; font-size: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; text-decoration: none; text-align: center; text-transform: uppercase; transition: 0.3s; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(0,162,255,0.25); }
-        .buy-btn:hover { background: linear-gradient(45deg, #00a2ff, #00e5ff); box-shadow: 0 6px 20px rgba(0,162,255,0.45); transform: translateY(-1px); }
-        .out-of-stock { background: #333 !important; color: #666 !important; cursor: not-allowed; box-shadow: none !important; border: 1px solid #444; }
+        /* Neon-Glow Premium Action Buttons */
+        .buy-btn { 
+            width: 100%; 
+            padding: 14px; 
+            background: linear-gradient(135deg, #0072ff, #00f2fe); 
+            color: white; 
+            border: none; 
+            font-size: 13px; 
+            font-weight: 800; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            text-decoration: none; 
+            text-align: center; 
+            text-transform: uppercase; 
+            transition: 0.3s; 
+            letter-spacing: 1px; 
+            box-shadow: 0 5px 20px rgba(0,114,255,0.4); 
+        }
+        .buy-btn:hover { 
+            background: linear-gradient(135deg, #00f2fe, #0072ff); 
+            box-shadow: 0 8px 25px rgba(0,242,254,0.6); 
+            transform: translateY(-2px); 
+        }
+        .out-of-stock { background: #1c2330 !important; color: #4e5d73 !important; cursor: not-allowed; box-shadow: none !important; border: 1px solid rgba(255,255,255,0.03); }
         
-        /* Loading & Shimmer State */
-        #loading { text-align: center; font-size: 16px; color: #00a2ff; margin-top: 60px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        /* Shimmer Syncing Status */
+        #loading { text-align: center; font-size: 15px; color: #00f2fe; margin-top: 80px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0,242,254,0.3); }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -80,14 +229,14 @@
 
     <div class="navbar">
         <a href="index.html">📋 Inquiry Form</a>
-        <a href="store.html" class="active-nav">🛍️ Supplements Store</a>
+        <a href="store.html" class="active-nav">🛍️ Store Catalog</a>
     </div>
 
     <div class="filter-section" id="filterContainer" style="display: none;">
-        <button class="filter-btn active-filter" onclick="filterProducts('All', this)">All Brands</button>
+        <button class="filter-btn active-filter" onclick="filterProducts('All', this)">All Supplements</button>
     </div>
 
-    <div id="loading">Syncing Authentic Inventory...</div>
+    <div id="loading">Establishing Secure Connection to Inventory Sheets...</div>
     <div class="products-grid" id="productsContainer"></div>
 
 <script>
@@ -108,7 +257,6 @@
         return url;
     }
 
-    // Main Engine to Render Advanced Cards
     function renderCards(products) {
         const container = document.getElementById('productsContainer');
         container.innerHTML = '';
@@ -125,7 +273,9 @@
             const img2 = cleanDriveUrl(prod["Image 2"]);
             const img3 = cleanDriveUrl(prod["Image 3"]);
 
-            let imagesHtml = `<img src="${img1}" class="product-img active img-set-${index}" data-idx="0" onerror="this.src='https://via.placeholder.com/250x250?text=Grow+Up+Fitness';">`;
+            const fallbackGraphic = `https://via.placeholder.com/400x400/0d0f14/00f2fe?text=${encodeURIComponent(prod.Brand || 'GrowUp')}+Premium`;
+
+            let imagesHtml = `<img src="${img1}" class="product-img active img-set-${index}" data-idx="0" onerror="this.src='${fallbackGraphic}';">`;
             let dotsHtml = `<span class="dot active" onclick="switchImg(${index}, 0)"></span>`;
             
             if(prod["Image 2"]) {
@@ -138,7 +288,7 @@
             }
 
             const whatsappNo = "919571214461";
-            const msg = encodeURIComponent(`Hello Grow Up Fitness! I want to order:\n\n*Brand:* ${prod.Brand}\n*Product:* ${prod["Product Name"]}\n*Size/Weight:* ${prod["Weight / Size"]}\n*Price:* ₹${prod["Selling Price"]}\n\nPlease dispatch my order.`);
+            const msg = encodeURIComponent(`⚡ *NEW ORDER INQUIRY* ⚡\n\n🔹 *Brand:* ${prod.Brand}\n🔹 *Product:* ${prod["Product Name"]}\n🔹 *Size/Weight:* ${prod["Weight / Size"]}\n🔹 *Deal Price:* ₹${prod["Selling Price"]}\n\nKindly confirm dispatch timelines.`);
             const waLink = `https://wa.me/${whatsappNo}?text=${msg}`;
 
             const isStock = prod["Stock Status"] === "In Stock" || prod["Stock Status"] === "";
@@ -153,16 +303,16 @@
                     <div class="slider-dots" style="${!prod["Image 2"] ? 'display:none;' : ''}">${dotsHtml}</div>
                 </div>
                 <div class="product-details">
-                    <span class="brand-name">${prod.Brand || 'Premium Brand'}</span>
+                    <span class="brand-name">${prod.Brand || 'Premium Tier'}</span>
                     <h3 class="product-title">${prod["Product Name"]}</h3>
-                    <span class="weight-tag">📦 Net WT: ${prod["Weight / Size"] || 'Standard'}</span>
+                    <span class="weight-tag">📦 Net Weight: ${prod["Weight / Size"] || 'Standard'}</span>
                     <div class="price-box">
                         <span class="selling-price">₹${prod["Selling Price"] || '0'}</span>
                         ${mrp > sp ? `<span class="mrp-price">₹${prod.MRP}</span>` : ''}
                     </div>
                     ${isStock ? 
-                        `<a href="${waLink}" target="_blank" class="buy-btn">⚡ Secure Order</a>` : 
-                        `<button class="buy-btn out-of-stock" disabled>Sold Out</button>`
+                        `<a href="${waLink}" target="_blank" class="buy-btn">⚡ INITIATE PURCHASE</a>` : 
+                        `<button class="buy-btn out-of-stock" disabled>BATCH SOLD OUT</button>`
                     }
                 </div>
             `;
@@ -170,9 +320,7 @@
         });
     }
 
-    // Smart Categories Filtering Mechanism
     function filterProducts(brandName, btnElement) {
-        // Active Filter Button Class Toggle
         const buttons = document.querySelectorAll('.filter-btn');
         buttons.forEach(btn => btn.classList.remove('active-filter'));
         btnElement.classList.add('active-filter');
@@ -185,7 +333,6 @@
         }
     }
 
-    // Dynamic Filter Generator from Sheet Unique Value
     function generateFilters(products) {
         const filterContainer = document.getElementById('filterContainer');
         const uniqueBrands = [...new Set(products.map(p => p.Brand).filter(b => b))];
@@ -200,7 +347,6 @@
         filterContainer.style.display = 'flex';
     }
 
-    // Initial Database Pull Hook
     fetch(apiURL)
         .then(res => res.json())
         .then(products => {
@@ -210,7 +356,7 @@
             renderCards(products);
         })
         .catch(err => {
-            document.getElementById('loading').innerText = 'Syncing Failed. Refresh Sheet API.';
+            document.getElementById('loading').innerText = 'Data Sync Pipeline Interrupted.';
             console.error(err);
         });
 
