@@ -5,40 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grow Up Fitness - Premium E-Store</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', sans-serif; transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
         
-        /* 🏋️‍♂️ Immersive Shopify Parallax Background Concept */
+        /* 🎨 Theme Variable Engines */
+        :root {
+            --bg-main: #070b12;
+            --bg-header: rgba(13, 20, 33, 0.8);
+            --bg-card: linear-gradient(145deg, rgba(18, 25, 38, 0.92), rgba(10, 14, 23, 0.95));
+            --bg-panel: #090b10;
+            --text-main: #ffffff;
+            --text-sub: #b0c2d9;
+            --text-muted: #6f8299;
+            --border-glow: rgba(0, 162, 255, 0.4);
+            --border-light: rgba(255, 255, 255, 0.06);
+            --toggle-bg: rgba(255, 255, 255, 0.08);
+        }
+
+        [data-theme="light"] {
+            --bg-main: #f4f7fa;
+            --bg-header: rgba(255, 255, 255, 0.85);
+            --bg-card: linear-gradient(145deg, #ffffff, #f0f4f8);
+            --bg-panel: #e2e8f0;
+            --text-main: #0f172a;
+            --text-sub: #334155;
+            --text-muted: #64748b;
+            --border-glow: rgba(0, 114, 255, 0.2);
+            --border-light: rgba(15, 23, 42, 0.08);
+            --toggle-bg: rgba(15, 23, 42, 0.08);
+        }
+        
         body { 
-            background-image: linear-gradient(rgba(10, 16, 26, 0.45), rgba(7, 11, 18, 0.75)), 
-                              url('https://i.postimg.cc/SxHN50tQ/gym-bg.jpg'); 
-            background-size: cover;
-            background-position: center 15%; 
-            background-repeat: no-repeat;
-            background-attachment: scroll; /* Smooth parallax movement along with track */
-            background-color: #070b12;
-            color: #ffffff; 
+            background: var(--bg-main);
+            color: var(--text-main); 
             min-height: 100vh; 
             letter-spacing: 0.5px;
             overflow-x: hidden;
         }
 
-        /* 📱 Mobile Parallax Setup */
-        @media (max-width: 768px) {
-            body {
-                background-position: 78% 15% !important;
-                background-attachment: scroll !important;
-            }
-        }
-
-        /* 🎯 Floating Transparent Header */
+        /* 🎯 Floating Interactive Header */
         header {
             position: sticky;
             top: 0;
             width: 100%;
             z-index: 100;
-            background: rgba(13, 20, 33, 0.7);
+            background: var(--bg-header);
             backdrop-filter: blur(25px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border-light);
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
@@ -46,20 +58,41 @@
         }
 
         .logo-area img {
-            max-width: 160px;
+            max-width: 150px;
             height: auto;
-            filter: drop-shadow(0 0 15px rgba(0, 162, 255, 0.4));
-            transition: transform 0.3s ease;
+            filter: drop-shadow(0 0 15px var(--border-glow));
         }
-        .logo-area img:hover { transform: scale(1.03); }
 
-        /* Sleek Modern Header Navigation Tabs */
-        .header-tabs {
+        /* Header Right Controls */
+        .header-controls {
             display: flex;
-            gap: 10px;
+            align-items: center;
+            gap: 20px;
         }
+
+        /* 🌗 Advanced Day/Night Toggle Switcher */
+        .theme-toggle-btn {
+            background: var(--toggle-bg);
+            border: 1px solid var(--border-light);
+            color: var(--text-main);
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .theme-toggle-btn:hover {
+            border-color: #00f2fe;
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+        }
+
         .header-tabs a {
-            color: #b0c2d9;
+            color: var(--text-sub);
             text-decoration: none;
             font-weight: 700;
             font-size: 12px;
@@ -67,12 +100,6 @@
             border-radius: 30px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: 0.3s;
-            border: 1px solid transparent;
-        }
-        .header-tabs a:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.05);
         }
         .header-tabs a.active-tab {
             background: linear-gradient(135deg, #0072ff, #00f2fe);
@@ -80,14 +107,13 @@
             box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
         }
 
-        /* Main Container */
         .wrapper {
             max-width: 1300px;
             margin: 40px auto;
             padding: 0 20px;
         }
 
-        /* Dynamic Filter Hub */
+        /* Filter Hub */
         .category-hub {
             display: flex;
             justify-content: center;
@@ -96,70 +122,59 @@
             flex-wrap: wrap;
         }
         .hub-btn {
-            background: rgba(13, 20, 33, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #8fa0b5;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            color: var(--text-sub);
             padding: 12px 24px;
             font-weight: 700;
             font-size: 12px;
             border-radius: 40px;
             cursor: pointer;
             text-transform: uppercase;
-            transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
         .hub-btn:hover, .hub-btn.active-hub {
             border-color: #00f2fe;
             color: #ffffff;
-            background: rgba(0, 242, 254, 0.15);
+            background: linear-gradient(135deg, rgba(0, 114, 255, 0.2), rgba(0, 242, 254, 0.2));
             box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
         }
 
-        /* 💎 Shopify Single Product Split Row Architecture */
+        /* 💎 Shopify Clean Grid Splits */
         .shopify-split-row {
             display: flex;
-            background: linear-gradient(145deg, rgba(18, 25, 38, 0.85), rgba(10, 14, 23, 0.92));
-            backdrop-filter: blur(20px);
+            background: var(--bg-card);
             border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            margin-bottom: 50px;
+            border: 1px solid var(--border-light);
+            margin-bottom: 40px;
             overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-            transition: transform 0.4s ease, border-color 0.4s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
         .shopify-split-row:hover {
-            border-color: rgba(0, 242, 254, 0.4);
-            transform: translateY(-4px);
+            border-color: #00f2fe;
         }
 
-        /* Left Side: Product Image Display Panel */
         .split-media-panel {
             flex: 1.1;
-            background: #090b10;
+            background: var(--bg-panel);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             padding: 40px;
-            min-height: 480px;
-            border-right: 1px solid rgba(255, 255, 255, 0.04);
+            min-height: 440px;
         }
         .showcase-img {
             max-width: 85%;
-            max-height: 400px;
+            max-height: 360px;
             object-fit: contain;
-            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.8));
             display: none;
-            transition: transform 0.4s ease;
         }
         .showcase-img.active { display: block; }
-        .shopify-split-row:hover .showcase-img { transform: scale(1.03); }
 
-        /* Media Controller Dots */
         .panel-dots { position: absolute; bottom: 20px; display: flex; gap: 8px; }
-        .p-dot { width: 7px; height: 7px; background: rgba(255,255,255,0.2); border-radius: 50%; cursor: pointer; transition: 0.3s; }
-        .p-dot.active { background: #00f2fe; transform: scale(1.3); box-shadow: 0 0 8px #00f2fe; }
+        .p-dot { width: 7px; height: 7px; background: var(--text-muted); border-radius: 50%; cursor: pointer; }
+        .p-dot.active { background: #00f2fe; transform: scale(1.3); }
 
-        /* Right Side: Professional Context Details Panel */
         .split-info-panel {
             flex: 1;
             padding: 45px;
@@ -176,37 +191,37 @@
             margin-bottom: 10px;
         }
         .item-main-title {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
             line-height: 1.3;
-            color: #ffffff;
+            color: var(--text-main);
             margin-bottom: 15px;
         }
         .spec-badge {
             display: inline-flex;
             align-items: center;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--toggle-bg);
+            border: 1px solid var(--border-light);
             padding: 6px 14px;
             font-size: 12px;
             font-weight: 600;
-            color: #a4b3c6;
+            color: var(--text-sub);
             border-radius: 8px;
             width: fit-content;
             margin-bottom: 25px;
         }
 
-        /* Shopify Style Pricing & Discounts */
         .pricing-hub {
             display: flex;
             align-items: center;
             gap: 15px;
             margin-bottom: 30px;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            border-top: 1px solid var(--border-light);
             padding-top: 20px;
         }
-        .deal-price { font-size: 32px; font-weight: 800; color: #00ff88; text-shadow: 0 0 20px rgba(0,255,136,0.15); }
-        .retail-price { font-size: 16px; color: #6f8299; text-decoration: line-through; font-weight: 500; }
+        .deal-price { font-size: 30px; font-weight: 800; color: #00ff88; }
+        [data-theme="light"] .deal-price { color: #059669; }
+        .retail-price { font-size: 15px; color: var(--text-muted); text-decoration: line-through; font-weight: 500; }
         .save-badge {
             background: linear-gradient(135deg, #ff0844, #ffb199);
             color: white;
@@ -216,7 +231,6 @@
             border-radius: 6px;
         }
 
-        /* Shopify Call-To-Action Button */
         .shopify-btn {
             width: 100%;
             padding: 16px;
@@ -231,20 +245,16 @@
             text-align: center;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: 0.3s;
-            box-shadow: 0 6px 20px rgba(0,114,255,0.3);
         }
         .shopify-btn:hover {
-            background: linear-gradient(135deg, #00f2fe, #0072ff);
-            box-shadow: 0 8px 25px rgba(0,242,254,0.5);
             transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 242, 254, 0.4);
         }
-        .sold-out { background: #1c2330 !important; color: #4e5d73 !important; cursor: not-allowed; box-shadow: none !important; }
+        .sold-out { background: #1c2330 !important; color: #4e5d73 !important; cursor: not-allowed; }
 
-        /* Mobile View Optimization */
         @media (max-width: 900px) {
             .shopify-split-row { flex-direction: column; }
-            .split-media-panel { min-height: 350px; }
+            .split-media-panel { min-height: 320px; }
             .split-info-panel { padding: 30px; }
             .item-main-title { font-size: 22px; }
         }
@@ -253,7 +263,7 @@
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body>
+<body data-theme="dark">
 
     <header>
         <div class="logo-area">
@@ -261,9 +271,12 @@
                 <img src="logo.png" alt="Grow Up Fitness Logo" onerror="this.src='https://raw.githubusercontent.com/growupfitness/growup/main/logo.png';">
             </a>
         </div>
-        <div class="header-tabs">
-            <a href="index.html">📋 Form</a>
-            <a href="premium-store.html" class="active-tab">🛍️ Elite Store</a>
+        <div class="header-controls">
+            <button class="theme-toggle-btn" onclick="toggleInterfaceTheme()">🌙 Dark</button>
+            <div class="header-tabs">
+                <a href="index.html">📋 Form</a>
+                <a href="premium-store.html" class="active-tab">🛍️ Elite Store</a>
+            </div>
         </div>
     </header>
 
@@ -272,13 +285,26 @@
             <button class="hub-btn active-hub" onclick="filterHub('All', this)">All Products</button>
         </div>
 
-        <div id="loading">Syncing Luxury Digital Pipeline...</div>
+        <div id="loading">Syncing Premium Dynamic Engine...</div>
         <div id="shopifyStoreContainer"></div>
     </div>
 
 <script>
     const apiURL = 'https://script.google.com/macros/s/AKfycbzd3hMZ8aNAG0QOQoKYVtx3e7kOFtAaCBWEPE2YUtB1v1sK5WPRXdfbygQlfVpBmZm99w/exec';
     let rawStoreDatabase = [];
+
+    // 🌗 Live Theme Toggle Mechanics
+    function toggleInterfaceTheme() {
+        const body = document.body;
+        const btn = document.querySelector('.theme-toggle-btn');
+        if(body.getAttribute('data-theme') === 'dark') {
+            body.setAttribute('data-theme', 'light');
+            btn.innerHTML = '☀️ Light';
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            btn.innerHTML = '🌙 Dark';
+        }
+    }
 
     function cleanDriveUrl(url) {
         if (!url) return '';
@@ -394,4 +420,3 @@
 </script>
 </body>
 </html>
-
