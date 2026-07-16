@@ -7,42 +7,50 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', sans-serif; }
         
-        /* 🏋️‍♂️ Responsive Gym Background - Model Forced into View */
+        /* 🏋️‍♂️ Responsive Gym Background - Movement & Head-Cut Fix */
         body { 
-            background-image: linear-gradient(rgba(13, 20, 33, 0.4), rgba(13, 20, 33, 0.6)), 
+            background-image: linear-gradient(rgba(13, 20, 33, 0.45), rgba(13, 20, 33, 0.65)), 
                               url('https://i.postimg.cc/SxHN50tQ/gym-bg.jpg'); 
             background-size: cover;
-            background-position: 72% center; /* Desktop par perfect adjust rakhega */
+            background-position: center 15%; /* Fixes the top head cutting issue */
             background-repeat: no-repeat;
-            background-attachment: fixed;
+            background-attachment: scroll; /* Forces image to move along with scroll */
             background-color: #0d1117;
             color: #ffffff; 
-            padding: 40px 20px; 
+            padding: 20px 20px 40px 20px; 
             min-height: 100vh; 
             letter-spacing: 0.5px;
         }
 
-        /* 📱 Mobile Specific Adjustment - Pulls the Model to Center */
+        /* 📱 Mobile Specific Adjustment - Model Perfect view on mobile with scroll movement */
         @media (max-width: 768px) {
             body {
-                background-position: 78% center !important; /* Mobile screens par model ko left me khinch kar samne layega */
+                background-position: 78% 15% !important; 
+                background-attachment: scroll !important;
             }
         }
         
-        /* Glowing Header Banner Section */
+        /* 🎯 Clickable Header Logo Section */
         header { 
             text-align: center; 
-            margin-bottom: 40px; 
+            margin-bottom: 30px; 
+            margin-top: 10px;
             position: relative;
+            z-index: 10;
+        }
+        .logo-link {
+            display: inline-block;
+            text-decoration: none;
+            cursor: pointer;
         }
         header img { 
-            max-width: 200px; 
-            filter: drop-shadow(0 0 20px rgba(0, 162, 255, 0.8));
-            transition: 0.5s;
+            max-width: 180px; 
+            filter: drop-shadow(0 0 20px rgba(0, 162, 255, 0.6));
+            transition: transform 0.4s ease, filter 0.4s ease;
         }
         header img:hover {
             transform: scale(1.05);
-            filter: drop-shadow(0 0 30px rgba(0, 229, 255, 0.9));
+            filter: drop-shadow(0 0 30px rgba(0, 229, 255, 0.8));
         }
         
         /* Futuristic Navigation Bar (Glassmorphism Tabs) */
@@ -230,7 +238,9 @@
 <body>
 
     <header>
-        <img src="https://raw.githubusercontent.com/growupfitness/growup/main/logo.png" alt="Grow Up Fitness Logo" onerror="this.style.display='none';">
+        <a href="index.html" class="logo-link">
+            <img src="https://raw.githubusercontent.com/growupfitness/growup/main/logo.png" alt="Grow Up Fitness Logo" id="mainLogo">
+        </a>
     </header>
 
     <div class="navbar">
@@ -267,7 +277,6 @@
         const container = document.getElementById('productsContainer');
         container.innerHTML = '';
         
-        // 🚨 SOLID FILTER: Blocks any 'BACKGROUND' entries from rendering into visual catalog cards
         const displayProducts = products.filter(p => p.Brand && p.Brand.toUpperCase() !== 'BACKGROUND');
 
         displayProducts.forEach((prod, index) => {
@@ -346,7 +355,6 @@
 
     function generateFilters(products) {
         const filterContainer = document.getElementById('filterContainer');
-        // Clean out BACKGROUND category button 
         const uniqueBrands = [...new Set(products.map(p => p.Brand).filter(b => b && b.toUpperCase() !== 'BACKGROUND'))];
         
         uniqueBrands.forEach(brand => {
