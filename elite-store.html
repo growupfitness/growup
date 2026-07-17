@@ -15,6 +15,7 @@
             --text-muted: #64748b;
             --border-color: rgba(15, 23, 42, 0.06);
             --accent-color: #0072ff;
+            --bg-header: rgba(255, 255, 255, 0.9);
         }
 
         [data-theme="dark"] {
@@ -24,6 +25,7 @@
             --text-muted: #94a3b8;
             --border-color: rgba(255, 255, 255, 0.08);
             --accent-color: #00f2fe;
+            --bg-header: rgba(13, 20, 33, 0.9);
         }
         
         body { 
@@ -34,23 +36,24 @@
             letter-spacing: 0.5px;
         }
 
-        /* 🎯 Fixed Solid Black Premium Slim Header */
+        /* 🎯 Premium Fixed Glassmorphism Header */
         header {
             position: fixed;
             top: 0;
             width: 100%;
             z-index: 100;
-            background: #000000; /* Solid black fixed for pure logo pop */
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 8px 30px; /* Thinned out completely */
+            background: var(--bg-header); 
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 30px; 
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         }
 
         .logo-area img {
-            max-height: 42px; /* Slim professional constraint */
+            max-height: 38px; 
             width: auto;
             display: block;
         }
@@ -58,42 +61,35 @@
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
         .nav-links a {
             text-decoration: none;
-            color: #ffffff;
+            color: var(--text-main);
             font-weight: 700;
             font-size: 11px;
             text-transform: uppercase;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 6px 14px;
+            border: 1px solid var(--border-color);
+            padding: 7px 14px;
             border-radius: 20px;
-            background: rgba(255,255,255,0.05);
-        }
-        .nav-links a:hover {
-            background: #ffffff;
-            color: #000000;
+            background: var(--bg-card);
         }
 
         /* 🌓 Sleek Theme Toggle Switch */
         .theme-toggle-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            color: #ffffff;
-            padding: 6px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 7px 12px;
             border-radius: 20px;
             cursor: pointer;
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
 
-        /* 🎬 Cinematic Fixed Video Container with Correct Custom Cropping */
+        /* 🎬 Cinematic Fixed Video Container */
         .hero-video-wrapper {
             position: fixed;
             top: 0;
@@ -109,7 +105,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover; 
-            object-position: center 85%; /* Keeps squats frame safe, clips upper background nicely */
+            object-position: center 85%; 
         }
 
         .glass-overlay {
@@ -125,7 +121,7 @@
 
         .video-caption {
             position: absolute;
-            bottom: 22%; /* Safe layout alignment zone */
+            bottom: 25%; 
             left: 5%;
             color: #ffffff;
             z-index: 5;
@@ -143,7 +139,7 @@
         .main-scroll-content {
             position: relative;
             z-index: 10;
-            margin-top: 85vh; 
+            margin-top: 80vh; /* Adjusts desktop entry view breakpoint */
             background: var(--bg-primary);
             border-radius: 24px 24px 0 0;
             box-shadow: 0 -15px 35px rgba(0,0,0,0.1);
@@ -177,18 +173,19 @@
             border-radius: 4px;
         }
 
-        /* 🏋️‍♂️ Categories Layout */
-        .category-row {
+        /* 🏋️‍♂️ Categories Slider Row */
+        .category-row, .flavours-scroll-row {
             display: flex;
             gap: 20px;
             overflow-x: auto;
             padding-bottom: 15px;
             margin-bottom: 40px;
         }
-        .category-row::-webkit-scrollbar { height: 4px; }
-        .category-row::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        .category-row::-webkit-scrollbar, .flavours-scroll-row::-webkit-scrollbar { height: 4px; }
+        .category-row::-webkit-scrollbar-thumb, .flavours-scroll-row::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
 
-        .cat-card { min-width: 100px; text-align: center; cursor: pointer; }
+        .cat-card, .flav-scroll-box { min-width: 100px; text-align: center; cursor: pointer; }
+        
         .cat-circle {
             width: 80px;
             height: 80px;
@@ -203,25 +200,23 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.01);
         }
         .cat-card:hover .cat-circle { transform: translateY(-4px); border-color: var(--accent-color); }
-        .cat-card p { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-main); }
+        .cat-card p, .flav-scroll-box p { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-main); }
 
-        /* 🍓 Flavours UI Component */
-        .flavours-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 15px;
-            margin-bottom: 40px;
-        }
-        .flavour-box {
+        /* Modernized Flat Flavours Design Elements */
+        .flav-box-square {
+            width: 80px;
+            height: 80px;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
+            border-radius: 16px;
+            margin: 0 auto 10px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.01);
         }
-        .flavour-box:hover { border-color: var(--accent-color); transform: translateY(-2px); }
-        .flavour-box p { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-main); }
+        .flav-scroll-box:hover .flav-box-square { transform: translateY(-4px); border-color: var(--accent-color); }
 
         /* 🛍️ Cohesive Catalog Products Module */
         .products-grid {
@@ -287,7 +282,7 @@
             text-transform: uppercase;
         }
 
-        /* 📝 High-End Cohesive Theme Inquiry Form Section */
+        /* 📝 Cohesive Theme Inquiry Form Section */
         .inquiry-wrapper-section {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -303,20 +298,9 @@
             gap: 20px;
         }
 
-        .input-group-cell {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
+        .input-group-cell { display: flex; flex-direction: column; gap: 6px; }
         .input-group-cell.full-width { grid-column: span 2; }
-
-        .input-group-cell label {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--text-main);
-        }
+        .input-group-cell label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-main); }
 
         .input-group-cell input, .input-group-cell select, .input-group-cell textarea {
             width: 100%;
@@ -344,13 +328,17 @@
             margin-top: 10px;
         }
 
+        /* 📱 Mobile Responsive Layout Engine Fixes */
         @media (max-width: 768px) {
-            .main-scroll-content { margin-top: 75vh; }
+            /* Video cuts to 68% height on mobile so category titles peek from bottom, signaling scroll availability */
+            .main-scroll-content { margin-top: 68vh; border-radius: 20px 20px 0 0; padding: 30px 0; }
             .form-grid-layout { grid-template-columns: 1fr; }
             .input-group-cell.full-width { grid-column: span 1; }
             .submit-form-btn { grid-column: span 1; }
             .video-caption h1 { font-size: 26px; }
-            header { padding: 8px 15px; }
+            header { padding: 10px 15px; }
+            .logo-area img { max-height: 32px; }
+            .nav-links a, .theme-toggle-btn { padding: 6px 10px; font-size: 10px; }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -363,9 +351,9 @@
         </div>
         <div class="header-controls">
             <div class="nav-links">
-                <a href="#inquiry-form-anchor">📝 Fill Inquiry</a>
+                <a href="#inquiry-form-anchor">📋 Inquiry</a>
             </div>
-            <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌓 Dark Mode</button>
+            <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
         </div>
     </header>
 
@@ -393,11 +381,11 @@
             </div>
 
             <h2 class="section-title">Shop By Flavours</h2>
-            <div class="flavours-grid">
-                <div class="flavour-box"><div class="flavour-icon">🍫</div><p>Chocolate</p></div>
-                <div class="flavour-box"><div class="flavour-icon">🥭</div><p>Mango</p></div>
-                <div class="flavour-box"><div class="flavour-icon">🍉</div><p>Watermelon</p></div>
-                <div class="flavour-box"><div class="flavour-icon">🍓</div><p>Strawberry</p></div>
+            <div class="flavours-scroll-row">
+                <div class="flav-scroll-box"><div class="flav-box-square">🍫</div><p>Chocolate</p></div>
+                <div class="flav-scroll-box"><div class="flav-box-square">🥭</div><p>Mango</p></div>
+                <div class="flav-scroll-box"><div class="flav-box-square">🍉</div><p>Watermelon</p></div>
+                <div class="flav-scroll-box"><div class="flav-box-square">🍓</div><p>Strawberry</p></div>
             </div>
 
             <h2 class="section-title">All Products</h2>
@@ -481,7 +469,6 @@
     </div>
 
 <script>
-    // Smooth Scrolling Glass Effect Mechanic Engine
     window.addEventListener('scroll', function() {
         const scrollValue = window.scrollY;
         const blurOverlay = document.getElementById('blurOverlay');
@@ -492,7 +479,6 @@
         
         blurOverlay.style.backdropFilter = `blur(${blurAmount}px)`;
         
-        // Light / Dark reactive blur masking layer adjustments
         const currentTheme = document.documentElement.getAttribute('data-theme');
         if(currentTheme === 'dark') {
             blurOverlay.style.background = `rgba(9, 13, 22, ${glassOpacity})`;
@@ -507,7 +493,6 @@
         }
     });
 
-    // 🌓 Pure Vanilla Real-time Client Side Theme Toggling Mechanism
     function toggleTheme() {
         const htmlEl = document.documentElement;
         const currentTheme = htmlEl.getAttribute('data-theme');
@@ -515,12 +500,11 @@
         
         if(currentTheme === 'dark') {
             htmlEl.removeAttribute('data-theme');
-            btn.innerText = "🌓 Dark Mode";
-            // Reset active scrolling backgrounds overlay dynamically on click transitions
+            btn.innerText = "🌙 Dark";
             document.getElementById('blurOverlay').style.background = `rgba(248, 250, 252, 0)`;
         } else {
             htmlEl.setAttribute('data-theme', 'dark');
-            btn.innerText = "☀️ Light Mode";
+            btn.innerText = "☀️ Light";
             document.getElementById('blurOverlay').style.background = `rgba(9, 13, 22, 0)`;
         }
     }
