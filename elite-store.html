@@ -91,7 +91,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 60vh; /* Fixed viewport setup for mobile compatibility */
+            height: 55vh; /* Desktop screen size base */
             z-index: 1;
             background: #000000;
             overflow: hidden;
@@ -135,7 +135,7 @@
         .main-scroll-content {
             position: relative;
             z-index: 10;
-            margin-top: 52vh; /* Content automatically pulls up right below crop line */
+            margin-top: 47vh; /* desktop pull up line */
             background: var(--bg-primary);
             border-radius: 24px 24px 0 0;
             box-shadow: 0 -15px 35px rgba(0,0,0,0.08);
@@ -208,7 +208,6 @@
 
         .cat-card p, .flav-scroll-box p { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-main); }
 
-        /* Responsive Shopify Grid Layout System */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -320,17 +319,17 @@
 
         #loading { text-align: center; font-size: 13px; color: var(--accent-color); margin: 40px 0; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* 📱 Responsive Screen Architecture Fixes */
+        /* 📱 Responsive Mobile View Scaling Optimization */
         @media (max-width: 768px) {
-            .hero-video-wrapper { height: 48vh; }
-            .main-scroll-content { margin-top: 40vh; }
+            .hero-video-wrapper { height: 40vh; } /* 🎯 Thinned out to 40% height on mobile for perfect view */
+            .main-scroll-content { margin-top: 32vh; } /* 🎯 Snaps right into the layout perfectly */
             .form-grid-layout { grid-template-columns: 1fr; }
             .input-group-cell.full-width { grid-column: span 1; }
             .submit-form-btn { grid-column: span 1; }
-            .video-caption h1 { font-size: 22px; }
+            .video-caption h1 { font-size: 20px; }
             header { padding: 10px 15px; }
             .logo-area img { max-height: 28px; }
-            .products-grid { grid-template-columns: 1fr 1fr; gap: 10px; } /* Clean responsive grid side by side grid style on standard layout */
+            .products-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -584,7 +583,7 @@
             blurOverlay.style.background = `rgba(248, 250, 252, ${glassOpacity})`;
         }
         
-        if(scrollValue > 200) {
+        if(scrollValue > 150) {
             heroCaption.style.opacity = '0';
         } else {
             heroCaption.style.opacity = '1';
