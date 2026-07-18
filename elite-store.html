@@ -85,13 +85,13 @@
             font-weight: 700;
         }
 
-        /* 🎬 Fixed Video Wrapper Frame with Proportional Handling */
+        /* 🎬 Adaptive Height Optimized Video Frame */
         .hero-video-wrapper {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh; 
+            height: 60vh; /* Fixed viewport setup for mobile compatibility */
             z-index: 1;
             background: #000000;
             overflow: hidden;
@@ -101,7 +101,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover; 
-            object-position: center 85%; 
+            object-position: center 50%; 
         }
 
         .glass-overlay {
@@ -117,7 +117,7 @@
 
         .video-caption {
             position: absolute;
-            bottom: 25%; 
+            bottom: 15%; 
             left: 5%;
             color: #ffffff;
             z-index: 5;
@@ -125,7 +125,7 @@
         }
 
         .video-caption h1 {
-            font-size: 36px;
+            font-size: 32px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -135,11 +135,11 @@
         .main-scroll-content {
             position: relative;
             z-index: 10;
-            margin-top: 72vh; 
+            margin-top: 52vh; /* Content automatically pulls up right below crop line */
             background: var(--bg-primary);
             border-radius: 24px 24px 0 0;
             box-shadow: 0 -15px 35px rgba(0,0,0,0.08);
-            padding: 40px 0 0 0;
+            padding: 30px 0 0 0;
         }
 
         .container {
@@ -149,7 +149,7 @@
         }
 
         .section-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -169,7 +169,6 @@
             border-radius: 4px;
         }
 
-        /* 🏋️‍♂️ Dynamic Filtering Horizontal Rows */
         .category-row, .flavours-scroll-row {
             display: flex;
             gap: 15px;
@@ -209,7 +208,7 @@
 
         .cat-card p, .flav-scroll-box p { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-main); }
 
-        /* 🛍️ Dynamic Showcase Grid Module */
+        /* Responsive Shopify Grid Layout System */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -284,9 +283,7 @@
             text-align: center;
         }
         .out-of-stock { background: #e2e8f0 !important; color: #94a3b8 !important; cursor: not-allowed; }
-        [data-theme="dark"] .out-of-stock { background: #1e293b !important; color: #64748b !important; }
 
-        /* 📝 Inquiry Form Structure */
         .inquiry-wrapper-section {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -309,7 +306,6 @@
             grid-column: span 2; padding: 13px; background: linear-gradient(135deg, #0072ff, #00f2fe); color: white; border: none; border-radius: 6px; font-weight: 800; font-size: 12px; text-transform: uppercase; cursor: pointer;
         }
 
-        /* 🖤 Luxury Black Footer Area */
         footer {
             background: #000000;
             color: #ffffff;
@@ -324,14 +320,17 @@
 
         #loading { text-align: center; font-size: 13px; color: var(--accent-color); margin: 40px 0; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
+        /* 📱 Responsive Screen Architecture Fixes */
         @media (max-width: 768px) {
-            .main-scroll-content { margin-top: 65vh; }
+            .hero-video-wrapper { height: 48vh; }
+            .main-scroll-content { margin-top: 40vh; }
             .form-grid-layout { grid-template-columns: 1fr; }
             .input-group-cell.full-width { grid-column: span 1; }
             .submit-form-btn { grid-column: span 1; }
-            .video-caption h1 { font-size: 24px; }
+            .video-caption h1 { font-size: 22px; }
             header { padding: 10px 15px; }
             .logo-area img { max-height: 28px; }
+            .products-grid { grid-template-columns: 1fr 1fr; gap: 10px; } /* Clean responsive grid side by side grid style on standard layout */
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -389,39 +388,39 @@
                 <form class="form-grid-layout" action="https://docs.google.com/forms/d/e/1FAIpQLSdn847-YOUR-REAL-GOOGLE-FORM-ID/formResponse" method="POST" target="_blank">
                     <div class="input-group-cell">
                         <label>Customer Name</label>
-                        <input type="text" name="entry.123456" placeholder="Enter full name required" required>
+                        <input type="text" placeholder="Enter full name required" required>
                     </div>
                     <div class="input-group-cell">
                         <label>Phone Number</label>
-                        <input type="tel" name="entry.789101" placeholder="Enter mobile number" required>
+                        <input type="tel" placeholder="Enter mobile number" required>
                     </div>
                     <div class="input-group-cell">
                         <label>Pin Code</label>
-                        <input type="text" name="entry.112131" placeholder="e.g. 313001">
+                        <input type="text" placeholder="e.g. 313001">
                     </div>
                     <div class="input-group-cell">
                         <label>Area / Colony</label>
-                        <input type="text" name="entry.141516" placeholder="e.g. Shobhagpura">
+                        <input type="text" placeholder="e.g. Shobhagpura">
                     </div>
                     <div class="input-group-cell">
                         <label>City</label>
-                        <input type="text" name="entry.171819" placeholder="Udaipur">
+                        <input type="text" placeholder="Udaipur">
                     </div>
                     <div class="input-group-cell">
                         <label>State</label>
-                        <input type="text" name="entry.202122" placeholder="Rajasthan">
+                        <input type="text" placeholder="Rajasthan">
                     </div>
                     <div class="input-group-cell full-width">
                         <label>Which brand are you looking for?</label>
-                        <input type="text" name="entry.232425" placeholder="Type brand names... e.g., Bolt, Avatar, Mylife">
+                        <input type="text" placeholder="Type brand names... e.g., Bolt, Avatar, Mylife">
                     </div>
                     <div class="input-group-cell full-width">
                         <label>What do you want to buy?</label>
-                        <input type="text" name="entry.262728" placeholder="e.g. Whey Protein, Creatine, Pre-Workout">
+                        <input type="text" placeholder="e.g. Whey Protein, Creatine, Pre-Workout">
                     </div>
                     <div class="input-group-cell full-width">
                         <label>Specific Requirement / Message</label>
-                        <textarea name="entry.293031" rows="3" placeholder="Any flavor preferences or target budget details..."></textarea>
+                        <textarea rows="3" placeholder="Any flavor preferences or target budget details..."></textarea>
                     </div>
                     <button type="submit" class="submit-form-btn">Submit Order Inquiry</button>
                 </form>
@@ -435,7 +434,7 @@
                     <img src="growup-logoo.png" alt="Grow Up Fitness Logo" onerror="this.src='logo.png';">
                 </div>
                 <p class="footer-text">We only carry premium designs and authentic fitness products that are made to deliver genuine results. Fuel your body, achieve your goals.</p>
-                <p class="footer-credits">© 2025-2026 Grow Up Fitness Supplements Store. Developed with Big Brand Marketing Standards.</p>
+                <p class="footer-credits">© 2025-2026 Grow Up Fitness Supplements Store.</p>
             </div>
         </footer>
     </div>
@@ -446,7 +445,6 @@
     let currentFilterCategory = 'All';
     let currentFilterFlavour = 'All';
 
-    // Core URL Image Parser 
     function cleanDriveUrl(url) {
         if (!url) return '';
         url = url.trim();
@@ -461,21 +459,18 @@
         const container = document.getElementById('shopifyGridContainer');
         container.innerHTML = '';
 
-        // Blocks backend configuration cards automatically
         let filtered = globalStoreData.filter(p => p.Brand && p.Brand.toUpperCase() !== 'BACKGROUND');
 
-        // Apply Category Filter Logic
         if(currentFilterCategory !== 'All') {
             filtered = filtered.filter(p => p.Category && p.Category.trim() === currentFilterCategory.trim());
         }
 
-        // Apply Flavour Filter Logic
         if(currentFilterFlavour !== 'All') {
             filtered = filtered.filter(p => p.Flavour && p.Flavour.trim() === currentFilterFlavour.trim());
         }
 
         if(filtered.length === 0) {
-            container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px; font-weight: 700;">No active supplements found in this matching configuration.</div>`;
+            container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px; font-weight: 700;">No active supplements found in this configuration.</div>`;
             return;
         }
 
@@ -485,24 +480,10 @@
             let discount = (mrp > sp && mrp > 0) ? Math.round(((mrp - sp) / mrp) * 100) : 0;
 
             const img1 = cleanDriveUrl(prod["Image 1"]);
-            const img2 = cleanDriveUrl(prod["Image 2"]);
-            const img3 = cleanDriveUrl(prod["Image 3"]);
             const fallback = `https://via.placeholder.com/300/f1f5f9/0072ff?text=${encodeURIComponent(prod.Brand || 'GrowUp')}`;
 
-            let mediaHTML = `<img src="${img1}" class="active item-media-${idx}" data-img="0" onerror="this.src='${fallback}';">`;
-            let dotsHTML = `<span class="dot active"></span>`;
-
-            if(prod["Image 2"]) {
-                mediaHTML += `<img src="${img2}" class="item-media-${idx}" data-img="1">`;
-                dotsHTML += `<span class="dot"></span>`;
-            }
-            if(prod["Image 3"]) {
-                mediaHTML += `<img src="${img3}" class="item-media-${idx}" data-img="2">`;
-                dotsHTML += `<span class="dot"></span>`;
-            }
-
             const waNo = "919571214461";
-            const waMsg = encodeURIComponent(`⚡ *SHOPIFY PREMIUM INQUIRY* ⚡\n\n🔹 *Brand:* ${prod.Brand}\n🔹 *Product:* ${prod["Product Name"]}\n🔹 *Weight/Size:* ${prod["Weight / Size"]}\n🔹 *Exclusive Price:* ₹${prod["Selling Price"]}`);
+            const waMsg = encodeURIComponent(`⚡ *SHOPIFY PREMIUM INQUIRY* ⚡\n\n🔹 *Brand:* ${prod.Brand}\n🔹 *Product:* ${prod["Product Name"]}\n🔹 *Weight/Size:* ${prod["Weight / Size"]}\n🔹 *Price:* ₹${prod["Selling Price"]}`);
             const checkoutLink = `https://wa.me/${waNo}?text=${waMsg}`;
             const inStock = prod["Stock Status"] === "In Stock" || prod["Stock Status"] === "";
 
@@ -511,8 +492,7 @@
             card.innerHTML = `
                 ${discount > 0 ? `<div class="badge-discount">${discount}% OFF</div>` : ''}
                 <div class="prod-media">
-                    ${mediaHTML}
-                    <div class="slider-dots" style="${!prod["Image 2"] ? 'display:none;' : ''}">${dotsHTML}</div>
+                    <img src="${img1}" class="active" onerror="this.src='${fallback}';">
                 </div>
                 <div class="prod-details">
                     <span class="prod-brand">${prod.Brand || 'Premium Tier'}</span>
@@ -520,11 +500,10 @@
                     <span class="prod-weight">📦 Net Content: ${prod["Weight / Size"] || 'Standard'}</span>
                     <div class="prod-pricing">
                         <span class="price-sale">₹${prod["Selling Price"] || '0'}</span>
-                        ${mrp > sp ? `<span class="price-mrp">₹${prod.MRP}</span>` : ''}
                     </div>
                     ${inStock ? 
-                        `<a href="${checkoutLink}" target="_blank" class="action-btn">Buy & Order via WhatsApp</a>` : 
-                        `<button class="action-btn out-of-stock" disabled>SOLD OUT BATCH</button>`
+                        `<a href="${checkoutLink}" target="_blank" class="action-btn">WhatsApp Order</a>` : 
+                        `<button class="action-btn out-of-stock" disabled>SOLD OUT</button>`
                     }
                 </div>
             `;
@@ -550,9 +529,8 @@
 
         const validItems = data.filter(p => p.Brand && p.Brand.toUpperCase() !== 'BACKGROUND');
 
-        // Extracting Dynamic Categories from Sheet Data mapping default emojis
         const categories = [...new Set(validItems.map(p => p.Category).filter(c => c && c.trim() !== ''))];
-        const emojiMap = { 'Protein': '🥛', 'Mass Gainer': '💪', 'Pre Workout': '⚡', 'Creatine': '🔋', 'Vitamins': '💊', 'EAA': '🥤', 'Fat Loss': '🔥', 'Wellness': '🌱' };
+        const emojiMap = { 'Protein': '🥛', 'Mass Gainer': '💪', 'Pre Workout': '⚡', 'Creatine': '🔋', 'Vitamins': '💊' };
         
         categories.forEach(cat => {
             const emoji = emojiMap[cat.trim()] || '📦';
@@ -563,9 +541,8 @@
             catRow.appendChild(card);
         });
 
-        // Extracting Dynamic Flavours from Sheet Data mapping default emojis
         const flavours = [...new Set(validItems.map(p => p.Flavour).filter(f => f && f.trim() !== ''))];
-        const flavEmojiMap = { 'Chocolate': '🍫', 'Mango': '🥭', 'Watermelon': '🍉', 'Strawberry': '🍓', 'Vanilla': '🍦', 'Banana': '🍌', 'Coffee': '☕', 'Blueberry': '🍇', 'Fruit Punch': '🍹' };
+        const flavEmojiMap = { 'Chocolate': '🍫', 'Mango': '🥭', 'Watermelon': '🍉', 'Strawberry': '🍓' };
 
         flavours.forEach(flav => {
             const fEmoji = flavEmojiMap[flav.trim()] || '🎨';
@@ -577,7 +554,6 @@
         });
     }
 
-    // Initialize Network Pipeline
     fetch(sheetAPI)
         .then(res => res.json())
         .then(data => {
@@ -587,11 +563,10 @@
             syncRenderEngine();
         })
         .catch(err => {
-            document.getElementById('loading').innerText = 'Data Synchronization Pipeline Interrupted.';
+            document.getElementById('loading').innerText = 'Data Synchronization Interrupted.';
             console.error(err);
         });
 
-    // Parallax Scrolling Mechanics
     window.addEventListener('scroll', function() {
         const scrollValue = window.scrollY;
         const blurOverlay = document.getElementById('blurOverlay');
