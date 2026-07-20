@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grow Up Fitness - Elite Premium Store</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', sans-serif; transition: all 0.3s ease-in-out; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', sans-serif; transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
         
         :root {
             --bg-primary: #f8fafc;
@@ -62,18 +62,6 @@
             gap: 12px;
         }
 
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-main);
-            font-weight: 700;
-            font-size: 11px;
-            text-transform: uppercase;
-            border: 1px solid var(--border-color);
-            padding: 6px 12px;
-            border-radius: 20px;
-            background: var(--bg-card);
-        }
-
         .theme-toggle-btn {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -85,6 +73,7 @@
             font-weight: 700;
         }
 
+        /* 🎬 Adaptive Height Optimized Video Frame */
         .hero-video-wrapper {
             position: fixed;
             top: 0;
@@ -130,6 +119,7 @@
             letter-spacing: 2px;
         }
 
+        /* 📦 Scrollable Panels Layer Layering */
         .main-scroll-content {
             position: relative;
             z-index: 10;
@@ -167,29 +157,25 @@
             border-radius: 4px;
         }
 
-        /* 🏋️‍♂️ Advanced Dynamic Filtering Rows for Categories, Brands, and flavours */
         .category-row, .brands-scroll-row, .flavours-scroll-row {
             display: flex;
             gap: 15px;
             overflow-x: auto;
             padding-bottom: 12px;
             margin-bottom: 35px;
-            scroll-behavior: smooth;
         }
         .category-row::-webkit-scrollbar, .brands-scroll-row::-webkit-scrollbar, .flavours-scroll-row::-webkit-scrollbar { height: 4px; }
         .category-row::-webkit-scrollbar-thumb, .brands-scroll-row::-webkit-scrollbar-thumb, .flavours-scroll-row::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 10px; }
 
         .cat-card, .flav-scroll-box, .brand-scroll-box { 
-            min-width: 90px; 
+            min-width: 100px; 
             text-align: center; 
             cursor: pointer; 
-            position: relative;
         }
         
-        /* Interactive Bubbles/Rects mechanics */
-        .cat-circle, .flav-box-graphic, .brand-logo-frame {
-            width: 75px;
-            height: 75px;
+        .cat-circle, .flav-box-square, .brand-circle {
+            width: 80px;
+            height: 80px;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 50%;
@@ -197,40 +183,24 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 24px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.01);
-            position: relative;
-            overflow: hidden;
-            z-index: 2;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
-        .brand-logo-frame { border-radius: 12px; width: 90px; height: 60px; padding: 10px; }
-        .brand-logo-frame img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .flav-box-square { border-radius: 16px; }
 
-        /* 🍓 screenshot 2: High-Quality Realistic flavour Graphics Mapping */
-        .flav-box-graphic {
-            background-size: cover !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
-            border: none !important;
-        }
-
-        /* Advanced Hover Scale & Shadow mechanics */
-        .cat-card:hover .cat-circle, .flav-scroll-box:hover .flav-box-graphic, .brand-scroll-box:hover .brand-logo-frame {
-            transform: translateY(-5px);
-            border-color: var(--accent-color);
-            box-shadow: 0 8px 15px rgba(0, 114, 255, 0.15);
-        }
-
-        /* Dynamic Active State visual mechanics */
-        .cat-card.active-filter .cat-circle, .flav-scroll-box.active-filter .flav-box-graphic, .brand-scroll-box.active-filter .brand-logo-frame {
+        .cat-card.active-filter .cat-circle, 
+        .brand-scroll-box.active-filter .brand-circle, 
+        .flav-scroll-box.active-filter .flav-box-square {
             border-color: var(--accent-color);
             box-shadow: 0 0 12px rgba(0, 114, 255, 0.2);
-            background: linear-gradient(135deg, rgba(0,114,255,0.05), rgba(0,242,254,0.05));
+            background-color: linear-gradient(135deg, rgba(0,114,255,0.05), rgba(0,242,254,0.05));
         }
 
         .cat-card p, .flav-scroll-box p, .brand-scroll-box p { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-main); }
 
-        /* 🛍️ Dynamic Showcase Grid Module optimized with luxury effects */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -247,13 +217,6 @@
             flex-direction: column;
             position: relative;
             box-shadow: 0 6px 15px rgba(0,0,0,0.01);
-            transform-style: preserve-3d;
-            perspective: 1000px;
-        }
-        .prod-card:hover {
-            border-color: var(--accent-color);
-            box-shadow: 0 10px 25px rgba(0, 114, 255, 0.1);
-            transform: translateY(-5px);
         }
 
         .badge-discount {
@@ -278,14 +241,11 @@
             justify-content: center;
             padding: 15px;
             position: relative;
-            z-index: 1;
         }
         [data-theme="dark"] .prod-media { background: rgba(255, 255, 255, 0.02); }
-        .prod-media img { max-width: 85%; max-height: 85%; object-fit: contain; display: none; transition: transform 0.4s; }
-        .prod-media img.active { display: block; }
-        .prod-card:hover .prod-media img { transform: scale(1.04) translateZ(10px); }
+        .prod-media img { max-width: 85%; max-height: 85%; object-fit: contain; }
 
-        .prod-details { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; z-index: 2; }
+        .prod-details { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
         .prod-brand { font-size: 9px; font-weight: 800; color: var(--accent-color); text-transform: uppercase; margin-bottom: 4px; }
         .prod-title { font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 10px; line-height: 1.4; min-height: 36px; }
         .prod-weight { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; }
@@ -308,13 +268,8 @@
             text-transform: uppercase;
             text-decoration: none;
             text-align: center;
-            position: relative;
-            overflow: hidden;
         }
-        .action-btn:hover {
-            box-shadow: 0 6px 15px rgba(0, 114, 255, 0.3);
-        }
-        .out-of-stock { background: #e2e8f0 !important; color: #94a3b8 !important; cursor: not-allowed; box-shadow: none !important; }
+        .out-of-stock { background: #e2e8f0 !important; color: #94a3b8 !important; cursor: not-allowed; }
 
         footer {
             background: #000000;
@@ -330,15 +285,13 @@
 
         #loading { text-align: center; font-size: 13px; color: var(--accent-color); margin: 40px 0; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* 📱 Responsive Screen Architecture Fixes */
         @media (max-width: 768px) {
             .hero-video-wrapper { height: 40vh; } 
-            .main-scroll-content { margin-top: 40vh; border-radius: 20px 20px 0 0; padding: 25px 0 0 0; }
+            .main-scroll-content { margin-top: 32vh; } 
             .video-caption h1 { font-size: 22px; }
             header { padding: 10px 15px; }
             .logo-area img { max-height: 28px; }
             .products-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-            .brand-logo-frame { width: 75px; height: 50px; }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -350,9 +303,6 @@
             <img src="growup-logoo.png" alt="Grow Up Fitness Logo" onerror="this.src='logo.png';">
         </div>
         <div class="header-controls">
-            <div class="nav-links">
-                <a href="#shopifyGridContainer">🛍️ Elite Store</a>
-            </div>
             <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
         </div>
     </header>
@@ -373,7 +323,7 @@
             
             <h2 class="section-title">Shop By Category</h2>
             <div class="category-row" id="categoryContainer">
-                <div class="cat-card active-filter" data-spec="Category" data-val="All" onclick="advancedFilterManager(this)">
+                <div class="cat-card active-filter" onclick="filterBySpec('Category', 'All', this)">
                     <div class="cat-circle">📦</div>
                     <p>All Products</p>
                 </div>
@@ -381,22 +331,22 @@
 
             <h2 class="section-title">Shop By Brand</h2>
             <div class="brands-scroll-row" id="brandContainer">
-                <div class="brand-scroll-box active-filter" data-spec="Brand" data-val="All" onclick="advancedFilterManager(this)">
-                    <div class="brand-logo-frame">🏷️</div>
+                <div class="brand-scroll-box active-filter" onclick="filterBySpec('Brand', 'All', this)">
+                    <div class="brand-circle">🏷️</div>
                     <p>All Brands</p>
                 </div>
             </div>
 
             <h2 class="section-title">Shop By Flavours</h2>
             <div class="flavours-scroll-row" id="flavourContainer">
-                <div class="flav-scroll-box active-filter" data-spec="Flavour" data-val="All" onclick="advancedFilterManager(this)">
-                    <div class="flav-box-graphic">🎨</div>
+                <div class="flav-scroll-box active-filter" onclick="filterBySpec('Flavour', 'All', this)">
+                    <div class="flav-box-square">🎨</div>
                     <p>All Flavours</p>
                 </div>
             </div>
 
             <h2 class="section-title">All Products</h2>
-            <div id="loading">Establishing Dynamic Live Connection...</div>
+            <div id="loading">Syncing Premium Live Database Engine...</div>
             <div class="products-grid" id="shopifyGridContainer"></div>
 
         </div>
@@ -415,12 +365,21 @@
 <script>
     const sheetAPI = 'https://script.google.com/macros/s/AKfycbzd3hMZ8aNAG0QOQoKYVtx3e7kOFtAaCBWEPE2YUtB1v1sK5WPRXdfbygQlfVpBmZm99w/exec';
     let globalStoreData = [];
-    
-    // Live Triple State Filter Manager
-    const filters = {
-        Category: 'All',
-        Brand: 'All',
-        Flavour: 'All'
+    let currentFilterCategory = 'All';
+    let currentFilterBrand = 'All';
+    let currentFilterFlavour = 'All';
+
+    // 🍓 Ultra High Quality Flavour Image Mapping Asset (Screenshot 2 Style)
+    const flavorImageAssets = {
+        'Chocolate': 'https://images.unsplash.com/photo-1548907040-4d42b52145ca?w=150&auto=format&fit=crop&q=60',
+        'Swiss Chocolate': 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=150&auto=format&fit=crop&q=60',
+        'Mango': 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=150&auto=format&fit=crop&q=60',
+        'Watermelon': 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=150&auto=format&fit=crop&q=60',
+        'Strawberry': 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=150&auto=format&fit=crop&q=60',
+        'Vanilla': 'https://images.unsplash.com/photo-1505394033641-4d5180ce4732?w=150&auto=format&fit=crop&q=60',
+        'Blueberry': 'https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=150&auto=format&fit=crop&q=60',
+        'Malai Kulfi': 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=150&auto=format&fit=crop&q=60',
+        'Cookies & Cream': 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=150&auto=format&fit=crop&q=60'
     };
 
     function cleanDriveUrl(url) {
@@ -437,19 +396,20 @@
         const container = document.getElementById('shopifyGridContainer');
         container.innerHTML = '';
 
-        // blocks configuration cards automatisch
         let filtered = globalStoreData.filter(p => p.Brand && p.Brand.toUpperCase() !== 'BACKGROUND');
 
-        // Apply Triple Dynamic Filter Logic makhhan style
-        filtered = filtered.filter(p => {
-            const matchesCategory = filters.Category === 'All' || (p.Category && p.Category.trim() === filters.Category.trim());
-            const matchesBrand = filters.Brand === 'All' || (p.Brand && p.Brand.trim() === filters.Brand.trim());
-            const matchesFlavour = filters.Flavour === 'All' || (p.Flavour && p.Flavour.trim() === filters.Flavour.trim());
-            return matchesCategory && matchesBrand && matchesFlavour;
-        });
+        if(currentFilterCategory !== 'All') {
+            filtered = filtered.filter(p => p.Category && p.Category.trim() === currentFilterCategory.trim());
+        }
+        if(currentFilterBrand !== 'All') {
+            filtered = filtered.filter(p => p.Brand && p.Brand.trim() === currentFilterBrand.trim());
+        }
+        if(currentFilterFlavour !== 'All') {
+            filtered = filtered.filter(p => p.Flavour && p.Flavour.trim() === currentFilterFlavour.trim());
+        }
 
         if(filtered.length === 0) {
-            container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px; font-weight: 700;">No premium supplements found matching this specific filter combination. Try resetting filters.</div>`;
+            container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px; font-weight: 700;">No active supplements found in this configuration.</div>`;
             return;
         }
 
@@ -462,7 +422,7 @@
             const fallback = `https://via.placeholder.com/300/f1f5f9/0072ff?text=${encodeURIComponent(prod.Brand || 'GrowUp')}`;
 
             const waNo = "919571214461";
-            const waMsg = encodeURIComponent(`⚡ *SHOPIFY PREMIUM ELITE INQUIRY* ⚡\n\n🔹 *Brand:* ${prod.Brand}\n🔹 *Product:* ${prod["Product Name"]}\n🔹 *Weight:* ${prod["Weight / Size"]}\n🔹 *Flavor:* ${prod["Flavour"]}\n\n*Elite Price:* ₹${prod["Selling Price"]}`);
+            const waMsg = encodeURIComponent(`⚡ *SHOPIFY PREMIUM INQUIRY* ⚡\n\n🔹 *Brand:* ${prod.Brand}\n🔹 *Product:* ${prod["Product Name"]}\n🔹 *Weight/Size:* ${prod["Weight / Size"]}\n🔹 *Price:* ₹${prod["Selling Price"]}`);
             const checkoutLink = `https://wa.me/${waNo}?text=${waMsg}`;
             const inStock = prod["Stock Status"] === "In Stock" || prod["Stock Status"] === "";
 
@@ -476,14 +436,13 @@
                 <div class="prod-details">
                     <span class="prod-brand">${prod.Brand || 'Premium Tier'}</span>
                     <h3 class="prod-title">${prod["Product Name"]}</h3>
-                    <span class="prod-weight">📦 Net Content: ${prod["Weight / Size"] || 'Standard'} • ${prod["Flavour"] || 'Unflavoured'}</span>
+                    <span class="prod-weight">📦 Net Content: ${prod["Weight / Size"] || 'Standard'}</span>
                     <div class="prod-pricing">
                         <span class="price-sale">₹${prod["Selling Price"] || '0'}</span>
-                        ${mrp > sp ? `<span class="price-mrp">₹${prod.MRP}</span>` : ''}
                     </div>
                     ${inStock ? 
                         `<a href="${checkoutLink}" target="_blank" class="action-btn">WhatsApp Order</a>` : 
-                        `<button class="action-btn out-of-stock" disabled>SOLD OUT BATCH</button>`
+                        `<button class="action-btn out-of-stock" disabled>SOLD OUT</button>`
                     }
                 </div>
             `;
@@ -491,94 +450,63 @@
         });
     }
 
-    // Advanced Triple Filter Manager Engine
-    function advancedFilterManager(element) {
-        const spec = element.getAttribute('data-spec');
-        const value = element.getAttribute('data-val');
-
-        // Reset and activate target sibling bubbles/boxes only
-        let containerId = '';
-        if(spec === 'Category') containerId = 'categoryContainer';
-        if(spec === 'Brand') containerId = 'brandContainer';
-        if(spec === 'Flavour') containerId = 'flavourContainer';
-
-        document.getElementById(containerId).querySelectorAll('.cat-card, .brand-scroll-box, .flav-scroll-box').forEach(b => b.classList.remove('active-filter'));
+    function filterBySpec(type, value, element) {
+        if(type === 'Category') {
+            document.querySelectorAll('#categoryContainer .cat-card').forEach(b => b.classList.remove('active-filter'));
+            currentFilterCategory = value;
+        } else if(type === 'Brand') {
+            document.querySelectorAll('#brandContainer .brand-scroll-box').forEach(b => b.classList.remove('active-filter'));
+            currentFilterBrand = value;
+        } else if(type === 'Flavour') {
+            document.querySelectorAll('#flavourContainer .flav-scroll-box').forEach(b => b.classList.remove('active-filter'));
+            currentFilterFlavour = value;
+        }
         element.classList.add('active-filter');
-
-        // Update target state filter variable dynamically
-        filters[spec] = value;
         syncRenderEngine();
     }
 
-    // 🍓 Real-time flavour mapping engine using high-quality realistic graphics
-    const highDefFlavourMap = {
-        'Chocolate': 'https://i.postimg.cc/q732w9mH/chocolate-flav.jpg',
-        'Mango': 'https://i.postimg.cc/k47L4K3X/mango-flav.jpg',
-        'Watermelon': 'https://i.postimg.cc/d1r8GZp0/watermelon-flav.jpg',
-        'Strawberry': 'https://i.postimg.cc/N0n8S02z/strawberry-flav.jpg',
-        'Vanilla': 'https://i.postimg.cc/y8H5X00d/vanilla-flav.jpg',
-        'Banana': 'https://i.postimg.cc/mD8N0y5Z/banana-flav.jpg',
-        'Coffee': 'https://i.postimg.cc/mD8N0y5Z/banana-flav.jpg', // change required
-        'Litchi': 'https://i.postimg.cc/q732w9mH/chocolate-flav.jpg' // change required
-    };
-
-    function buildTripleFilterRows(data) {
+    function buildFilterUIRows(data) {
         const catRow = document.getElementById('categoryContainer');
         const brandRow = document.getElementById('brandContainer');
         const flavRow = document.getElementById('flavourContainer');
 
         const validItems = data.filter(p => p.Brand && p.Brand.toUpperCase() !== 'BACKGROUND');
 
-        // Categories UI Pipeline
+        // Build Dynamic Categories
         const categories = [...new Set(validItems.map(p => p.Category).filter(c => c && c.trim() !== ''))];
-        const catEmojiMap = { 'Protein': '🥛', 'Mass Gainer': '💪', 'Pre Workout': '⚡', 'Creatine': '🔋', 'Vitamins': '💊', 'EAA': '🥤', 'Fat Loss': '🔥', 'Wellness': '🌱' };
-        
+        const emojiMap = { 'Protein': '🥛', 'Mass Gainer': '💪', 'Pre Workout': '⚡', 'Creatine': '🔋', 'Vitamins': '💊' };
         categories.forEach(cat => {
-            const emoji = catEmojiMap[cat.trim()] || '📦';
+            const emoji = emojiMap[cat.trim()] || '📦';
             const card = document.createElement('div');
             card.className = 'cat-card';
-            card.setAttribute('data-spec', 'Category');
-            card.setAttribute('data-val', cat);
-            card.onclick = function() { advancedFilterManager(this); };
+            card.onclick = function() { filterBySpec('Category', cat, card); };
             card.innerHTML = `<div class="cat-circle">${emoji}</div><p>${cat}</p>`;
             catRow.appendChild(card);
         });
 
-        // Brands UI Pipeline linked to screenshot 1
+        // Build Dynamic Brands
         const brands = [...new Set(validItems.map(p => p.Brand).filter(b => b && b.trim() !== ''))];
-        const brandLogoMap = { 
-            'Avatar': 'https://raw.githubusercontent.com/growupfitness/growup/main/avatar-logo.png',
-            'Bolt': 'https://raw.githubusercontent.com/growupfitness/growup/main/bolt-logo.png',
-            'Mylife Nutrition': 'https://raw.githubusercontent.com/growupfitness/growup/main/mylife-logo.png',
-            'Asitis': '🏷️', 'Atom': '🏷️', 'Nakpro': '🏷️'
-        };
-
         brands.forEach(brand => {
-            const logoSrc = brandLogoMap[brand.trim()] || '🏷️';
             const card = document.createElement('div');
             card.className = 'brand-scroll-box';
-            card.setAttribute('data-spec', 'Brand');
-            card.setAttribute('data-val', brand);
-            card.onclick = function() { advancedFilterManager(this); };
-            
-            let logoHTML = (logoSrc.startsWith('http')) ? `<img src="${logoSrc}" alt="${brand} Logo" onerror="this.parentElement.innerText='🏷️'">` : logoSrc;
-            card.innerHTML = `<div class="brand-logo-frame">${logoHTML}</div><p>${brand}</p>`;
+            card.onclick = function() { filterBySpec('Brand', brand, card); };
+            card.innerHTML = `<div class="brand-circle">🏷️</div><p>${brand}</p>`;
             brandRow.appendChild(card);
         });
 
-        // flavours UI Pipeline with high-quality mapping from screenshot 2
+        // Build Dynamic Flavours with Image Fallback Map
         const flavours = [...new Set(validItems.map(p => p.Flavour).filter(f => f && f.trim() !== ''))];
-        
         flavours.forEach(flav => {
-            const flavImg = highDefFlavourMap[flav.trim()] || '';
+            const imgUrl = flavorImageAssets[flav.trim()] || '';
             const box = document.createElement('div');
             box.className = 'flav-scroll-box';
-            box.setAttribute('data-spec', 'Flavour');
-            box.setAttribute('data-val', flav);
-            box.onclick = function() { advancedFilterManager(this); };
+            box.onclick = function() { filterBySpec('Flavour', flav, box); };
             
-            let graphicHTML = (flavImg) ? `style="background-image: url('${flavImg}');"` : `>🎨`;
-            box.innerHTML = `<div class="flav-box-graphic"${graphicHTML}</div><p>${flav}</p>`;
+            if (imgUrl) {
+                box.innerHTML = `<div class="flav-box-square" style="background-image: url('${imgUrl}');"></div><p>${flav}</p>`;
+            } else {
+                box.innerHTML = `<div class="flav-box-square">🍦</div><p>${flav}</p>`;
+            }
             flavRow.appendChild(box);
         });
     }
@@ -588,11 +516,11 @@
         .then(data => {
             document.getElementById('loading').style.display = 'none';
             globalStoreData = data;
-            buildTripleFilterRows(data);
+            buildFilterUIRows(data);
             syncRenderEngine();
         })
         .catch(err => {
-            document.getElementById('loading').innerText = 'Data Sync Interrupted.';
+            document.getElementById('loading').innerText = 'Data Synchronization Interrupted.';
             console.error(err);
         });
 
