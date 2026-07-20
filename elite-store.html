@@ -73,7 +73,7 @@
             font-weight: 700;
         }
 
-        /* 🎬 Adaptive Height Optimized Video Frame */
+        /* 🎬 Fixed Video Wrapper Section */
         .hero-video-wrapper {
             position: fixed;
             top: 0;
@@ -185,21 +185,21 @@
             justify-content: center;
             font-size: 24px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.01);
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
         }
-        .flav-box-square { border-radius: 16px; }
+        .flav-box-square { border-radius: 16px; transition: transform 0.3s ease; }
+        .flav-scroll-box:hover .flav-box-square { transform: scale(1.05); }
 
         .cat-card.active-filter .cat-circle, 
         .brand-scroll-box.active-filter .brand-circle, 
         .flav-scroll-box.active-filter .flav-box-square {
             border-color: var(--accent-color);
             box-shadow: 0 0 12px rgba(0, 114, 255, 0.2);
-            background-color: linear-gradient(135deg, rgba(0,114,255,0.05), rgba(0,242,254,0.05));
         }
 
-        .cat-card p, .flav-scroll-box p, .brand-scroll-box p { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-main); }
+        .cat-card p, .flav-scroll-box p, .brand-scroll-box p { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-main); margin-top: 4px; }
 
         .products-grid {
             display: grid;
@@ -340,7 +340,7 @@
             <h2 class="section-title">Shop By Flavours</h2>
             <div class="flavours-scroll-row" id="flavourContainer">
                 <div class="flav-scroll-box active-filter" onclick="filterBySpec('Flavour', 'All', this)">
-                    <div class="flav-box-square">🎨</div>
+                    <div class="flav-box-square" style="background-image: url('https://images.unsplash.com/photo-1511381939415-e44015466834?w=150&auto=format&fit=crop&q=60');"></div>
                     <p>All Flavours</p>
                 </div>
             </div>
@@ -369,201 +369,18 @@
     let currentFilterBrand = 'All';
     let currentFilterFlavour = 'All';
 
-    // 🍓 Ultra High Quality Flavour Image Mapping Asset (Screenshot 2 Style)
+    // 🍓 Live Splash Asset Library for Screenshot 2 mapping 
     const flavorImageAssets = {
-        'Chocolate': 'https://images.unsplash.com/photo-1548907040-4d42b52145ca?w=150&auto=format&fit=crop&q=60',
-        'Swiss Chocolate': 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=150&auto=format&fit=crop&q=60',
-        'Mango': 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=150&auto=format&fit=crop&q=60',
-        'Watermelon': 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=150&auto=format&fit=crop&q=60',
-        'Strawberry': 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=150&auto=format&fit=crop&q=60',
-        'Vanilla': 'https://images.unsplash.com/photo-1505394033641-4d5180ce4732?w=150&auto=format&fit=crop&q=60',
-        'Blueberry': 'https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=150&auto=format&fit=crop&q=60',
-        'Malai Kulfi': 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=150&auto=format&fit=crop&q=60',
-        'Cookies & Cream': 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=150&auto=format&fit=crop&q=60'
-    };
-
-    function cleanDriveUrl(url) {
-        if (!url) return '';
-        url = url.trim();
-        if (url.includes('drive.google.com/uc?')) return url;
-        var id = '';
-        if (url.includes('id=')) id = url.split('id=')[1].split('&')[0];
-        else if (url.includes('/d/')) id = url.split('/d/')[1].split('/')[0];
-        return id ? 'https://drive.google.com/uc?export=view&id=' + id : url;
-    }
-
-    function syncRenderEngine() {
-        const container = document.getElementById('shopifyGridContainer');
-        container.innerHTML = '';
-
-        let filtered = globalStoreData.filter(p => p.Brand && p.Brand.toUpperCase() !== 'BACKGROUND');
-
-        if(currentFilterCategory !== 'All') {
-            filtered = filtered.filter(p => p.Category && p.Category.trim() === currentFilterCategory.trim());
-        }
-        if(currentFilterBrand !== 'All') {
-            filtered = filtered.filter(p => p.Brand && p.Brand.trim() === currentFilterBrand.trim());
-        }
-        if(currentFilterFlavour !== 'All') {
-            filtered = filtered.filter(p => p.Flavour && p.Flavour.trim() === currentFilterFlavour.trim());
-        }
-
-        if(filtered.length === 0) {
-            container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px; font-weight: 700;">No active supplements found in this configuration.</div>`;
-            return;
-        }
-
-        filtered.forEach((prod, idx) => {
-            const mrp = parseFloat(prod.MRP || 0);
-            const sp = parseFloat(prod["Selling Price"] || 0);
-            let discount = (mrp > sp && mrp > 0) ? Math.round(((mrp - sp) / mrp) * 100) : 0;
-
-            const img1 = cleanDriveUrl(prod["Image 1"]);
-            const fallback = `https://via.placeholder.com/300/f1f5f9/0072ff?text=${encodeURIComponent(prod.Brand || 'GrowUp')}`;
-
-            const waNo = "919571214461";
-            const waMsg = encodeURIComponent(`⚡ *SHOPIFY PREMIUM INQUIRY* ⚡\n\n🔹 *Brand:* ${prod.Brand}\n🔹 *Product:* ${prod["Product Name"]}\n🔹 *Weight/Size:* ${prod["Weight / Size"]}\n🔹 *Price:* ₹${prod["Selling Price"]}`);
-            const checkoutLink = `https://wa.me/${waNo}?text=${waMsg}`;
-            const inStock = prod["Stock Status"] === "In Stock" || prod["Stock Status"] === "";
-
-            const card = document.createElement('div');
-            card.className = 'prod-card';
-            card.innerHTML = `
-                ${discount > 0 ? `<div class="badge-discount">${discount}% OFF</div>` : ''}
-                <div class="prod-media">
-                    <img src="${img1}" class="active" onerror="this.src='${fallback}';">
-                </div>
-                <div class="prod-details">
-                    <span class="prod-brand">${prod.Brand || 'Premium Tier'}</span>
-                    <h3 class="prod-title">${prod["Product Name"]}</h3>
-                    <span class="prod-weight">📦 Net Content: ${prod["Weight / Size"] || 'Standard'}</span>
-                    <div class="prod-pricing">
-                        <span class="price-sale">₹${prod["Selling Price"] || '0'}</span>
-                    </div>
-                    ${inStock ? 
-                        `<a href="${checkoutLink}" target="_blank" class="action-btn">WhatsApp Order</a>` : 
-                        `<button class="action-btn out-of-stock" disabled>SOLD OUT</button>`
-                    }
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    function filterBySpec(type, value, element) {
-        if(type === 'Category') {
-            document.querySelectorAll('#categoryContainer .cat-card').forEach(b => b.classList.remove('active-filter'));
-            currentFilterCategory = value;
-        } else if(type === 'Brand') {
-            document.querySelectorAll('#brandContainer .brand-scroll-box').forEach(b => b.classList.remove('active-filter'));
-            currentFilterBrand = value;
-        } else if(type === 'Flavour') {
-            document.querySelectorAll('#flavourContainer .flav-scroll-box').forEach(b => b.classList.remove('active-filter'));
-            currentFilterFlavour = value;
-        }
-        element.classList.add('active-filter');
-        syncRenderEngine();
-    }
-
-    function buildFilterUIRows(data) {
-        const catRow = document.getElementById('categoryContainer');
-        const brandRow = document.getElementById('brandContainer');
-        const flavRow = document.getElementById('flavourContainer');
-
-        const validItems = data.filter(p => p.Brand && p.Brand.toUpperCase() !== 'BACKGROUND');
-
-        // Build Dynamic Categories
-        const categories = [...new Set(validItems.map(p => p.Category).filter(c => c && c.trim() !== ''))];
-        const emojiMap = { 'Protein': '🥛', 'Mass Gainer': '💪', 'Pre Workout': '⚡', 'Creatine': '🔋', 'Vitamins': '💊' };
-        categories.forEach(cat => {
-            const emoji = emojiMap[cat.trim()] || '📦';
-            const card = document.createElement('div');
-            card.className = 'cat-card';
-            card.onclick = function() { filterBySpec('Category', cat, card); };
-            card.innerHTML = `<div class="cat-circle">${emoji}</div><p>${cat}</p>`;
-            catRow.appendChild(card);
-        });
-
-        // Build Dynamic Brands
-        const brands = [...new Set(validItems.map(p => p.Brand).filter(b => b && b.trim() !== ''))];
-        brands.forEach(brand => {
-            const card = document.createElement('div');
-            card.className = 'brand-scroll-box';
-            card.onclick = function() { filterBySpec('Brand', brand, card); };
-            card.innerHTML = `<div class="brand-circle">🏷️</div><p>${brand}</p>`;
-            brandRow.appendChild(card);
-        });
-
-        // Build Dynamic Flavours with Image Fallback Map
-        const flavours = [...new Set(validItems.map(p => p.Flavour).filter(f => f && f.trim() !== ''))];
-        flavours.forEach(flav => {
-            const imgUrl = flavorImageAssets[flav.trim()] || '';
-            const box = document.createElement('div');
-            box.className = 'flav-scroll-box';
-            box.onclick = function() { filterBySpec('Flavour', flav, box); };
-            
-            if (imgUrl) {
-                box.innerHTML = `<div class="flav-box-square" style="background-image: url('${imgUrl}');"></div><p>${flav}</p>`;
-            } else {
-                box.innerHTML = `<div class="flav-box-square">🍦</div><p>${flav}</p>`;
-            }
-            flavRow.appendChild(box);
-        });
-    }
-
-    fetch(sheetAPI)
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById('loading').style.display = 'none';
-            globalStoreData = data;
-            buildFilterUIRows(data);
-            syncRenderEngine();
-        })
-        .catch(err => {
-            document.getElementById('loading').innerText = 'Data Synchronization Interrupted.';
-            console.error(err);
-        });
-
-    window.addEventListener('scroll', function() {
-        const scrollValue = window.scrollY;
-        const blurOverlay = document.getElementById('blurOverlay');
-        const heroCaption = document.getElementById('heroCaption');
-        
-        let blurAmount = Math.min(scrollValue / 35, 25); 
-        let glassOpacity = Math.min(scrollValue / 350, 0.65); 
-        
-        blurOverlay.style.backdropFilter = `blur(${blurAmount}px)`;
-        
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        if(currentTheme === 'dark') {
-            blurOverlay.style.background = `rgba(9, 13, 22, ${glassOpacity})`;
-        } else {
-            blurOverlay.style.background = `rgba(248, 250, 252, ${glassOpacity})`;
-        }
-        
-        if(scrollValue > 150) {
-            heroCaption.style.opacity = '0';
-        } else {
-            heroCaption.style.opacity = '1';
-        }
-    });
-
-    function toggleTheme() {
-        const htmlEl = document.documentElement;
-        const currentTheme = htmlEl.getAttribute('data-theme');
-        const btn = document.getElementById('themeBtn');
-        
-        if(currentTheme === 'dark') {
-            htmlEl.removeAttribute('data-theme');
-            btn.innerText = "🌙 Dark";
-            document.getElementById('blurOverlay').style.background = `rgba(248, 250, 252, 0)`;
-        } else {
-            htmlEl.setAttribute('data-theme', 'dark');
-            btn.innerText = "☀️ Light";
-            document.getElementById('blurOverlay').style.background = `rgba(9, 13, 22, 0)`;
-        }
-        syncRenderEngine();
-    }
-</script>
-</body>
-</html>
+        'Chocolate': 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=150&auto=format&fit=crop&q=80',
+        'Swiss Chocolate': 'https://images.unsplash.com/photo-1548907040-4d42b52145ca?w=150&auto=format&fit=crop&q=80',
+        'Swiss chocolate': 'https://images.unsplash.com/photo-1548907040-4d42b52145ca?w=150&auto=format&fit=crop&q=80',
+        'Mango': 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=150&auto=format&fit=crop&q=80',
+        'Watermelon': 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=150&auto=format&fit=crop&q=80',
+        'Strawberry': 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=150&auto=format&fit=crop&q=80',
+        'Vanilla': 'https://images.unsplash.com/photo-1505394033641-4d5180ce4732?w=150&auto=format&fit=crop&q=80',
+        'Blueberry': 'https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=150&auto=format&fit=crop&q=80',
+        'Blue berry': 'https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=150&auto=format&fit=crop&q=80',
+        'Blue raspberry': 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=150&auto=format&fit=crop&q=80',
+        'Malai Kulfi': 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=150&auto=format&fit=crop&q=80',
+        'Malai kulfi': 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=150&auto=format&fit=crop&q=80',
+        'Cookies & Cream': '
