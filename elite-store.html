@@ -78,7 +78,7 @@
             transform: scale(1.03);
         }
 
-        /* 🔍 SMART TOP SEARCH BAR WITH DROPDOWN SUGGESTIONS */
+        /* 🔍 SEARCH BOX */
         .search-box {
             position: relative;
             max-width: 280px;
@@ -107,7 +107,6 @@
             opacity: 0.6;
         }
 
-        /* 📍 Live Search Dropdown Box (Top Header ke niche) */
         .top-search-dropdown {
             position: absolute;
             top: 110%;
@@ -135,14 +134,8 @@
             justify-content: space-between;
         }
 
-        .top-search-item:last-child {
-            border-bottom: none;
-        }
-
-        .top-search-item:hover {
-            background: rgba(0, 114, 255, 0.08);
-            color: var(--accent-color);
-        }
+        .top-search-item:last-child { border-bottom: none; }
+        .top-search-item:hover { background: rgba(0, 114, 255, 0.08); color: var(--accent-color); }
 
         .top-search-tag {
             font-size: 9px;
@@ -154,19 +147,25 @@
             text-transform: uppercase;
         }
 
+        /* 🔘 HEADER CONTROLS & ICONS ORDER */
         .header-controls { display: flex; align-items: center; gap: 10px; }
 
+        /* Match Color Style for Inquiry Button */
         .inquiry-nav-btn {
-            background: linear-gradient(135deg, #0072ff, #00f2fe);
-            color: #ffffff;
-            border: none;
-            padding: 7px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 700;
             cursor: pointer;
             text-decoration: none;
             white-space: nowrap;
+        }
+        .inquiry-nav-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
         }
 
         .theme-toggle-btn {
@@ -178,6 +177,62 @@
             cursor: pointer;
             font-size: 11px;
             font-weight: 700;
+        }
+
+        /* Header Nav Action Icons (Cart, Wishlist, Login) */
+        .header-icon-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 13px;
+            position: relative;
+            text-decoration: none;
+        }
+        .header-icon-btn:hover {
+            border-color: var(--accent-color);
+        }
+
+        .header-login-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+        .header-login-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .icon-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ff0844;
+            color: #ffffff;
+            font-size: 8px;
+            font-weight: 800;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .hero-video-wrapper {
@@ -573,11 +628,25 @@
                 <div id="topSearchDropdown" class="top-search-dropdown"></div>
             </div>
         </div>
+
         <div class="header-controls">
             <button onclick="scrollToInquiryAnchor()" class="inquiry-nav-btn">
                 📝 Inquiry Form
             </button>
+
             <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+
+            <a href="#" class="header-icon-btn" title="Cart / Trolley">
+                🛒 <span class="icon-badge">0</span>
+            </a>
+
+            <a href="#" class="header-icon-btn" title="Wishlist">
+                ❤️ <span class="icon-badge">0</span>
+            </a>
+
+            <a href="#" class="header-login-btn">
+                👤 Login
+            </a>
         </div>
     </header>
 
@@ -779,12 +848,10 @@
         return id ? 'https://drive.google.com/uc?export=view&id=' + id : url;
     }
 
-    /* 1. SMOOTH SCROLL TO TOP ON LOGO CLICK */
     function scrollToTopHome() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    /* 2. SMART TOP SEARCH BAR WITH DROPDOWN SUGGESTIONS (3 to 5 ITEMS) */
     function handleSmartTopSearch(query) {
         const dropdown = document.getElementById('topSearchDropdown');
         const queryClean = query.toLowerCase().trim();
@@ -798,7 +865,6 @@
         let suggestions = [];
         let addedKeys = new Set();
 
-        // Search through Products, Brands, and Flavours
         globalStoreData.forEach(prod => {
             if (suggestions.length >= 5) return;
 
@@ -807,24 +873,20 @@
             const pCategory = prod.Category || "";
             const pFlavour = prod.Flavour || "";
 
-            // Check Product Match
             if (pName.toLowerCase().includes(queryClean) && !addedKeys.has('prod:' + pName)) {
-                suggestions.push({ text: pName, tag: 'Product', filterVal: pName });
+                suggestions.push({ text: pName, tag: 'Product' });
                 addedKeys.add('prod:' + pName);
             }
-            // Check Brand Match
             else if (pBrand.toLowerCase().includes(queryClean) && !addedKeys.has('brand:' + pBrand)) {
-                suggestions.push({ text: pBrand, tag: 'Brand', filterVal: pBrand });
+                suggestions.push({ text: pBrand, tag: 'Brand' });
                 addedKeys.add('brand:' + pBrand);
             }
-            // Check Flavour Match
             else if (pFlavour.toLowerCase().includes(queryClean) && !addedKeys.has('flav:' + pFlavour)) {
-                suggestions.push({ text: pFlavour, tag: 'Flavour', filterVal: pFlavour });
+                suggestions.push({ text: pFlavour, tag: 'Flavour' });
                 addedKeys.add('flav:' + pFlavour);
             }
         });
 
-        // Render Suggestions Dropdown
         dropdown.innerHTML = '';
         if (suggestions.length > 0) {
             dropdown.style.display = 'block';
@@ -836,8 +898,6 @@
                     document.getElementById('searchInput').value = item.text;
                     dropdown.style.display = 'none';
                     syncRenderEngine(item.text);
-                    
-                    // Smooth scroll down to products grid
                     const pTarget = document.getElementById('productsTarget');
                     if(pTarget) pTarget.scrollIntoView({ behavior: 'smooth' });
                 };
@@ -847,11 +907,9 @@
             dropdown.style.display = 'none';
         }
 
-        // Real-time Filtering in background
         syncRenderEngine(queryClean);
     }
 
-    // Hide Search Dropdown when clicking outside
     document.addEventListener('click', (e) => {
         const sBox = document.querySelector('.search-box');
         if (sBox && !sBox.contains(e.target)) {
@@ -990,7 +1048,6 @@
         }
     }
 
-    /* 📍 PINCODE AUTO LOOKUP */
     const pincodeInput = document.getElementById("pincode");
     const cityInput = document.getElementById("city");
     const stateInput = document.getElementById("state");
@@ -1021,7 +1078,6 @@
         }
     });
 
-    /* 🗺️ MAP ENGINE */
     let map, marker;
     function initInteractiveMap() {
         const defaultLat = 24.6030;
@@ -1065,7 +1121,6 @@
         }
     }
 
-    /* 🔍 AREA AUTO-SUGGESTION ENGINE */
     const areaInput = document.getElementById("area");
     const areaSuggestions = document.getElementById("areaSuggestions");
     let suggestionDebounce;
@@ -1128,7 +1183,6 @@
         if (e.target !== areaInput) { areaSuggestions.style.display = "none"; }
     });
 
-    /* 📩 FORM SUBMIT SCRIPT */
     const inquiryForm = document.forms['submit-to-google-sheet'];
     const submitBtn = document.getElementById("submitBtn");
     const formContainerBlock = document.getElementById("formContainerBlock");
@@ -1152,7 +1206,6 @@
             });
     });
 
-    /* FETCH STORE PRODUCTS */
     fetch(sheetAPI)
         .then(res => res.json())
         .then(data => {
