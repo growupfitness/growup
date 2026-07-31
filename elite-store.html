@@ -15,6 +15,7 @@
             --border-color: rgba(15, 23, 42, 0.08);
             --accent-color: #0072ff;
             --bg-header: rgba(255, 255, 255, 0.98);
+            --logo-filter: invert(1); /* Light mode me logo visible karne ke liye */
         }
 
         [data-theme="dark"] {
@@ -25,6 +26,7 @@
             --border-color: rgba(255, 255, 255, 0.08);
             --accent-color: #00f2fe;
             --bg-header: rgba(13, 20, 33, 0.98);
+            --logo-filter: invert(0); /* Dark mode me original logo */
         }
         
         body { 
@@ -61,26 +63,30 @@
             flex: 1;
         }
 
+        /* 🖼️ LOGO VISIBILITY FIX FOR LIGHT & DARK MODE */
         .logo-area img {
             max-height: 32px; 
             width: auto;
             display: block;
+            filter: var(--logo-filter);
+            transition: filter 0.3s ease;
         }
 
         /* Search Bar System */
         .search-box {
             position: relative;
-            max-width: 320px;
+            max-width: 280px;
             width: 100%;
         }
 
         .search-box input {
             width: 100%;
-            padding: 7px 12px 7px 32px;
+            padding: 8px 12px 8px 34px;
             background: var(--bg-primary);
             border: 1px solid var(--border-color);
             border-radius: 20px;
             font-size: 11px;
+            font-weight: 600;
             color: var(--text-main);
             outline: none;
         }
@@ -91,22 +97,22 @@
             left: 10px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 11px;
+            font-size: 12px;
             opacity: 0.6;
         }
 
-        /* Right Navigation Icons & Order Form */
+        /* Right Navigation Icons & Inquiry Form */
         .header-right {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
-        .order-form-btn {
+        .inquiry-btn {
             background: linear-gradient(135deg, #0072ff, #00f2fe);
             color: #ffffff;
             border: none;
-            padding: 6px 14px;
+            padding: 7px 14px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 700;
@@ -362,6 +368,60 @@
         }
         .out-of-stock { background: #cbd5e1 !important; color: #64748b !important; cursor: not-allowed; }
 
+        /* 📋 INQUIRY FORM SECTION */
+        .inquiry-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 40px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+
+        .inquiry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            padding: 10px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        .form-submit-btn {
+            grid-column: 1 / -1;
+            padding: 12px;
+            background: linear-gradient(135deg, #0072ff, #00f2fe);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
         footer {
             background: #000000;
             color: #ffffff;
@@ -377,8 +437,8 @@
 
         /* 📱 MOBILE VIEW HEADER ADJUSTMENTS */
         @media (max-width: 768px) {
-            header { padding: 8px 12px; gap: 8px; }
-            .search-box { max-width: 150px; }
+            header { padding: 8px 12px; gap: 6px; }
+            .search-box { max-width: 130px; }
             .hero-video-wrapper { height: 280px; } 
             .main-scroll-content { margin-top: 240px; border-radius: 16px 16px 0 0; } 
             .video-caption h1 { font-size: 18px; }
@@ -398,14 +458,14 @@
                 <img src="growup-logoo.png" alt="Grow Up Fitness Logo" onerror="this.src='logo.png';">
             </div>
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Search protein, brand..." onkeyup="liveSearchProducts()">
+                <input type="text" id="searchInput" placeholder="Search product, brand..." oninput="liveSearchProducts()">
             </div>
         </div>
         
         <div class="header-right">
-            <a href="https://forms.google.com" target="_blank" class="order-form-btn">
-                📋 Order Form
-            </a>
+            <button onclick="scrollToInquiry()" class="inquiry-btn">
+                📝 Fill Inquiry
+            </button>
             <a href="#" class="icon-btn" title="Wishlist">
                 ❤️ <span class="badge-count">0</span>
             </a>
@@ -458,6 +518,51 @@
             <div id="loading">Syncing Live Products...</div>
             <div class="products-grid" id="shopifyGridContainer"></div>
 
+            <div class="inquiry-section" id="inquirySection">
+                <h2 class="section-title">Grow Up Fitness - Order / Inquiry Form</h2>
+                <form id="inquiryForm" onsubmit="submitInquiry(event)">
+                    <div class="inquiry-grid">
+                        <div class="form-group">
+                            <label>Customer Name *</label>
+                            <input type="text" id="custName" placeholder="E.g. Nitin Salvi" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number *</label>
+                            <input type="tel" id="custPhone" placeholder="Enter mobile number" required>
+                        </div>
+                        <div class="form-group">
+                            <label>PIN Code</label>
+                            <input type="text" id="custPincode" placeholder="E.g. 313001">
+                        </div>
+                        <div class="form-group">
+                            <label>Area / Colony</label>
+                            <input type="text" id="custArea" placeholder="E.g. Shobhagpura">
+                        </div>
+                        <div class="form-group">
+                            <label>City</label>
+                            <input type="text" id="custCity" value="Udaipur">
+                        </div>
+                        <div class="form-group">
+                            <label>State</label>
+                            <input type="text" id="custState" value="Rajasthan">
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Which Brand Are You Looking For?</label>
+                            <input type="text" id="custBrand" placeholder="Type brand names... e.g. Bolt, Avatar, Myfit">
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>What Do You Want To Buy?</label>
+                            <input type="text" id="custProduct" placeholder="E.g. Whey Protein, Creatine, Pre Workout">
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Specific Requirement / Message</label>
+                            <textarea id="custMsg" rows="3" placeholder="Any flavor preferences or target budget details..."></textarea>
+                        </div>
+                        <button type="submit" class="form-submit-btn">Submit Order Inquiry</button>
+                    </div>
+                </form>
+            </div>
+
         </div>
 
         <footer>
@@ -507,7 +612,7 @@
         return id ? 'https://drive.google.com/uc?export=view&id=' + id : url;
     }
 
-    /* 🔍 Live Search Engine */
+    /* 🔍 100% WORKING LIVE SEARCH ENGINE */
     function liveSearchProducts() {
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
         syncRenderEngine(query);
@@ -529,12 +634,13 @@
             filtered = filtered.filter(p => p.Flavour && p.Flavour.trim() === currentFilterFlavour.trim());
         }
 
-        /* Applying Search Filter */
+        /* Search Filter logic */
         if(searchQuery !== '') {
             filtered = filtered.filter(p => 
                 (p["Product Name"] && p["Product Name"].toLowerCase().includes(searchQuery)) ||
                 (p.Brand && p.Brand.toLowerCase().includes(searchQuery)) ||
-                (p.Category && p.Category.toLowerCase().includes(searchQuery))
+                (p.Category && p.Category.toLowerCase().includes(searchQuery)) ||
+                (p.Flavour && p.Flavour.toLowerCase().includes(searchQuery))
             );
         }
 
@@ -634,6 +740,27 @@
                 `<div class="flav-box-square">🍦</div><p>${flav}</p>`;
             flavRow.appendChild(box);
         });
+    }
+
+    /* 📜 Smooth Scroll to Inquiry Form */
+    function scrollToInquiry() {
+        document.getElementById('inquirySection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /* 📩 Submit Inquiry to WhatsApp */
+    function submitInquiry(e) {
+        e.preventDefault();
+        const name = document.getElementById('custName').value;
+        const phone = document.getElementById('custPhone').value;
+        const pin = document.getElementById('custPincode').value;
+        const area = document.getElementById('custArea').value;
+        const city = document.getElementById('custCity').value;
+        const brand = document.getElementById('custBrand').value;
+        const prod = document.getElementById('custProduct').value;
+        const msg = document.getElementById('custMsg').value;
+
+        const text = `📋 *NEW ORDER INQUIRY*\n\n👤 *Name:* ${name}\n📞 *Phone:* ${phone}\n📍 *Address:* ${area}, ${city} - ${pin}\n🏷️ *Brand Needed:* ${brand}\n📦 *Product Needed:* ${prod}\n💬 *Message:* ${msg}`;
+        window.open(`https://wa.me/919571214461?text=${encodeURIComponent(text)}`, '_blank');
     }
 
     fetch(sheetAPI)
