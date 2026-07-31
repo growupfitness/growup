@@ -364,7 +364,7 @@
             box-shadow: 0 0 8px rgba(0, 162, 255, 0.4);
         }
 
-        /* 📍 Auto-Suggestion Dropdown List (Big Websites Jaisa) */
+        /* 📍 Auto-Suggestion Dropdown List (Hybrid Smart Engine) */
         .suggestion-box {
             position: absolute;
             top: 100%;
@@ -373,7 +373,7 @@
             background: #181818;
             border: 1px solid #00a2ff;
             border-radius: 6px;
-            max-height: 180px;
+            max-height: 200px;
             overflow-y: auto;
             z-index: 1000;
             display: none;
@@ -387,12 +387,14 @@
             cursor: pointer;
             border-bottom: 1px solid rgba(255,255,255,0.05);
             line-height: 1.4;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         .suggestion-item:hover { background: #0072ff; color: #ffffff; }
 
         .loading-pin-status { color: #00a2ff; font-size: 11px; display: none; margin-top: 2px; font-weight: 600; }
 
-        /* Map Controls Header */
         .map-header-bar {
             display: flex;
             justify-content: space-between;
@@ -422,7 +424,6 @@
             border-bottom: none;
         }
 
-        /* 📍 LIVE LOCATION ADDRESS DETAILS BAR (MAP KE NICHE) */
         .map-address-display-bar {
             background: rgba(30, 30, 30, 0.95);
             border: 1px solid #00a2ff;
@@ -587,7 +588,7 @@
 
                             <div class="form-cell">
                                 <label>Area / Colony / Street Address</label>
-                                <input type="text" id="area" name="Area" placeholder="Type area e.g. Jagdish Chowk, Shobhagpura..." autocomplete="off" required>
+                                <input type="text" id="area" name="Area" placeholder="Type area e.g. Grow Up Fitness, Jagdish Chowk..." autocomplete="off" required>
                                 <div id="areaSuggestions" class="suggestion-box"></div>
                             </div>
 
@@ -609,7 +610,7 @@
                                 <div id="map"></div>
                                 <div class="map-address-display-bar">
                                     <span>📍 Selected Location:</span>
-                                    <span id="liveAddressDisplay">Udaipur, Rajasthan (Drag marker or use search above)</span>
+                                    <span id="liveAddressDisplay">Grow Up Fitness Supplements Store, Udaipur</span>
                                 </div>
                                 <input type="hidden" id="geoCoordinates" name="Map Coordinates" value="">
                                 <input type="hidden" id="fullMapAddress" name="Full Map Address" value="">
@@ -699,6 +700,23 @@
         'Vanilla': 'https://images.unsplash.com/photo-1505394033641-4d5180ce4732?w=150&auto=format&fit=crop&q=80'
     };
 
+    /* 🏪 UDAIPUR LOCAL LANDMARKS & SHOPS DATABASE FOR INSTANT AUTO-COMPLETE */
+    const udaipurLocalPlaces = [
+        { name: "Grow Up Fitness Supplements Store, Shobhagpura", lat: 24.6030, lon: 73.7112 },
+        { name: "Grow Up Fitness, Udaipur", lat: 24.6030, lon: 73.7112 },
+        { name: "Jagdish Chowk, Old City, Udaipur", lat: 24.5793, lon: 73.6836 },
+        { name: "Jagdish Temple, Udaipur", lat: 24.5793, lon: 73.6836 },
+        { name: "Shobhagpura Circle, Udaipur", lat: 24.6035, lon: 73.7115 },
+        { name: "Fatehpura Circle, Udaipur", lat: 24.6001, lon: 73.6990 },
+        { name: "Sukher Bypass, Udaipur", lat: 24.6291, lon: 73.7185 },
+        { name: "Hiran Magri Sector 4, Udaipur", lat: 24.5620, lon: 73.7210 },
+        { name: "Hiran Magri Sector 3, Udaipur", lat: 24.5680, lon: 73.7180 },
+        { name: "Delhi Gate, Udaipur", lat: 24.5821, lon: 73.6952 },
+        { name: "Panchwati, Udaipur", lat: 24.5932, lon: 73.6931 },
+        { name: "Udaipole, Udaipur", lat: 24.5750, lon: 73.6980 },
+        { name: "Ayad, Udaipur", lat: 24.5870, lon: 73.7150 }
+    ];
+
     function cleanDriveUrl(url) {
         if (!url) return '';
         url = url.trim();
@@ -709,7 +727,6 @@
         return id ? 'https://drive.google.com/uc?export=view&id=' + id : url;
     }
 
-    /* 🔍 LIVE HEADER SEARCH ENGINE */
     function liveSearchProducts() {
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
         syncRenderEngine(query);
@@ -838,7 +855,6 @@
         });
     }
 
-    /* 📜 SMOOTH SCROLL TO FORM */
     function scrollToInquiryAnchor() {
         const target = document.getElementById('inquiryFormTarget');
         if(target) {
@@ -846,7 +862,7 @@
         }
     }
 
-    /* 📍 INSTANT PINCODE AUTO LOOKUP (FAST ENDPOINT) */
+    /* 📍 INSTANT PINCODE AUTO LOOKUP */
     const pincodeInput = document.getElementById("pincode");
     const cityInput = document.getElementById("city");
     const stateInput = document.getElementById("state");
@@ -877,13 +893,13 @@
         }
     });
 
-    /* 🗺️ MAP ENGINE (MOUSE SCROLL ZOOM DISABLED + LIVE DISPLAY BAR) */
+    /* 🗺️ MAP ENGINE */
     let map, marker;
     function initInteractiveMap() {
-        const defaultLat = 24.5854; // Udaipur Center
-        const defaultLng = 73.7125;
+        const defaultLat = 24.6030; // Grow Up Fitness Store Udaipur Coords
+        const defaultLng = 73.7112;
 
-        map = L.map('map', { scrollWheelZoom: false }).setView([defaultLat, defaultLng], 13);
+        map = L.map('map', { scrollWheelZoom: false }).setView([defaultLat, defaultLng], 14);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap'
         }).addTo(map);
@@ -899,7 +915,6 @@
 
     function updateGeoLocationInfo(lat, lng) {
         document.getElementById('geoCoordinates').value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-        // Reverse Geocoding to show live address bar under map
         fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
             .then(res => res.json())
             .then(data => {
@@ -922,24 +937,46 @@
         }
     }
 
-    /* 🔍 REAL-TIME AREA AUTO-SUGGESTION ENGINE (BIG WEBSITES STYLE) */
+    /* 🔍 HYBRID SMART AUTO-SUGGESTION ENGINE (LOCAL + GLOBAL API) */
     const areaInput = document.getElementById("area");
     const areaSuggestions = document.getElementById("areaSuggestions");
     let suggestionDebounce;
 
     areaInput.addEventListener("input", () => {
         clearTimeout(suggestionDebounce);
-        const query = areaInput.value.trim();
+        const query = areaInput.value.toLowerCase().trim();
         if (query.length < 2) {
             areaSuggestions.style.display = "none";
             return;
         }
 
+        // 1. Check Local Custom Database First
+        const localMatches = udaipurLocalPlaces.filter(place => place.name.toLowerCase().includes(query));
+
+        areaSuggestions.innerHTML = "";
+        
+        if (localMatches.length > 0) {
+            areaSuggestions.style.display = "block";
+            localMatches.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "suggestion-item";
+                div.innerHTML = `📍 <strong>${item.name}</strong>`;
+                div.onclick = function() {
+                    areaInput.value = item.name;
+                    areaSuggestions.style.display = "none";
+                    map.setView([item.lat, item.lon], 16);
+                    marker.setLatLng([item.lat, item.lon]);
+                    updateGeoLocationInfo(item.lat, item.lon);
+                };
+                areaSuggestions.appendChild(div);
+            });
+        }
+
+        // 2. Fetch Global Nominatim Suggestions in Parallel
         suggestionDebounce = setTimeout(() => {
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ', Udaipur, Rajasthan')}&limit=5`)
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ', Udaipur, Rajasthan')}&limit=4`)
                 .then(res => res.json())
                 .then(data => {
-                    areaSuggestions.innerHTML = "";
                     if (data && data.length > 0) {
                         areaSuggestions.style.display = "block";
                         data.forEach(item => {
@@ -957,8 +994,6 @@
                             };
                             areaSuggestions.appendChild(div);
                         });
-                    } else {
-                        areaSuggestions.style.display = "none";
                     }
                 });
         }, 300);
