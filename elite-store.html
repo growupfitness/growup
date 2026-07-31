@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Grow Up Fitness - Elite Premium Store</title>
+    <title>Grow Up Fitness - Elite Premium Store & Inquiry</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', sans-serif; transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
@@ -15,7 +15,8 @@
             --text-muted: #64748b;
             --border-color: rgba(15, 23, 42, 0.08);
             --accent-color: #0072ff;
-            --bg-header: rgba(255, 255, 255, 0.95);
+            --bg-header: rgba(255, 255, 255, 0.98);
+            --logo-filter: invert(1); /* Light Mode me Logo Visible Kaala Dikhne ke liye */
         }
 
         [data-theme="dark"] {
@@ -25,7 +26,8 @@
             --text-muted: #94a3b8;
             --border-color: rgba(255, 255, 255, 0.08);
             --accent-color: #00f2fe;
-            --bg-header: rgba(13, 20, 33, 0.95);
+            --bg-header: rgba(13, 20, 33, 0.98);
+            --logo-filter: invert(0); /* Dark Mode me Original Logo */
         }
         
         body { 
@@ -48,22 +50,22 @@
             border-bottom: 1px solid var(--border-color);
             padding: 12px 20px; 
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            gap: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
 
-        .logo-area img {
+        /* 🖼️ LOGO INVERT FILTER FIX */
+        .logo-area img#mainLogo {
             max-height: 32px; 
             width: auto;
             display: block;
+            filter: var(--logo-filter) !important;
+            transition: filter 0.3s ease;
         }
 
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .header-controls { display: flex; align-items: center; gap: 10px; }
 
         .inquiry-nav-btn {
             background: linear-gradient(135deg, #0072ff, #00f2fe);
@@ -287,7 +289,7 @@
         }
         .out-of-stock { background: #cbd5e1 !important; color: #64748b !important; cursor: not-allowed; }
 
-        /* 📋 NEON GLOW INQUIRY FORM SECTION WITH MAP PICKER */
+        /* 📋 NEON INQUIRY FORM WITH LIVE AUTO-SUGGESTION MAP PICKER */
         .inquiry-wrapper-card {
             background: rgba(20, 20, 20, 0.92);
             border: 2px solid #00a2ff;
@@ -305,7 +307,7 @@
             margin-top: 15px;
         }
 
-        .form-cell { display: flex; flex-direction: column; gap: 6px; }
+        .form-cell { display: flex; flex-direction: column; gap: 6px; position: relative; }
         .form-cell.full-width { grid-column: 1 / -1; }
 
         .form-cell label {
@@ -332,15 +334,59 @@
             box-shadow: 0 0 8px rgba(0, 162, 255, 0.4);
         }
 
+        /* 📍 Auto-Suggestion Dropdown List */
+        .suggestion-box {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #1e1e1e;
+            border: 1px solid #00a2ff;
+            border-radius: 6px;
+            max-height: 160px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 10px;
+            font-size: 12px;
+            color: #fff;
+            cursor: pointer;
+            border-bottom: 1px solid #333;
+        }
+        .suggestion-item:hover { background: #0072ff; }
+
         .loading-pin-status { color: #00a2ff; font-size: 11px; display: none; margin-top: 2px; }
 
-        /* Map Box Container */
+        /* Map Controls Header */
+        .map-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .gps-locate-btn {
+            background: #0072ff;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
         #map {
             width: 100%;
-            height: 200px;
+            height: 220px;
             border-radius: 8px;
             border: 1px solid #00a2ff;
-            margin-top: 5px;
         }
 
         .submit-neon-btn {
@@ -410,7 +456,7 @@
 
     <header>
         <div class="logo-area">
-            <img src="growup-logoo.png" alt="Grow Up Fitness Logo" onerror="this.src='logo.png';">
+            <img src="growup-logoo.png" id="mainLogo" alt="Grow Up Fitness Logo" onerror="this.src='logo.png';">
         </div>
         <div class="header-controls">
             <button onclick="scrollToInquiryAnchor()" class="inquiry-nav-btn">
@@ -480,14 +526,15 @@
                             </div>
 
                             <div class="form-cell">
-                                <label>Pin Code</label>
+                                <label>Pin Code (Auto Fetch)</label>
                                 <input type="text" id="pincode" name="Pincode" placeholder="e.g. 313001" maxlength="6" required>
                                 <div id="pinLoading" class="loading-pin-status">Fetching City & State...</div>
                             </div>
 
                             <div class="form-cell">
                                 <label>Area / Colony / Street Address</label>
-                                <input type="text" id="area" name="Area" placeholder="e.g. Shobhagpura, near landmark..." required>
+                                <input type="text" id="area" name="Area" placeholder="Type area e.g. Jagdish Chowk, Shobhagpura..." autocomplete="off" required>
+                                <div id="areaSuggestions" class="suggestion-box"></div>
                             </div>
 
                             <div class="form-cell">
@@ -501,7 +548,10 @@
                             </div>
 
                             <div class="form-cell full-width">
-                                <label>📍 Drag Pin on Map for Exact Shop/Home Delivery Location</label>
+                                <div class="map-header-bar">
+                                    <label>📍 Exact Delivery Location Pin</label>
+                                    <button type="button" class="gps-locate-btn" onclick="fetchLiveGPSLocation()">🎯 Use My Current Location</button>
+                                </div>
                                 <div id="map"></div>
                                 <input type="hidden" id="geoCoordinates" name="Map Coordinates" value="">
                             </div>
@@ -714,7 +764,7 @@
         });
     }
 
-    /* 📜 SMOOTH SCROLL TO FORM FIXED */
+    /* 📜 SMOOTH SCROLL TO FORM */
     function scrollToInquiryAnchor() {
         const target = document.getElementById('inquiryFormTarget');
         if(target) {
@@ -722,7 +772,7 @@
         }
     }
 
-    /* 📍 PINCODE AUTO LOOKUP ENGINE */
+    /* 📍 PINCODE AUTO LOOKUP ENGINE - STRICT PARSING FIX */
     const pincodeInput = document.getElementById("pincode");
     const cityInput = document.getElementById("city");
     const stateInput = document.getElementById("state");
@@ -736,15 +786,10 @@
                 .then(res => res.json())
                 .then(data => {
                     pinLoading.style.display = "none";
-                    if (data[0].Status === "Success") {
+                    if (data && data[0] && data[0].Status === "Success") {
                         const postOffice = data[0].PostOffice[0];
-                        cityInput.value = postOffice.District;
+                        cityInput.value = postOffice.District || postOffice.Block;
                         stateInput.value = postOffice.State;
-                        
-                        // Center Map automatically on Udaipur default or pincode region
-                        if(map && marker) {
-                            map.setView([24.5854, 73.7125], 13);
-                        }
                     } else {
                         alert("Invalid Pin Code!");
                         cityInput.value = "";
@@ -758,24 +803,97 @@
         }
     });
 
-    /* 🗺️ INTERACTIVE MAP PICKER ENGINE (Udaipur Default Center) */
+    /* 🗺️ MAP ENGINE & LIVE GPS FETCH */
     let map, marker;
     function initInteractiveMap() {
-        const defaultLat = 24.5854; // Udaipur Coordinates
+        const defaultLat = 24.5854; // Udaipur Center
         const defaultLng = 73.7125;
 
-        map = L.map('map').setView([defaultLat, defaultLng], 12);
+        map = L.map('map').setView([defaultLat, defaultLng], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap'
         }).addTo(map);
 
         marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
+        updateGeoCoordinates(defaultLat, defaultLng);
 
         marker.on('dragend', function (e) {
             const position = marker.getLatLng();
-            document.getElementById('geoCoordinates').value = `${position.lat.toFixed(5)}, ${position.lng.toFixed(5)}`;
+            updateGeoCoordinates(position.lat, position.lng);
         });
     }
+
+    function updateGeoCoordinates(lat, lng) {
+        document.getElementById('geoCoordinates').value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    }
+
+    /* 🎯 GPS Button Click Handler */
+    function fetchLiveGPSLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    map.setView([lat, lng], 16);
+                    marker.setLatLng([lat, lng]);
+                    updateGeoCoordinates(lat, lng);
+                },
+                (error) => {
+                    alert("Please allow location access on your browser.");
+                }
+            );
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    /* 🔍 AREA LIVE AUTO-SUGGESTION (NOMINATIM GEOCODING) */
+    const areaInput = document.getElementById("area");
+    const areaSuggestions = document.getElementById("areaSuggestions");
+    let suggestionDebounce;
+
+    areaInput.addEventListener("input", () => {
+        clearTimeout(suggestionDebounce);
+        const query = areaInput.value.trim();
+        if (query.length < 3) {
+            areaSuggestions.style.display = "none";
+            return;
+        }
+
+        suggestionDebounce = setTimeout(() => {
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ', Udaipur, Rajasthan')}&limit=4`)
+                .then(res => res.json())
+                .then(data => {
+                    areaSuggestions.innerHTML = "";
+                    if (data && data.length > 0) {
+                        areaSuggestions.style.display = "block";
+                        data.forEach(item => {
+                            const div = document.createElement("div");
+                            div.className = "suggestion-item";
+                            div.innerText = item.display_name;
+                            div.onclick = function() {
+                                areaInput.value = item.display_name;
+                                areaSuggestions.style.display = "none";
+                                const lat = parseFloat(item.lat);
+                                const lon = parseFloat(item.lon);
+                                map.setView([lat, lon], 16);
+                                marker.setLatLng([lat, lon]);
+                                updateGeoCoordinates(lat, lon);
+                            };
+                            areaSuggestions.appendChild(div);
+                        });
+                    } else {
+                        areaSuggestions.style.display = "none";
+                    }
+                });
+        }, 400);
+    });
+
+    document.addEventListener("click", (e) => {
+        if (e.target !== areaInput) {
+            areaSuggestions.style.display = "none";
+        }
+    });
 
     /* 📩 GOOGLE SHEETS FORM SUBMIT ENGINE */
     const inquiryForm = document.forms['submit-to-google-sheet'];
