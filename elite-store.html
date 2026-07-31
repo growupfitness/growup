@@ -69,13 +69,13 @@
             font-weight: 700;
         }
 
-        /* 🎬 Perfect Fitted 1720x600 Centered Banner Video */
+        /* 🎬 Fixed 1720x600 Fitted Video Frame */
         .hero-video-wrapper {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh; 
+            height: 55vh; /* Video ko achhi jagah di hai */
             z-index: 1;
             background: #000000;
             overflow: hidden;
@@ -88,7 +88,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover; 
-            object-position: center center; /* Action center me fit rahega */
+            object-position: center 30%; /* Face aur upper body focal point par rakha hai */
         }
 
         .glass-overlay {
@@ -97,7 +97,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.15);
+            background: rgba(0, 0, 0, 0.1);
             pointer-events: none;
         }
 
@@ -117,15 +117,15 @@
             letter-spacing: 1.5px;
         }
 
-        /* 📦 Scrollable Main Content Layer */
+        /* 📦 Scrollable Main Content Layer - FIXED OVERLAP GAP */
         .main-scroll-content {
             position: relative;
             z-index: 10;
-            margin-top: 45vh; 
+            margin-top: 48vh; /* 👇 YAHAN GAP SAHI KAR DIYA HAI: Video ab saaf dikhegi */
             background: var(--bg-primary);
-            border-radius: 20px 20px 0 0;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
-            padding-top: 25px;
+            border-radius: 24px 24px 0 0;
+            box-shadow: 0 -15px 35px rgba(0,0,0,0.12);
+            padding-top: 30px;
             min-height: 100vh;
         }
 
@@ -200,7 +200,7 @@
 
         .cat-card p, .flav-scroll-box p, .brand-scroll-box p { font-size: 9px; font-weight: 700; text-transform: uppercase; color: var(--text-main); line-height: 1.2; }
 
-        /* 🛒 Responsive Grid Layout */
+        /* 🛒 Responsive Products Grid Layout */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -283,10 +283,10 @@
 
         #loading { text-align: center; font-size: 12px; color: var(--accent-color); margin: 30px 0; font-weight: 700; text-transform: uppercase; }
 
-        /* 📱 Mobile Specific View Adjustments */
+        /* 📱 MOBILE VIEW ADJUSTMENTS */
         @media (max-width: 768px) {
-            .hero-video-wrapper { height: 250px; } 
-            .main-scroll-content { margin-top: 220px; border-radius: 16px 16px 0 0; } 
+            .hero-video-wrapper { height: 260px; } 
+            .main-scroll-content { margin-top: 230px; border-radius: 16px 16px 0 0; } 
             .video-caption h1 { font-size: 18px; }
             .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .prod-media { height: 140px; }
@@ -365,7 +365,6 @@
     let currentFilterBrand = 'All';
     let currentFilterFlavour = 'All';
 
-    // 🍓 High-Res Food Graphics Assets for Flavours
     const flavorImageAssets = {
         'Chocolate': 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=150&auto=format&fit=crop&q=80',
         'Swiss Chocolate': 'https://images.unsplash.com/photo-1548907040-4d42b52145ca?w=150&auto=format&fit=crop&q=80',
