@@ -14,7 +14,7 @@
             --text-muted: #64748b;
             --border-color: rgba(15, 23, 42, 0.08);
             --accent-color: #0072ff;
-            --bg-header: rgba(255, 255, 255, 0.95);
+            --bg-header: rgba(255, 255, 255, 0.98);
         }
 
         [data-theme="dark"] {
@@ -24,7 +24,7 @@
             --text-muted: #94a3b8;
             --border-color: rgba(255, 255, 255, 0.08);
             --accent-color: #00f2fe;
-            --bg-header: rgba(13, 20, 33, 0.95);
+            --bg-header: rgba(13, 20, 33, 0.98);
         }
         
         body { 
@@ -35,6 +35,7 @@
             letter-spacing: 0.3px;
         }
 
+        /* 🛍️ MODERN SHOPIFY HEADER LAYOUT */
         header {
             position: fixed;
             top: 0;
@@ -45,11 +46,19 @@
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--border-color);
-            padding: 12px 20px; 
+            padding: 10px 20px; 
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            gap: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
         }
 
         .logo-area img {
@@ -58,24 +67,107 @@
             display: block;
         }
 
+        /* Search Bar System */
+        .search-box {
+            position: relative;
+            max-width: 320px;
+            width: 100%;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 7px 12px 7px 32px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 11px;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            opacity: 0.6;
+        }
+
+        /* Right Navigation Icons & Order Form */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .order-form-btn {
+            background: linear-gradient(135deg, #0072ff, #00f2fe);
+            color: #ffffff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .icon-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 13px;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .badge-count {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ff0844;
+            color: #ffffff;
+            font-size: 8px;
+            font-weight: 800;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .theme-toggle-btn {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 6px 14px;
+            padding: 6px 10px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
         }
 
-        /* 🎬 Fixed 1720x600 Fitted Video Frame */
+        /* 🎬 Fixed Video Wrapper Frame */
         .hero-video-wrapper {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 60vh; /* Video ko achhi jagah di hai */
+            height: 65vh; 
             z-index: 1;
             background: #000000;
             overflow: hidden;
@@ -88,7 +180,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover; 
-            object-position: center 30%; /* Face aur upper body focal point par rakha hai */
+            object-position: center 30%; 
         }
 
         .glass-overlay {
@@ -103,7 +195,7 @@
 
         .video-caption {
             position: absolute;
-            bottom: 12%; 
+            bottom: 15%; 
             left: 5%;
             color: #ffffff;
             z-index: 5;
@@ -117,11 +209,11 @@
             letter-spacing: 1.5px;
         }
 
-        /* 📦 Scrollable Main Content Layer - FIXED OVERLAP GAP */
+        /* 📦 Scrollable Main Content Layer */
         .main-scroll-content {
             position: relative;
             z-index: 10;
-            margin-top: 55vh; /* 👇 YAHAN GAP SAHI KAR DIYA HAI: Video ab saaf dikhegi */
+            margin-top: 58vh; 
             background: var(--bg-primary);
             border-radius: 24px 24px 0 0;
             box-shadow: 0 -15px 35px rgba(0,0,0,0.12);
@@ -283,10 +375,12 @@
 
         #loading { text-align: center; font-size: 12px; color: var(--accent-color); margin: 30px 0; font-weight: 700; text-transform: uppercase; }
 
-        /* 📱 MOBILE VIEW ADJUSTMENTS */
+        /* 📱 MOBILE VIEW HEADER ADJUSTMENTS */
         @media (max-width: 768px) {
-            .hero-video-wrapper { height: 300px; } 
-            .main-scroll-content { margin-top: 300px; border-radius: 16px 16px 0 0; } 
+            header { padding: 8px 12px; gap: 8px; }
+            .search-box { max-width: 150px; }
+            .hero-video-wrapper { height: 280px; } 
+            .main-scroll-content { margin-top: 240px; border-radius: 16px 16px 0 0; } 
             .video-caption h1 { font-size: 18px; }
             .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .prod-media { height: 140px; }
@@ -299,10 +393,27 @@
 <body>
 
     <header>
-        <div class="logo-area">
-            <img src="growup-logoo.png" alt="Grow Up Fitness Logo" onerror="this.src='logo.png';">
+        <div class="header-left">
+            <div class="logo-area">
+                <img src="growup-logoo.png" alt="Grow Up Fitness Logo" onerror="this.src='logo.png';">
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search protein, brand..." onkeyup="liveSearchProducts()">
+            </div>
         </div>
-        <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+        
+        <div class="header-right">
+            <a href="https://forms.google.com" target="_blank" class="order-form-btn">
+                📋 Order Form
+            </a>
+            <a href="#" class="icon-btn" title="Wishlist">
+                ❤️ <span class="badge-count">0</span>
+            </a>
+            <a href="#" class="icon-btn" title="Cart">
+                🛒 <span class="badge-count">0</span>
+            </a>
+            <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+        </div>
     </header>
 
     <div class="hero-video-wrapper">
@@ -396,7 +507,13 @@
         return id ? 'https://drive.google.com/uc?export=view&id=' + id : url;
     }
 
-    function syncRenderEngine() {
+    /* 🔍 Live Search Engine */
+    function liveSearchProducts() {
+        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        syncRenderEngine(query);
+    }
+
+    function syncRenderEngine(searchQuery = '') {
         const container = document.getElementById('shopifyGridContainer');
         container.innerHTML = '';
 
@@ -412,8 +529,17 @@
             filtered = filtered.filter(p => p.Flavour && p.Flavour.trim() === currentFilterFlavour.trim());
         }
 
+        /* Applying Search Filter */
+        if(searchQuery !== '') {
+            filtered = filtered.filter(p => 
+                (p["Product Name"] && p["Product Name"].toLowerCase().includes(searchQuery)) ||
+                (p.Brand && p.Brand.toLowerCase().includes(searchQuery)) ||
+                (p.Category && p.Category.toLowerCase().includes(searchQuery))
+            );
+        }
+
         if(filtered.length === 0) {
-            container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 30px; font-weight: 700;">No products found in this filter.</div>`;
+            container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 30px; font-weight: 700;">No matching products found.</div>`;
             return;
         }
 
