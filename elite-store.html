@@ -69,23 +69,26 @@
             font-weight: 700;
         }
 
-        /* 🎬 Fully Responsive Top Banner Video */
+        /* 🎬 Perfect Fitted 1720x600 Centered Banner Video */
         .hero-video-wrapper {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 45vh; 
+            height: 48vh; 
             z-index: 1;
             background: #000000;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .hero-video-wrapper video {
             width: 100%;
             height: 100%;
             object-fit: cover; 
-            object-position: center 30%; 
+            object-position: center center; /* Action center me fit rahega */
         }
 
         .glass-overlay {
@@ -100,7 +103,7 @@
 
         .video-caption {
             position: absolute;
-            bottom: 15%; 
+            bottom: 12%; 
             left: 5%;
             color: #ffffff;
             z-index: 5;
@@ -114,11 +117,11 @@
             letter-spacing: 1.5px;
         }
 
-        /* 📦 Scrollable Main Content Panel */
+        /* 📦 Scrollable Main Content Layer */
         .main-scroll-content {
             position: relative;
             z-index: 10;
-            margin-top: 42vh; 
+            margin-top: 45vh; 
             background: var(--bg-primary);
             border-radius: 20px 20px 0 0;
             box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
@@ -165,14 +168,14 @@
 
         .cat-card, .flav-scroll-box, .brand-scroll-box { 
             flex: 0 0 auto;
-            width: 75px; 
+            width: 80px; 
             text-align: center; 
             cursor: pointer; 
         }
         
         .cat-circle, .flav-box-square, .brand-circle {
-            width: 65px;
-            height: 65px;
+            width: 70px;
+            height: 70px;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 50%;
@@ -180,7 +183,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 22px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
             background-size: cover !important;
             background-position: center !important;
@@ -197,7 +200,7 @@
 
         .cat-card p, .flav-scroll-box p, .brand-scroll-box p { font-size: 9px; font-weight: 700; text-transform: uppercase; color: var(--text-main); line-height: 1.2; }
 
-        /* 🛒 Products Grid Layout */
+        /* 🛒 Responsive Grid Layout */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -280,15 +283,15 @@
 
         #loading { text-align: center; font-size: 12px; color: var(--accent-color); margin: 30px 0; font-weight: 700; text-transform: uppercase; }
 
-        /* 📱 MOBILE VIEW ADJUSTMENTS (Fixes Image 2 & Image 3 Issues) */
+        /* 📱 Mobile Specific View Adjustments */
         @media (max-width: 768px) {
-            .hero-video-wrapper { height: 280px; } 
-            .main-scroll-content { margin-top: 240px; border-radius: 16px 16px 0 0; } 
-            .video-caption h1 { font-size: 20px; }
+            .hero-video-wrapper { height: 250px; } 
+            .main-scroll-content { margin-top: 220px; border-radius: 16px 16px 0 0; } 
+            .video-caption h1 { font-size: 18px; }
             .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .prod-media { height: 140px; }
-            .cat-circle, .flav-box-square, .brand-circle { width: 55px; height: 55px; font-size: 18px; }
-            .cat-card, .flav-scroll-box, .brand-scroll-box { width: 65px; }
+            .cat-circle, .flav-box-square, .brand-circle { width: 60px; height: 60px; font-size: 18px; }
+            .cat-card, .flav-scroll-box, .brand-scroll-box { width: 70px; }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -362,6 +365,7 @@
     let currentFilterBrand = 'All';
     let currentFilterFlavour = 'All';
 
+    // 🍓 High-Res Food Graphics Assets for Flavours
     const flavorImageAssets = {
         'Chocolate': 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=150&auto=format&fit=crop&q=80',
         'Swiss Chocolate': 'https://images.unsplash.com/photo-1548907040-4d42b52145ca?w=150&auto=format&fit=crop&q=80',
