@@ -59,12 +59,7 @@
 
         .header-left { display: flex; align-items: center; gap: 15px; flex: 1; }
 
-        /* 🖼️ CLICKABLE LOGO */
-        .logo-area {
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
+        .logo-area { cursor: pointer; display: flex; align-items: center; }
 
         .logo-area img#mainLogo {
             max-height: 32px; 
@@ -74,16 +69,9 @@
             transition: filter 0.3s ease, transform 0.2s ease;
         }
 
-        .logo-area:hover img#mainLogo {
-            transform: scale(1.03);
-        }
+        .logo-area:hover img#mainLogo { transform: scale(1.03); }
 
-        /* 🔍 SEARCH BOX */
-        .search-box {
-            position: relative;
-            max-width: 280px;
-            width: 100%;
-        }
+        .search-box { position: relative; max-width: 280px; width: 100%; }
 
         .search-box input {
             width: 100%;
@@ -147,10 +135,8 @@
             text-transform: uppercase;
         }
 
-        /* 🔘 HEADER CONTROLS & ICONS ORDER */
         .header-controls { display: flex; align-items: center; gap: 10px; }
 
-        /* Match Color Style for Inquiry Button */
         .inquiry-nav-btn {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -163,10 +149,7 @@
             text-decoration: none;
             white-space: nowrap;
         }
-        .inquiry-nav-btn:hover {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
+        .inquiry-nav-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
 
         .theme-toggle-btn {
             background: var(--bg-card);
@@ -179,7 +162,6 @@
             font-weight: 700;
         }
 
-        /* Header Nav Action Icons (Cart, Wishlist, Login) */
         .header-icon-btn {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -195,9 +177,7 @@
             position: relative;
             text-decoration: none;
         }
-        .header-icon-btn:hover {
-            border-color: var(--accent-color);
-        }
+        .header-icon-btn:hover { border-color: var(--accent-color); }
 
         .header-login-btn {
             background: var(--bg-card);
@@ -214,10 +194,7 @@
             gap: 5px;
             white-space: nowrap;
         }
-        .header-login-btn:hover {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
+        .header-login-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
 
         .icon-badge {
             position: absolute;
@@ -293,11 +270,7 @@
             min-height: 100vh;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
 
         .section-title {
             font-size: 14px;
@@ -330,12 +303,7 @@
         }
         .category-row::-webkit-scrollbar, .brands-scroll-row::-webkit-scrollbar, .flavours-scroll-row::-webkit-scrollbar { display: none; }
 
-        .cat-card, .flav-scroll-box, .brand-scroll-box { 
-            flex: 0 0 auto;
-            width: 80px; 
-            text-align: center; 
-            cursor: pointer; 
-        }
+        .cat-card, .flav-scroll-box, .brand-scroll-box { flex: 0 0 auto; width: 80px; text-align: center; cursor: pointer; }
         
         .cat-circle, .flav-box-square, .brand-circle {
             width: 70px;
@@ -395,6 +363,23 @@
             z-index: 5;
         }
 
+        .wishlist-btn-card {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+            font-size: 12px;
+        }
+
         .prod-media {
             width: 100%;
             height: 180px;
@@ -416,22 +401,37 @@
         [data-theme="dark"] .price-sale { color: #10b981; }
         .price-mrp { font-size: 11px; color: var(--text-muted); text-decoration: line-through; }
 
+        .card-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
         .action-btn {
-            width: 100%;
-            padding: 9px;
+            padding: 8px 4px;
             background: linear-gradient(135deg, #0072ff, #00f2fe);
             color: white;
             border: none;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 800;
             border-radius: 6px;
             cursor: pointer;
             text-transform: uppercase;
             text-decoration: none;
             text-align: center;
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
         }
-        .out-of-stock { background: #cbd5e1 !important; color: #64748b !important; cursor: not-allowed; }
+
+        .action-btn.secondary {
+            background: var(--bg-primary);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .out-of-stock { background: #cbd5e1 !important; color: #64748b !important; cursor: not-allowed; grid-column: 1 / -1; }
 
         /* 📋 NEON INQUIRY FORM */
         .inquiry-wrapper-card {
@@ -444,13 +444,7 @@
             color: #ffffff;
         }
 
-        .inquiry-grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 15px;
-        }
-
+        .inquiry-grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
         .form-cell { display: flex; flex-direction: column; gap: 6px; position: relative; }
         .form-cell.full-width { grid-column: 1 / -1; }
 
@@ -471,11 +465,6 @@
             color: #ffffff;
             font-size: 13px;
             outline: none;
-        }
-
-        .form-cell input:focus, .form-cell select:focus, .form-cell textarea:focus {
-            border-color: #00a2ff;
-            box-shadow: 0 0 8px rgba(0, 162, 255, 0.4);
         }
 
         .suggestion-box {
@@ -499,7 +488,6 @@
             color: #e2e8f0;
             cursor: pointer;
             border-bottom: 1px solid rgba(255,255,255,0.05);
-            line-height: 1.4;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -508,12 +496,7 @@
 
         .loading-pin-status { color: #00a2ff; font-size: 11px; display: none; margin-top: 2px; font-weight: 600; }
 
-        .map-header-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-        }
+        .map-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 
         .gps-locate-btn {
             background: #0072ff;
@@ -524,18 +507,9 @@
             font-size: 10px;
             font-weight: 700;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
         }
 
-        #map {
-            width: 100%;
-            height: 220px;
-            border-radius: 8px 8px 0 0;
-            border: 1px solid #00a2ff;
-            border-bottom: none;
-        }
+        #map { width: 100%; height: 220px; border-radius: 8px 8px 0 0; border: 1px solid #00a2ff; border-bottom: none; }
 
         .map-address-display-bar {
             background: rgba(30, 30, 30, 0.95);
@@ -548,7 +522,6 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            line-height: 1.4;
         }
 
         .submit-neon-btn {
@@ -567,13 +540,9 @@
             margin-top: 10px;
         }
 
-        .whatsapp-success-box {
-            display: none;
-            text-align: center;
-            padding: 30px 15px;
-        }
+        .whatsapp-success-box { display: none; text-align: center; padding: 30px 15px; }
         .whatsapp-success-box h2 { color: #00ff88; font-size: 22px; margin-bottom: 10px; }
-        .whatsapp-success-box p { color: #dddddd; font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
+        .whatsapp-success-box p { color: #dddddd; font-size: 13px; margin-bottom: 20px; }
         .whatsapp-join-btn {
             display: inline-block;
             padding: 12px 25px;
@@ -584,16 +553,113 @@
             font-weight: 800;
             border-radius: 30px;
             text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
         }
 
-        footer {
-            background: #000000;
-            color: #ffffff;
-            padding: 30px 15px;
-            margin-top: 40px;
-            text-align: center;
+        /* 🪟 POPUP MODALS & SLIDE DRAWERS */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
         }
+
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 420px;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 380px;
+            height: 100%;
+            background: var(--bg-card);
+            box-shadow: -5px 0 25px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .drawer-overlay.active { right: 0; }
+
+        .drawer-header {
+            padding: 18px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .drawer-body {
+            padding: 15px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .drawer-footer {
+            padding: 15px;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-primary);
+        }
+
+        .cart-item-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-item-row img { width: 50px; height: 50px; object-fit: contain; }
+
+        .qty-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .qty-btn {
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-main);
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        footer { background: #000000; color: #ffffff; padding: 30px 15px; margin-top: 40px; text-align: center; }
         .footer-logo img { max-height: 30px; margin-bottom: 10px; }
         .footer-text { font-size: 10px; color: #94a3b8; max-width: 400px; margin: 0 auto 15px auto; line-height: 1.5; }
         .footer-credits { font-size: 9px; color: #64748b; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; }
@@ -636,17 +702,19 @@
 
             <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
 
-            <a href="#" class="header-icon-btn" title="Cart / Trolley">
-                🛒 <span class="icon-badge">0</span>
-            </a>
+            <div class="header-icon-btn" onclick="toggleDrawer('cartDrawer')" title="Cart / Trolley">
+                🛒 <span class="icon-badge" id="cartBadge">0</span>
+            </div>
 
-            <a href="#" class="header-icon-btn" title="Wishlist">
-                ❤️ <span class="icon-badge">0</span>
-            </a>
+            <div class="header-icon-btn" onclick="toggleDrawer('wishlistDrawer')" title="Wishlist">
+                ❤️ <span class="icon-badge" id="wishlistBadge">0</span>
+            </div>
 
-            <a href="#" class="header-login-btn">
-                👤 Login
-            </a>
+            <div id="userAccountBtnSlot">
+                <button class="header-login-btn" onclick="openLoginModal()">
+                    👤 Login
+                </button>
+            </div>
         </div>
     </header>
 
@@ -698,7 +766,6 @@
                 <div id="formContainerBlock">
                     <form id="submit-to-google-sheet">
                         <div class="inquiry-grid-layout">
-                            
                             <div class="form-cell">
                                 <label>Customer Name *</label>
                                 <input type="text" id="name" name="Customer Name" placeholder="Enter full name" required>
@@ -809,16 +876,85 @@
         </footer>
     </div>
 
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-card">
+            <button class="close-modal-btn" onclick="closeLoginModal()">✕</button>
+            <h2 style="font-size: 16px; font-weight: 800; margin-bottom: 5px;">Customer Account Login</h2>
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px;">Enter your phone number to login / create account</p>
+            
+            <form id="loginForm" onsubmit="handleUserLogin(event)">
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <input type="text" id="userLoginName" placeholder="Full Name" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main);" required>
+                    <input type="tel" id="userLoginPhone" placeholder="10-Digit Mobile Number" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main);" required>
+                    <input type="email" id="userLoginEmail" placeholder="Email Address (Optional)" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main);">
+                    
+                    <button type="submit" id="loginSubmitBtn" class="action-btn" style="padding: 12px; font-size: 11px; margin-top: 10px;">Login / Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="accountModal">
+        <div class="modal-card" style="max-width: 500px;">
+            <button class="close-modal-btn" onclick="closeAccountModal()">✕</button>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--accent-color); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px;" id="userAvatar">U</div>
+                <div>
+                    <h3 style="font-size: 14px; font-weight: 800;" id="accUserName">Customer</h3>
+                    <p style="font-size: 11px; color: var(--text-muted);" id="accUserPhone">+91 ---------</p>
+                </div>
+            </div>
+
+            <h4 style="font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">My Purchase History</h4>
+            <div id="orderHistoryContainer" style="max-height: 250px; overflow-y: auto;">
+                <p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">Fetching order history...</p>
+            </div>
+
+            <button onclick="handleUserLogout()" class="action-btn secondary" style="width: 100%; margin-top: 15px; color: #ff0844; border-color: #ff0844;">🚪 Logout Account</button>
+        </div>
+    </div>
+
+    <div class="drawer-overlay" id="cartDrawer">
+        <div class="drawer-header">
+            <h3 style="font-size: 14px; font-weight: 800;">Your Cart</h3>
+            <button class="close-modal-btn" style="position: static;" onclick="toggleDrawer('cartDrawer')">✕</button>
+        </div>
+        <div class="drawer-body" id="cartDrawerItems">
+            <p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">Your cart is empty.</p>
+        </div>
+        <div class="drawer-footer">
+            <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 13px; margin-bottom: 10px;">
+                <span>Total Amount:</span>
+                <span id="cartGrandTotal">₹0</span>
+            </div>
+            <button class="action-btn" style="width: 100%; padding: 12px;" onclick="checkoutCartWhatsApp()">Proceed to WhatsApp Order</button>
+        </div>
+    </div>
+
+    <div class="drawer-overlay" id="wishlistDrawer">
+        <div class="drawer-header">
+            <h3 style="font-size: 14px; font-weight: 800;">Saved Wishlist</h3>
+            <button class="close-modal-btn" style="position: static;" onclick="toggleDrawer('wishlistDrawer')">✕</button>
+        </div>
+        <div class="drawer-body" id="wishlistDrawerItems">
+            <p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">No items saved in wishlist.</p>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-    const sheetAPI = 'https://script.google.com/macros/s/AKfycbzd3hMZ8aNAG0QOQoKYVtx3e7kOFtAaCBWEPE2YUtB1v1sK5WPRXdfbygQlfVpBmZm99w/exec';
+    const sheetAPI = 'https://script.google.com/macros/s/AKfycbwYYkHK0vrR30ZzrI2t066TFoXJ7GFXypOJCMfd1MnVkqgv-n5vo65Nfkyh5HhVVQGrLw/exec';
     const inquiryScriptURL = 'https://script.google.com/macros/s/AKfycbwjpu4olgDnXHNg7aJOoN9igPCXh8adtO1cwtF6CC_MKhLPyk-UfKqP5i6PUQhoJY3uMA/exec';
     
     let globalStoreData = [];
     let currentFilterCategory = 'All';
     let currentFilterBrand = 'All';
     let currentFilterFlavour = 'All';
+
+    let userCart = JSON.parse(localStorage.getItem('gu_cart') || '[]');
+    let userWishlist = JSON.parse(localStorage.getItem('gu_wishlist') || '[]');
+    let currentUser = JSON.parse(localStorage.getItem('gu_user') || 'null');
 
     const flavorImageAssets = {
         'Chocolate': 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=150&auto=format&fit=crop&q=80',
@@ -848,8 +984,222 @@
         return id ? 'https://drive.google.com/uc?export=view&id=' + id : url;
     }
 
-    function scrollToTopHome() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    function scrollToTopHome() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+    function syncUserAccountBtn() {
+        const slot = document.getElementById('userAccountBtnSlot');
+        if (currentUser) {
+            slot.innerHTML = `
+                <button class="header-login-btn" onclick="openAccountModal()">
+                    👤 ${currentUser.name.split(' ')[0]}
+                </button>
+            `;
+        } else {
+            slot.innerHTML = `
+                <button class="header-login-btn" onclick="openLoginModal()">
+                    👤 Login
+                </button>
+            `;
+        }
+    }
+
+    function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+    function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
+    function openAccountModal() { 
+        document.getElementById('accountModal').style.display = 'flex'; 
+        if (currentUser) {
+            document.getElementById('accUserName').innerText = currentUser.name;
+            document.getElementById('accUserPhone').innerText = '+91 ' + currentUser.phone;
+            document.getElementById('userAvatar').innerText = currentUser.name.charAt(0).toUpperCase();
+            fetchOrderHistory();
+        }
+    }
+    function closeAccountModal() { document.getElementById('accountModal').style.display = 'none'; }
+
+    function handleUserLogin(e) {
+        e.preventDefault();
+        const btn = document.getElementById('loginSubmitBtn');
+        btn.innerText = "Processing...";
+        btn.disabled = true;
+
+        const name = document.getElementById('userLoginName').value;
+        const phone = document.getElementById('userLoginPhone').value;
+        const email = document.getElementById('userLoginEmail').value;
+
+        const formData = new FormData();
+        formData.append('action', 'registerUser');
+        formData.append('name', name);
+        formData.append('phone', phone);
+        formData.append('email', email);
+
+        fetch(sheetAPI, { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                btn.innerText = "Login / Register";
+                btn.disabled = false;
+                if(data.user) {
+                    currentUser = data.user;
+                    localStorage.setItem('gu_user', JSON.stringify(currentUser));
+                    syncUserAccountBtn();
+                    closeLoginModal();
+                    alert(`Welcome ${currentUser.name}! Account active.`);
+                }
+            }).catch(() => {
+                btn.innerText = "Login / Register";
+                btn.disabled = false;
+                alert("Login Error. Check connection.");
+            });
+    }
+
+    function handleUserLogout() {
+        currentUser = null;
+        localStorage.removeItem('gu_user');
+        syncUserAccountBtn();
+        closeAccountModal();
+    }
+
+    function fetchOrderHistory() {
+        if(!currentUser) return;
+        const container = document.getElementById('orderHistoryContainer');
+        fetch(`${sheetAPI}?action=getOrders&phone=${currentUser.phone}`)
+            .then(res => res.json())
+            .then(orders => {
+                container.innerHTML = '';
+                if(!orders || orders.length === 0) {
+                    container.innerHTML = `<p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">No past orders found.</p>`;
+                    return;
+                }
+                orders.forEach(ord => {
+                    const div = document.createElement('div');
+                    div.style.cssText = "background: var(--bg-primary); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 11px;";
+                    div.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; font-weight:800; margin-bottom:4px;">
+                            <span>ID: ${ord['Order ID'] || 'GU-ORD'}</span>
+                            <span style="color:var(--accent-color);">${ord['Delivery Status'] || 'Placed'}</span>
+                        </div>
+                        <div style="color:var(--text-muted); margin-bottom:4px;">${ord['Items Ordered']}</div>
+                        <div style="display:flex; justify-content:space-between; font-weight:700;">
+                            <span>Total: ₹${ord['Total Amount']}</span>
+                            <span style="font-size:9px; opacity:0.7;">${ord['Order Date']}</span>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            }).catch(() => {
+                container.innerHTML = `<p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">Failed to load history.</p>`;
+            });
+    }
+
+    function toggleDrawer(id) {
+        const el = document.getElementById(id);
+        el.classList.toggle('active');
+        if(id === 'cartDrawer') renderCartDrawer();
+        if(id === 'wishlistDrawer') renderWishlistDrawer();
+    }
+
+    function addToCart(prodName, brand, price, img) {
+        const existing = userCart.find(i => i.name === prodName);
+        if(existing) {
+            existing.qty += 1;
+        } else {
+            userCart.push({ name: prodName, brand: brand, price: parseFloat(price), img: img, qty: 1 });
+        }
+        localStorage.setItem('gu_cart', JSON.stringify(userCart));
+        updateBadges();
+        toggleDrawer('cartDrawer');
+    }
+
+    function toggleWishlist(prodName, brand, price, img) {
+        const idx = userWishlist.findIndex(i => i.name === prodName);
+        if(idx > -1) {
+            userWishlist.splice(idx, 1);
+        } else {
+            userWishlist.push({ name: prodName, brand: brand, price: parseFloat(price), img: img });
+        }
+        localStorage.setItem('gu_wishlist', JSON.stringify(userWishlist));
+        updateBadges();
+        syncRenderEngine();
+    }
+
+    function updateBadges() {
+        document.getElementById('cartBadge').innerText = userCart.reduce((sum, i) => sum + i.qty, 0);
+        document.getElementById('wishlistBadge').innerText = userWishlist.length;
+    }
+
+    function updateCartQty(idx, delta) {
+        userCart[idx].qty += delta;
+        if(userCart[idx].qty <= 0) userCart.splice(idx, 1);
+        localStorage.setItem('gu_cart', JSON.stringify(userCart));
+        updateBadges();
+        renderCartDrawer();
+    }
+
+    function renderCartDrawer() {
+        const container = document.getElementById('cartDrawerItems');
+        container.innerHTML = '';
+        let total = 0;
+
+        if(userCart.length === 0) {
+            container.innerHTML = `<p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">Your cart is empty.</p>`;
+            document.getElementById('cartGrandTotal').innerText = '₹0';
+            return;
+        }
+
+        userCart.forEach((item, idx) => {
+            total += item.price * item.qty;
+            const div = document.createElement('div');
+            div.className = 'cart-item-row';
+            div.innerHTML = `
+                <img src="${item.img}">
+                <div style="flex-grow: 1;">
+                    <div style="font-size: 11px; font-weight: 700;">${item.name}</div>
+                    <div style="font-size: 10px; color: #059669; font-weight: 800;">₹${item.price}</div>
+                    <div class="qty-control">
+                        <button class="qty-btn" onclick="updateCartQty(${idx}, -1)">-</button>
+                        <span style="font-size: 11px; font-weight: 800;">${item.qty}</span>
+                        <button class="qty-btn" onclick="updateCartQty(${idx}, 1)">+</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+
+        document.getElementById('cartGrandTotal').innerText = `₹${total}`;
+    }
+
+    function renderWishlistDrawer() {
+        const container = document.getElementById('wishlistDrawerItems');
+        container.innerHTML = '';
+
+        if(userWishlist.length === 0) {
+            container.innerHTML = `<p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">No items saved in wishlist.</p>`;
+            return;
+        }
+
+        userWishlist.forEach((item) => {
+            const div = document.createElement('div');
+            div.className = 'cart-item-row';
+            div.innerHTML = `
+                <img src="${item.img}">
+                <div style="flex-grow: 1;">
+                    <div style="font-size: 11px; font-weight: 700;">${item.name}</div>
+                    <div style="font-size: 10px; color: #059669; font-weight: 800;">₹${item.price}</div>
+                </div>
+                <button class="action-btn" onclick="addToCart('${item.name}', '${item.brand}', '${item.price}', '${item.img}')">Add Cart</button>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function checkoutCartWhatsApp() {
+        if(userCart.length === 0) { alert("Cart is empty!"); return; }
+        const itemsStr = userCart.map(i => `• ${i.name} (x${i.qty}) - ₹${i.price * i.qty}`).join('\n');
+        const grandTotal = userCart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+        
+        let custInfoStr = currentUser ? `\n👤 *Customer:* ${currentUser.name}\n📞 *Phone:* ${currentUser.phone}` : '';
+
+        const msg = encodeURIComponent(`⚡ *NEW STORE ORDER* ⚡\n${custInfoStr}\n\n*Ordered Items:*\n${itemsStr}\n\n💰 *Total Amount:* ₹${grandTotal}`);
+        window.open(`https://wa.me/919571214461?text=${msg}`, '_blank');
     }
 
     function handleSmartTopSearch(query) {
@@ -870,7 +1220,6 @@
 
             const pName = prod["Product Name"] || "";
             const pBrand = prod.Brand || "";
-            const pCategory = prod.Category || "";
             const pFlavour = prod.Flavour || "";
 
             if (pName.toLowerCase().includes(queryClean) && !addedKeys.has('prod:' + pName)) {
@@ -956,15 +1305,16 @@
             const img1 = cleanDriveUrl(prod["Image 1"]);
             const fallback = `https://via.placeholder.com/300/f1f5f9/0072ff?text=${encodeURIComponent(prod.Brand || 'GrowUp')}`;
 
-            const waNo = "919571214461";
-            const waMsg = encodeURIComponent(`⚡ *PRODUCT INQUIRY* ⚡\n\n🔹 *Brand:* ${prod.Brand}\n🔹 *Product:* ${prod["Product Name"]}\n🔹 *Weight/Size:* ${prod["Weight / Size"]}\n🔹 *Price:* ₹${prod["Selling Price"]}`);
-            const checkoutLink = `https://wa.me/${waNo}?text=${waMsg}`;
+            const inWishlist = userWishlist.some(i => i.name === prod["Product Name"]);
             const inStock = prod["Stock Status"] === "In Stock" || prod["Stock Status"] === "";
 
             const card = document.createElement('div');
             card.className = 'prod-card';
             card.innerHTML = `
                 ${discount > 0 ? `<div class="badge-discount">${discount}% OFF</div>` : ''}
+                <div class="wishlist-btn-card" onclick="toggleWishlist('${prod["Product Name"]}', '${prod.Brand || 'GrowUp'}', '${prod["Selling Price"] || '0'}', '${img1}')">
+                    ${inWishlist ? '❤️' : '🤍'}
+                </div>
                 <div class="prod-media">
                     <img src="${img1}" onerror="this.src='${fallback}';">
                 </div>
@@ -977,7 +1327,10 @@
                         ${mrp > sp ? `<span class="price-mrp">₹${prod.MRP}</span>` : ''}
                     </div>
                     ${inStock ? 
-                        `<a href="${checkoutLink}" target="_blank" class="action-btn">WhatsApp Order</a>` : 
+                        `<div class="card-actions-grid">
+                            <button class="action-btn secondary" onclick="addToCart('${prod["Product Name"]}', '${prod.Brand || 'GrowUp'}', '${prod["Selling Price"] || '0'}', '${img1}')">🛒 +Cart</button>
+                            <button class="action-btn" onclick="addToCart('${prod["Product Name"]}', '${prod.Brand || 'GrowUp'}', '${prod["Selling Price"] || '0'}', '${img1}')">Order</button>
+                        </div>` : 
                         `<button class="action-btn out-of-stock" disabled>OUT OF STOCK</button>`
                     }
                 </div>
@@ -1043,9 +1396,7 @@
 
     function scrollToInquiryAnchor() {
         const target = document.getElementById('inquiryFormTarget');
-        if(target) {
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     const pincodeInput = document.getElementById("pincode");
@@ -1084,9 +1435,7 @@
         const defaultLng = 73.7112;
 
         map = L.map('map', { scrollWheelZoom: false }).setView([defaultLat, defaultLng], 14);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
 
         marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
         updateGeoLocationInfo(defaultLat, defaultLng);
@@ -1117,7 +1466,7 @@
                 map.setView([lat, lng], 16);
                 marker.setLatLng([lat, lng]);
                 updateGeoLocationInfo(lat, lng);
-            }, () => { alert("Location access disabled in browser."); });
+            }, () => { alert("Location access disabled."); });
         }
     }
 
@@ -1128,10 +1477,7 @@
     areaInput.addEventListener("input", () => {
         clearTimeout(suggestionDebounce);
         const query = areaInput.value.toLowerCase().trim();
-        if (query.length < 2) {
-            areaSuggestions.style.display = "none";
-            return;
-        }
+        if (query.length < 2) { areaSuggestions.style.display = "none"; return; }
 
         const localMatches = udaipurLocalPlaces.filter(place => place.name.toLowerCase().includes(query));
         areaSuggestions.innerHTML = "";
@@ -1180,7 +1526,7 @@
     });
 
     document.addEventListener("click", (e) => {
-        if (e.target !== areaInput) { areaSuggestions.style.display = "none"; }
+        if (e.target !== areaInput) areaSuggestions.style.display = "none";
     });
 
     const inquiryForm = document.forms['submit-to-google-sheet'];
@@ -1213,6 +1559,8 @@
             globalStoreData = data;
             buildFilterUIRows(data);
             syncRenderEngine();
+            syncUserAccountBtn();
+            updateBadges();
             initInteractiveMap();
         })
         .catch(err => {
@@ -1228,11 +1576,8 @@
         let blurAmount = Math.min(scrollValue / 20, 15); 
         blurOverlay.style.backdropFilter = `blur(${blurAmount}px)`;
         
-        if(scrollValue > 100) {
-            heroCaption.style.opacity = '0';
-        } else {
-            heroCaption.style.opacity = '1';
-        }
+        if(scrollValue > 100) heroCaption.style.opacity = '0';
+        else heroCaption.style.opacity = '1';
     });
 
     function toggleTheme() {
