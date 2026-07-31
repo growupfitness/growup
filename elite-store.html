@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Grow Up Fitness - Elite Premium Store</title>
+    <title>Grow Up Fitness - Elite Premium Store & Inquiry</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', sans-serif; transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
         
@@ -15,7 +15,7 @@
             --border-color: rgba(15, 23, 42, 0.08);
             --accent-color: #0072ff;
             --bg-header: rgba(255, 255, 255, 0.98);
-            --logo-filter: invert(1); /* Light mode me logo visible karne ke liye */
+            --logo-filter: invert(1);
         }
 
         [data-theme="dark"] {
@@ -26,7 +26,7 @@
             --border-color: rgba(255, 255, 255, 0.08);
             --accent-color: #00f2fe;
             --bg-header: rgba(13, 20, 33, 0.98);
-            --logo-filter: invert(0); /* Dark mode me original logo */
+            --logo-filter: invert(0);
         }
         
         body { 
@@ -37,7 +37,7 @@
             letter-spacing: 0.3px;
         }
 
-        /* 🛍️ MODERN SHOPIFY HEADER LAYOUT */
+        /* 🛍️ HEADER STYLING */
         header {
             position: fixed;
             top: 0;
@@ -56,14 +56,8 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex: 1;
-        }
+        .header-left { display: flex; align-items: center; gap: 15px; flex: 1; }
 
-        /* 🖼️ LOGO VISIBILITY FIX FOR LIGHT & DARK MODE */
         .logo-area img {
             max-height: 32px; 
             width: auto;
@@ -72,7 +66,6 @@
             transition: filter 0.3s ease;
         }
 
-        /* Search Bar System */
         .search-box {
             position: relative;
             max-width: 280px;
@@ -101,12 +94,7 @@
             opacity: 0.6;
         }
 
-        /* Right Navigation Icons & Inquiry Form */
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .header-right { display: flex; align-items: center; gap: 10px; }
 
         .inquiry-btn {
             background: linear-gradient(135deg, #0072ff, #00f2fe);
@@ -118,42 +106,7 @@
             font-weight: 700;
             cursor: pointer;
             text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 4px;
             white-space: nowrap;
-        }
-
-        .icon-btn {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 13px;
-            position: relative;
-            text-decoration: none;
-        }
-
-        .badge-count {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background: #ff0844;
-            color: #ffffff;
-            font-size: 8px;
-            font-weight: 800;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .theme-toggle-btn {
@@ -167,7 +120,7 @@
             font-weight: 700;
         }
 
-        /* 🎬 Fixed Video Wrapper Frame */
+        /* 🎬 VIDEO BANNER */
         .hero-video-wrapper {
             position: fixed;
             top: 0;
@@ -215,7 +168,7 @@
             letter-spacing: 1.5px;
         }
 
-        /* 📦 Scrollable Main Content Layer */
+        /* 📦 MAIN CONTENT CONTAINER */
         .main-scroll-content {
             position: relative;
             z-index: 10;
@@ -298,7 +251,7 @@
 
         .cat-card p, .flav-scroll-box p, .brand-scroll-box p { font-size: 9px; font-weight: 700; text-transform: uppercase; color: var(--text-main); line-height: 1.2; }
 
-        /* 🛒 Responsive Products Grid Layout */
+        /* 🛒 STORE PRODUCTS GRID */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -368,58 +321,93 @@
         }
         .out-of-stock { background: #cbd5e1 !important; color: #64748b !important; cursor: not-allowed; }
 
-        /* 📋 INQUIRY FORM SECTION */
-        .inquiry-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
+        /* 📋 NEON GLOW STANDALONE INQUIRY FORM INTEGRATION */
+        .inquiry-wrapper-card {
+            background: rgba(20, 20, 20, 0.95);
+            border: 2px solid #00a2ff;
             border-radius: 16px;
-            padding: 25px;
+            padding: 30px;
             margin: 40px 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            box-shadow: 0 0 20px rgba(0, 162, 255, 0.3);
+            animation: neonGlow 3s infinite alternate;
+            color: #ffffff;
         }
 
-        .inquiry-grid {
+        @keyframes neonGlow {
+            from { box-shadow: 0 0 15px rgba(0, 162, 255, 0.25); border-color: #0088cc; }
+            to { box-shadow: 0 0 25px rgba(0, 162, 255, 0.6); border-color: #00bcff; }
+        }
+
+        .inquiry-grid-layout {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
             margin-top: 15px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
+        .form-cell { display: flex; flex-direction: column; gap: 6px; }
+        .form-cell.full-width { grid-column: 1 / -1; }
 
-        .form-group label {
-            font-size: 10px;
+        .form-cell label {
+            color: #00a2ff;
             font-weight: 800;
+            font-size: 11px;
             text-transform: uppercase;
-            color: var(--text-muted);
+            letter-spacing: 0.5px;
         }
 
-        .form-group input, .form-group textarea, .form-group select {
-            padding: 10px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 12px;
-            color: var(--text-main);
+        .form-cell input, .form-cell select, .form-cell textarea {
+            width: 100%;
+            padding: 12px;
+            background-color: rgba(35, 35, 35, 0.9);
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 13px;
             outline: none;
         }
 
-        .form-submit-btn {
+        .form-cell input:focus, .form-cell select:focus, .form-cell textarea:focus {
+            border-color: #00a2ff;
+            box-shadow: 0 0 8px rgba(0, 162, 255, 0.4);
+        }
+
+        .loading-pin-status { color: #00a2ff; font-size: 11px; display: none; margin-top: 2px; }
+
+        .submit-neon-btn {
             grid-column: 1 / -1;
-            padding: 12px;
-            background: linear-gradient(135deg, #0072ff, #00f2fe);
-            color: white;
+            padding: 14px;
+            background: linear-gradient(45deg, #0088cc, #00a2ff);
             border: none;
-            border-radius: 8px;
-            font-size: 12px;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 14px;
             font-weight: 800;
             cursor: pointer;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 162, 255, 0.3);
             margin-top: 10px;
+        }
+
+        .whatsapp-success-box {
+            display: none;
+            text-align: center;
+            padding: 30px 15px;
+        }
+        .whatsapp-success-box h2 { color: #00ff88; font-size: 22px; margin-bottom: 10px; }
+        .whatsapp-success-box p { color: #dddddd; font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
+        .whatsapp-join-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #25D366;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 800;
+            border-radius: 30px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
         }
 
         footer {
@@ -435,7 +423,6 @@
 
         #loading { text-align: center; font-size: 12px; color: var(--accent-color); margin: 30px 0; font-weight: 700; text-transform: uppercase; }
 
-        /* 📱 MOBILE VIEW HEADER ADJUSTMENTS */
         @media (max-width: 768px) {
             header { padding: 8px 12px; gap: 6px; }
             .search-box { max-width: 130px; }
@@ -446,6 +433,7 @@
             .prod-media { height: 140px; }
             .cat-circle, .flav-box-square, .brand-circle { width: 60px; height: 60px; font-size: 18px; }
             .cat-card, .flav-scroll-box, .brand-scroll-box { width: 70px; }
+            .inquiry-grid-layout { grid-template-columns: 1fr; }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -464,14 +452,8 @@
         
         <div class="header-right">
             <button onclick="scrollToInquiry()" class="inquiry-btn">
-                📝 Fill Inquiry
+                📝 Inquiry Form
             </button>
-            <a href="#" class="icon-btn" title="Wishlist">
-                ❤️ <span class="badge-count">0</span>
-            </a>
-            <a href="#" class="icon-btn" title="Cart">
-                🛒 <span class="badge-count">0</span>
-            </a>
             <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
         </div>
     </header>
@@ -518,49 +500,100 @@
             <div id="loading">Syncing Live Products...</div>
             <div class="products-grid" id="shopifyGridContainer"></div>
 
-            <div class="inquiry-section" id="inquirySection">
-                <h2 class="section-title">Grow Up Fitness - Order / Inquiry Form</h2>
-                <form id="inquiryForm" onsubmit="submitInquiry(event)">
-                    <div class="inquiry-grid">
-                        <div class="form-group">
-                            <label>Customer Name *</label>
-                            <input type="text" id="custName" placeholder="E.g. Nitin Salvi" required>
+            <div class="inquiry-wrapper-card" id="inquirySection">
+                <h2 class="section-title" style="color: #00a2ff;">Grow Up Fitness - Requirement Form</h2>
+                
+                <div id="formSection">
+                    <form id="submit-to-google-sheet">
+                        <div class="inquiry-grid-layout">
+                            
+                            <div class="form-cell">
+                                <label>Customer Name *</label>
+                                <input type="text" id="name" name="Customer Name" placeholder="Enter your full name" required>
+                            </div>
+                            
+                            <div class="form-cell">
+                                <label>Phone Number *</label>
+                                <input type="tel" id="phone" name="Phone Number" placeholder="Enter 10-digit mobile number" required>
+                            </div>
+
+                            <div class="form-cell">
+                                <label>Pin Code (Live Area Lookup)</label>
+                                <input type="text" id="pincode" name="Pincode" placeholder="e.g. 313001" maxlength="6" required>
+                                <div id="pinLoading" class="loading-pin-status">Fetching City & State...</div>
+                            </div>
+                            
+                            <div class="form-cell">
+                                <label>Area / Colony / Street Address</label>
+                                <input type="text" id="area" name="Area" placeholder="Search address or type landmark..." required>
+                            </div>
+
+                            <div class="form-cell">
+                                <label>City</label>
+                                <input type="text" id="city" name="City" placeholder="City" required readonly>
+                            </div>
+
+                            <div class="form-cell">
+                                <label>State</label>
+                                <input type="text" id="state" name="State" placeholder="State" required readonly>
+                            </div>
+                            
+                            <div class="form-cell full-width">
+                                <label>Which Brand are you looking for?</label>
+                                <input type="text" id="brand" name="Preferred Brand" list="brandList" placeholder="Type to search brand... e.g. Bolt, Avatar, Mylife" required>
+                                <datalist id="brandList">
+                                    <option value="Mylife Nutrition"></option>
+                                    <option value="Bolt Nutrition"></option>
+                                    <option value="Muscleblaze"></option>
+                                    <option value="Muscletech"></option>
+                                    <option value="Optimum Nutrition (ON)"></option>
+                                    <option value="Big Muscle"></option>
+                                    <option value="Wellcore"></option>
+                                    <option value="Avvtar"></option>
+                                </datalist>
+                            </div>
+
+                            <div class="form-cell full-width">
+                                <label>What do you want to buy?</label>
+                                <input type="text" id="product" name="Product/Inquiry" list="productList" placeholder="Type to search product... e.g. Whey Protein, Creatine" required>
+                                <datalist id="productList">
+                                    <option value="Whey Protein"></option>
+                                    <option value="Whey Isolate"></option>
+                                    <option value="Creatine"></option>
+                                    <option value="Mass Gainer"></option>
+                                    <option value="Pre Workout"></option>
+                                    <option value="Multivitamin"></option>
+                                    <option value="Fish Oil"></option>
+                                </datalist>
+                            </div>
+
+                            <div class="form-cell full-width">
+                                <label>Where were you buying from till now?</label>
+                                <select id="onlinePlatform" name="Current Online Platform">
+                                    <option value="Amazon">Amazon</option>
+                                    <option value="Flipkart">Flipkart</option>
+                                    <option value="HealthKart">HealthKart</option>
+                                    <option value="Direct from Brand Website">Direct from Brand Website</option>
+                                    <option value="Local Store / Offline Shop">Other Local Store / Offline Shop</option>
+                                    <option value="First Time Buying">Buying for the First Time</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-cell full-width">
+                                <label>Specific Requirement / Message</label>
+                                <textarea id="message" name="Message" rows="3" placeholder="Any specific flavor, size, or target budget?"></textarea>
+                            </div>
+
+                            <button type="submit" id="submitBtn" class="submit-neon-btn">Submit Requirement</button>
                         </div>
-                        <div class="form-group">
-                            <label>Phone Number *</label>
-                            <input type="tel" id="custPhone" placeholder="Enter mobile number" required>
-                        </div>
-                        <div class="form-group">
-                            <label>PIN Code</label>
-                            <input type="text" id="custPincode" placeholder="E.g. 313001">
-                        </div>
-                        <div class="form-group">
-                            <label>Area / Colony</label>
-                            <input type="text" id="custArea" placeholder="E.g. Shobhagpura">
-                        </div>
-                        <div class="form-group">
-                            <label>City</label>
-                            <input type="text" id="custCity" value="Udaipur">
-                        </div>
-                        <div class="form-group">
-                            <label>State</label>
-                            <input type="text" id="custState" value="Rajasthan">
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label>Which Brand Are You Looking For?</label>
-                            <input type="text" id="custBrand" placeholder="Type brand names... e.g. Bolt, Avatar, Myfit">
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label>What Do You Want To Buy?</label>
-                            <input type="text" id="custProduct" placeholder="E.g. Whey Protein, Creatine, Pre Workout">
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label>Specific Requirement / Message</label>
-                            <textarea id="custMsg" rows="3" placeholder="Any flavor preferences or target budget details..."></textarea>
-                        </div>
-                        <button type="submit" class="form-submit-btn">Submit Order Inquiry</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
+
+                <div id="whatsappSection" class="whatsapp-success-box">
+                    <h2>🎉 Requirement Submitted Successfully!</h2>
+                    <p>Your details have been saved directly in our server.<br>Join our Official WhatsApp Community for daily fitness tips, exclusive supplement offers, and stock updates!</p>
+                    <a href="https://chat.whatsapp.com/Jut9x2tf7s1DCKIota5DYh" target="_blank" class="whatsapp-join-btn">💬 Join WhatsApp Community</a>
+                </div>
             </div>
 
         </div>
@@ -576,6 +609,8 @@
 
 <script>
     const sheetAPI = 'https://script.google.com/macros/s/AKfycbzd3hMZ8aNAG0QOQoKYVtx3e7kOFtAaCBWEPE2YUtB1v1sK5WPRXdfbygQlfVpBmZm99w/exec';
+    const inquiryScriptURL = 'https://script.google.com/macros/s/AKfycbwjpu4olgDnXHNg7aJOoN9igPCXh8adtO1cwtF6CC_MKhLPyk-UfKqP5i6PUQhoJY3uMA/exec';
+    
     let globalStoreData = [];
     let currentFilterCategory = 'All';
     let currentFilterBrand = 'All';
@@ -584,22 +619,10 @@
     const flavorImageAssets = {
         'Chocolate': 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=150&auto=format&fit=crop&q=80',
         'Swiss Chocolate': 'https://images.unsplash.com/photo-1548907040-4d42b52145ca?w=150&auto=format&fit=crop&q=80',
-        'Swiss chocolate': 'https://images.unsplash.com/photo-1548907040-4d42b52145ca?w=150&auto=format&fit=crop&q=80',
         'Mango': 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=150&auto=format&fit=crop&q=80',
         'Watermelon': 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=150&auto=format&fit=crop&q=80',
         'Strawberry': 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=150&auto=format&fit=crop&q=80',
-        'Vanilla': 'https://images.unsplash.com/photo-1505394033641-4d5180ce4732?w=150&auto=format&fit=crop&q=80',
-        'Blueberry': 'https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=150&auto=format&fit=crop&q=80',
-        'Blue berry': 'https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=150&auto=format&fit=crop&q=80',
-        'Blue raspberry': 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=150&auto=format&fit=crop&q=80',
-        'Malai Kulfi': 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=150&auto=format&fit=crop&q=80',
-        'Malai kulfi': 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=150&auto=format&fit=crop&q=80',
-        'Cookies & Cream': 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=150&auto=format&fit=crop&q=80',
-        'Cookies & cream': 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=150&auto=format&fit=crop&q=80',
-        'Orange': 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=150&auto=format&fit=crop&q=80',
-        'Swiss coffee': 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=150&auto=format&fit=crop&q=80',
-        'Kesar Pista': 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=150&auto=format&fit=crop&q=80',
-        'Fruit punch': 'https://images.unsplash.com/photo-1536935338788-846bb9981813?w=150&auto=format&fit=crop&q=80'
+        'Vanilla': 'https://images.unsplash.com/photo-1505394033641-4d5180ce4732?w=150&auto=format&fit=crop&q=80'
     };
 
     function cleanDriveUrl(url) {
@@ -612,7 +635,7 @@
         return id ? 'https://drive.google.com/uc?export=view&id=' + id : url;
     }
 
-    /* 🔍 100% WORKING LIVE SEARCH ENGINE */
+    /* 🔍 LIVE SEARCH ENGINE */
     function liveSearchProducts() {
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
         syncRenderEngine(query);
@@ -634,7 +657,6 @@
             filtered = filtered.filter(p => p.Flavour && p.Flavour.trim() === currentFilterFlavour.trim());
         }
 
-        /* Search Filter logic */
         if(searchQuery !== '') {
             filtered = filtered.filter(p => 
                 (p["Product Name"] && p["Product Name"].toLowerCase().includes(searchQuery)) ||
@@ -665,146 +687,4 @@
             const card = document.createElement('div');
             card.className = 'prod-card';
             card.innerHTML = `
-                ${discount > 0 ? `<div class="badge-discount">${discount}% OFF</div>` : ''}
-                <div class="prod-media">
-                    <img src="${img1}" onerror="this.src='${fallback}';">
-                </div>
-                <div class="prod-details">
-                    <span class="prod-brand">${prod.Brand || 'GrowUp'}</span>
-                    <h3 class="prod-title">${prod["Product Name"]}</h3>
-                    <span class="prod-weight">${prod["Weight / Size"] || ''} ${prod["Flavour"] ? '• ' + prod["Flavour"] : ''}</span>
-                    <div class="prod-pricing">
-                        <span class="price-sale">₹${prod["Selling Price"] || '0'}</span>
-                        ${mrp > sp ? `<span class="price-mrp">₹${prod.MRP}</span>` : ''}
-                    </div>
-                    ${inStock ? 
-                        `<a href="${checkoutLink}" target="_blank" class="action-btn">WhatsApp Order</a>` : 
-                        `<button class="action-btn out-of-stock" disabled>OUT OF STOCK</button>`
-                    }
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    function filterBySpec(type, value, element) {
-        if(type === 'Category') {
-            document.querySelectorAll('#categoryContainer .cat-card').forEach(b => b.classList.remove('active-filter'));
-            currentFilterCategory = value;
-        } else if(type === 'Brand') {
-            document.querySelectorAll('#brandContainer .brand-scroll-box').forEach(b => b.classList.remove('active-filter'));
-            currentFilterBrand = value;
-        } else if(type === 'Flavour') {
-            document.querySelectorAll('#flavourContainer .flav-scroll-box').forEach(b => b.classList.remove('active-filter'));
-            currentFilterFlavour = value;
-        }
-        element.classList.add('active-filter');
-        syncRenderEngine();
-    }
-
-    function buildFilterUIRows(data) {
-        const catRow = document.getElementById('categoryContainer');
-        const brandRow = document.getElementById('brandContainer');
-        const flavRow = document.getElementById('flavourContainer');
-
-        const validItems = data.filter(p => p.Brand && p.Brand.toUpperCase() !== 'BACKGROUND');
-
-        const categories = [...new Set(validItems.map(p => p.Category).filter(c => c && c.trim() !== ''))];
-        const emojiMap = { 'Protein': '🥛', 'Mass Gainer': '💪', 'Pre Workout': '⚡', 'Creatine': '🔋', 'Vitamins': '💊', 'EAA': '🥤', 'Fat Loss': '🔥', 'Wellness': '🌱' };
-        categories.forEach(cat => {
-            const emoji = emojiMap[cat.trim()] || '📦';
-            const card = document.createElement('div');
-            card.className = 'cat-card';
-            card.onclick = function() { filterBySpec('Category', cat, card); };
-            card.innerHTML = `<div class="cat-circle">${emoji}</div><p>${cat}</p>`;
-            catRow.appendChild(card);
-        });
-
-        const brands = [...new Set(validItems.map(p => p.Brand).filter(b => b && b.trim() !== ''))];
-        brands.forEach(brand => {
-            const card = document.createElement('div');
-            card.className = 'brand-scroll-box';
-            card.onclick = function() { filterBySpec('Brand', brand, card); };
-            card.innerHTML = `<div class="brand-circle">🏷️</div><p>${brand}</p>`;
-            brandRow.appendChild(card);
-        });
-
-        const flavours = [...new Set(validItems.map(p => p.Flavour).filter(f => f && f.trim() !== ''))];
-        flavours.forEach(flav => {
-            const imgUrl = flavorImageAssets[flav.trim()] || '';
-            const box = document.createElement('div');
-            box.className = 'flav-scroll-box';
-            box.onclick = function() { filterBySpec('Flavour', flav, box); };
-            box.innerHTML = imgUrl ? 
-                `<div class="flav-box-square" style="background-image: url('${imgUrl}');"></div><p>${flav}</p>` : 
-                `<div class="flav-box-square">🍦</div><p>${flav}</p>`;
-            flavRow.appendChild(box);
-        });
-    }
-
-    /* 📜 Smooth Scroll to Inquiry Form */
-    function scrollToInquiry() {
-        document.getElementById('inquirySection').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    /* 📩 Submit Inquiry to WhatsApp */
-    function submitInquiry(e) {
-        e.preventDefault();
-        const name = document.getElementById('custName').value;
-        const phone = document.getElementById('custPhone').value;
-        const pin = document.getElementById('custPincode').value;
-        const area = document.getElementById('custArea').value;
-        const city = document.getElementById('custCity').value;
-        const brand = document.getElementById('custBrand').value;
-        const prod = document.getElementById('custProduct').value;
-        const msg = document.getElementById('custMsg').value;
-
-        const text = `📋 *NEW ORDER INQUIRY*\n\n👤 *Name:* ${name}\n📞 *Phone:* ${phone}\n📍 *Address:* ${area}, ${city} - ${pin}\n🏷️ *Brand Needed:* ${brand}\n📦 *Product Needed:* ${prod}\n💬 *Message:* ${msg}`;
-        window.open(`https://wa.me/919571214461?text=${encodeURIComponent(text)}`, '_blank');
-    }
-
-    fetch(sheetAPI)
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById('loading').style.display = 'none';
-            globalStoreData = data;
-            buildFilterUIRows(data);
-            syncRenderEngine();
-        })
-        .catch(err => {
-            document.getElementById('loading').innerText = 'Data Sync Error';
-            console.error(err);
-        });
-
-    window.addEventListener('scroll', function() {
-        const scrollValue = window.scrollY;
-        const blurOverlay = document.getElementById('blurOverlay');
-        const heroCaption = document.getElementById('heroCaption');
-        
-        let blurAmount = Math.min(scrollValue / 20, 15); 
-        blurOverlay.style.backdropFilter = `blur(${blurAmount}px)`;
-        
-        if(scrollValue > 100) {
-            heroCaption.style.opacity = '0';
-        } else {
-            heroCaption.style.opacity = '1';
-        }
-    });
-
-    function toggleTheme() {
-        const htmlEl = document.documentElement;
-        const currentTheme = htmlEl.getAttribute('data-theme');
-        const btn = document.getElementById('themeBtn');
-        
-        if(currentTheme === 'dark') {
-            htmlEl.removeAttribute('data-theme');
-            btn.innerText = "🌙 Dark";
-        } else {
-            htmlEl.setAttribute('data-theme', 'dark');
-            btn.innerText = "☀️ Light";
-        }
-        syncRenderEngine();
-    }
-</script>
-</body>
-</html>
+                ${discount > 0 ? `<div class="badge-discount">${discount}% OFF
