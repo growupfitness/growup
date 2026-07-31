@@ -38,7 +38,7 @@
             letter-spacing: 0.3px;
         }
 
-        /* 🛍️ HEADER WITH SEARCH BAR */
+        /* 🛍️ HEADER STYLING */
         header {
             position: fixed;
             top: 0;
@@ -59,14 +59,26 @@
 
         .header-left { display: flex; align-items: center; gap: 15px; flex: 1; }
 
+        /* 🖼️ CLICKABLE LOGO */
+        .logo-area {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
         .logo-area img#mainLogo {
             max-height: 32px; 
             width: auto;
             display: block;
             filter: var(--logo-filter) !important;
-            transition: filter 0.3s ease;
+            transition: filter 0.3s ease, transform 0.2s ease;
         }
 
+        .logo-area:hover img#mainLogo {
+            transform: scale(1.03);
+        }
+
+        /* 🔍 SMART TOP SEARCH BAR WITH DROPDOWN SUGGESTIONS */
         .search-box {
             position: relative;
             max-width: 280px;
@@ -93,6 +105,53 @@
             transform: translateY(-50%);
             font-size: 12px;
             opacity: 0.6;
+        }
+
+        /* 📍 Live Search Dropdown Box (Top Header ke niche) */
+        .top-search-dropdown {
+            position: absolute;
+            top: 110%;
+            left: 0;
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            max-height: 220px;
+            overflow-y: auto;
+            z-index: 200;
+            display: none;
+        }
+
+        .top-search-item {
+            padding: 10px 14px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .top-search-item:last-child {
+            border-bottom: none;
+        }
+
+        .top-search-item:hover {
+            background: rgba(0, 114, 255, 0.08);
+            color: var(--accent-color);
+        }
+
+        .top-search-tag {
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: rgba(0, 114, 255, 0.1);
+            color: var(--accent-color);
+            font-weight: 700;
+            text-transform: uppercase;
         }
 
         .header-controls { display: flex; align-items: center; gap: 10px; }
@@ -364,7 +423,6 @@
             box-shadow: 0 0 8px rgba(0, 162, 255, 0.4);
         }
 
-        /* 📍 Auto-Suggestion Dropdown List (Hybrid Smart Engine) */
         .suggestion-box {
             position: absolute;
             top: 100%;
@@ -506,11 +564,13 @@
 
     <header>
         <div class="header-left">
-            <div class="logo-area">
+            <div class="logo-area" onclick="scrollToTopHome()" title="Go to Home / Top">
                 <img src="growup-logoo.png" id="mainLogo" alt="Grow Up Fitness Logo" onerror="this.src='logo.png';">
             </div>
+
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Search product, brand..." oninput="liveSearchProducts()">
+                <input type="text" id="searchInput" placeholder="Search product, brand, flavor..." oninput="handleSmartTopSearch(this.value)" autocomplete="off">
+                <div id="topSearchDropdown" class="top-search-dropdown"></div>
             </div>
         </div>
         <div class="header-controls">
@@ -543,7 +603,7 @@
                 </div>
             </div>
 
-            <h2 class="section-title">Shop By Brand</h2>
+            <h2 class="section-title" id="productsTarget">Shop By Brand</h2>
             <div class="brands-scroll-row" id="brandContainer">
                 <div class="brand-scroll-box active-filter" onclick="filterBySpec('Brand', 'All', this)">
                     <div class="brand-circle">🏷️</div>
@@ -700,21 +760,13 @@
         'Vanilla': 'https://images.unsplash.com/photo-1505394033641-4d5180ce4732?w=150&auto=format&fit=crop&q=80'
     };
 
-    /* 🏪 UDAIPUR LOCAL LANDMARKS & SHOPS DATABASE FOR INSTANT AUTO-COMPLETE */
     const udaipurLocalPlaces = [
         { name: "Grow Up Fitness Supplements Store, Shobhagpura", lat: 24.6030, lon: 73.7112 },
         { name: "Grow Up Fitness, Udaipur", lat: 24.6030, lon: 73.7112 },
         { name: "Jagdish Chowk, Old City, Udaipur", lat: 24.5793, lon: 73.6836 },
         { name: "Jagdish Temple, Udaipur", lat: 24.5793, lon: 73.6836 },
         { name: "Shobhagpura Circle, Udaipur", lat: 24.6035, lon: 73.7115 },
-        { name: "Fatehpura Circle, Udaipur", lat: 24.6001, lon: 73.6990 },
-        { name: "Sukher Bypass, Udaipur", lat: 24.6291, lon: 73.7185 },
-        { name: "Hiran Magri Sector 4, Udaipur", lat: 24.5620, lon: 73.7210 },
-        { name: "Hiran Magri Sector 3, Udaipur", lat: 24.5680, lon: 73.7180 },
-        { name: "Delhi Gate, Udaipur", lat: 24.5821, lon: 73.6952 },
-        { name: "Panchwati, Udaipur", lat: 24.5932, lon: 73.6931 },
-        { name: "Udaipole, Udaipur", lat: 24.5750, lon: 73.6980 },
-        { name: "Ayad, Udaipur", lat: 24.5870, lon: 73.7150 }
+        { name: "Fatehpura Circle, Udaipur", lat: 24.6001, lon: 73.6990 }
     ];
 
     function cleanDriveUrl(url) {
@@ -727,10 +779,86 @@
         return id ? 'https://drive.google.com/uc?export=view&id=' + id : url;
     }
 
-    function liveSearchProducts() {
-        const query = document.getElementById('searchInput').value.toLowerCase().trim();
-        syncRenderEngine(query);
+    /* 1. SMOOTH SCROLL TO TOP ON LOGO CLICK */
+    function scrollToTopHome() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    /* 2. SMART TOP SEARCH BAR WITH DROPDOWN SUGGESTIONS (3 to 5 ITEMS) */
+    function handleSmartTopSearch(query) {
+        const dropdown = document.getElementById('topSearchDropdown');
+        const queryClean = query.toLowerCase().trim();
+
+        if (!queryClean || globalStoreData.length === 0) {
+            dropdown.style.display = 'none';
+            syncRenderEngine('');
+            return;
+        }
+
+        let suggestions = [];
+        let addedKeys = new Set();
+
+        // Search through Products, Brands, and Flavours
+        globalStoreData.forEach(prod => {
+            if (suggestions.length >= 5) return;
+
+            const pName = prod["Product Name"] || "";
+            const pBrand = prod.Brand || "";
+            const pCategory = prod.Category || "";
+            const pFlavour = prod.Flavour || "";
+
+            // Check Product Match
+            if (pName.toLowerCase().includes(queryClean) && !addedKeys.has('prod:' + pName)) {
+                suggestions.push({ text: pName, tag: 'Product', filterVal: pName });
+                addedKeys.add('prod:' + pName);
+            }
+            // Check Brand Match
+            else if (pBrand.toLowerCase().includes(queryClean) && !addedKeys.has('brand:' + pBrand)) {
+                suggestions.push({ text: pBrand, tag: 'Brand', filterVal: pBrand });
+                addedKeys.add('brand:' + pBrand);
+            }
+            // Check Flavour Match
+            else if (pFlavour.toLowerCase().includes(queryClean) && !addedKeys.has('flav:' + pFlavour)) {
+                suggestions.push({ text: pFlavour, tag: 'Flavour', filterVal: pFlavour });
+                addedKeys.add('flav:' + pFlavour);
+            }
+        });
+
+        // Render Suggestions Dropdown
+        dropdown.innerHTML = '';
+        if (suggestions.length > 0) {
+            dropdown.style.display = 'block';
+            suggestions.slice(0, 5).forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'top-search-item';
+                div.innerHTML = `<span>${item.text}</span><span class="top-search-tag">${item.tag}</span>`;
+                div.onclick = function() {
+                    document.getElementById('searchInput').value = item.text;
+                    dropdown.style.display = 'none';
+                    syncRenderEngine(item.text);
+                    
+                    // Smooth scroll down to products grid
+                    const pTarget = document.getElementById('productsTarget');
+                    if(pTarget) pTarget.scrollIntoView({ behavior: 'smooth' });
+                };
+                dropdown.appendChild(div);
+            });
+        } else {
+            dropdown.style.display = 'none';
+        }
+
+        // Real-time Filtering in background
+        syncRenderEngine(queryClean);
+    }
+
+    // Hide Search Dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        const sBox = document.querySelector('.search-box');
+        if (sBox && !sBox.contains(e.target)) {
+            const dropdown = document.getElementById('topSearchDropdown');
+            if (dropdown) dropdown.style.display = 'none';
+        }
+    });
 
     function syncRenderEngine(searchQuery = '') {
         const container = document.getElementById('shopifyGridContainer');
@@ -750,10 +878,10 @@
 
         if(searchQuery !== '') {
             filtered = filtered.filter(p => 
-                (p["Product Name"] && p["Product Name"].toLowerCase().includes(searchQuery)) ||
-                (p.Brand && p.Brand.toLowerCase().includes(searchQuery)) ||
-                (p.Category && p.Category.toLowerCase().includes(searchQuery)) ||
-                (p.Flavour && p.Flavour.toLowerCase().includes(searchQuery))
+                (p["Product Name"] && p["Product Name"].toLowerCase().includes(searchQuery.toLowerCase())) ||
+                (p.Brand && p.Brand.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                (p.Category && p.Category.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                (p.Flavour && p.Flavour.toLowerCase().includes(searchQuery.toLowerCase()))
             );
         }
 
@@ -862,7 +990,7 @@
         }
     }
 
-    /* 📍 INSTANT PINCODE AUTO LOOKUP */
+    /* 📍 PINCODE AUTO LOOKUP */
     const pincodeInput = document.getElementById("pincode");
     const cityInput = document.getElementById("city");
     const stateInput = document.getElementById("state");
@@ -896,7 +1024,7 @@
     /* 🗺️ MAP ENGINE */
     let map, marker;
     function initInteractiveMap() {
-        const defaultLat = 24.6030; // Grow Up Fitness Store Udaipur Coords
+        const defaultLat = 24.6030;
         const defaultLng = 73.7112;
 
         map = L.map('map', { scrollWheelZoom: false }).setView([defaultLat, defaultLng], 14);
@@ -937,7 +1065,7 @@
         }
     }
 
-    /* 🔍 HYBRID SMART AUTO-SUGGESTION ENGINE (LOCAL + GLOBAL API) */
+    /* 🔍 AREA AUTO-SUGGESTION ENGINE */
     const areaInput = document.getElementById("area");
     const areaSuggestions = document.getElementById("areaSuggestions");
     let suggestionDebounce;
@@ -950,9 +1078,7 @@
             return;
         }
 
-        // 1. Check Local Custom Database First
         const localMatches = udaipurLocalPlaces.filter(place => place.name.toLowerCase().includes(query));
-
         areaSuggestions.innerHTML = "";
         
         if (localMatches.length > 0) {
@@ -972,7 +1098,6 @@
             });
         }
 
-        // 2. Fetch Global Nominatim Suggestions in Parallel
         suggestionDebounce = setTimeout(() => {
             fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ', Udaipur, Rajasthan')}&limit=4`)
                 .then(res => res.json())
