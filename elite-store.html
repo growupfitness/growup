@@ -16,7 +16,7 @@
             --border-color: rgba(15, 23, 42, 0.08);
             --accent-color: #0072ff;
             --bg-header: rgba(255, 255, 255, 0.98);
-            --logo-filter: invert(1); /* Light Mode me Logo Visible Kaala Dikhne ke liye */
+            --logo-filter: invert(1);
         }
 
         [data-theme="dark"] {
@@ -27,7 +27,7 @@
             --border-color: rgba(255, 255, 255, 0.08);
             --accent-color: #00f2fe;
             --bg-header: rgba(13, 20, 33, 0.98);
-            --logo-filter: invert(0); /* Dark Mode me Original Logo */
+            --logo-filter: invert(0);
         }
         
         body { 
@@ -38,6 +38,7 @@
             letter-spacing: 0.3px;
         }
 
+        /* 🛍️ HEADER WITH SEARCH BAR */
         header {
             position: fixed;
             top: 0;
@@ -48,7 +49,7 @@
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--border-color);
-            padding: 12px 20px; 
+            padding: 10px 20px; 
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -56,13 +57,42 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
 
-        /* 🖼️ LOGO INVERT FILTER FIX */
+        .header-left { display: flex; align-items: center; gap: 15px; flex: 1; }
+
         .logo-area img#mainLogo {
             max-height: 32px; 
             width: auto;
             display: block;
             filter: var(--logo-filter) !important;
             transition: filter 0.3s ease;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 280px;
+            width: 100%;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px 8px 34px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            opacity: 0.6;
         }
 
         .header-controls { display: flex; align-items: center; gap: 10px; }
@@ -289,7 +319,7 @@
         }
         .out-of-stock { background: #cbd5e1 !important; color: #64748b !important; cursor: not-allowed; }
 
-        /* 📋 NEON INQUIRY FORM WITH LIVE AUTO-SUGGESTION MAP PICKER */
+        /* 📋 NEON INQUIRY FORM */
         .inquiry-wrapper-card {
             background: rgba(20, 20, 20, 0.92);
             border: 2px solid #00a2ff;
@@ -334,31 +364,33 @@
             box-shadow: 0 0 8px rgba(0, 162, 255, 0.4);
         }
 
-        /* 📍 Auto-Suggestion Dropdown List */
+        /* 📍 Auto-Suggestion Dropdown List (Big Websites Jaisa) */
         .suggestion-box {
             position: absolute;
             top: 100%;
             left: 0;
             right: 0;
-            background: #1e1e1e;
+            background: #181818;
             border: 1px solid #00a2ff;
             border-radius: 6px;
-            max-height: 160px;
+            max-height: 180px;
             overflow-y: auto;
             z-index: 1000;
             display: none;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
         }
 
         .suggestion-item {
-            padding: 10px;
-            font-size: 12px;
-            color: #fff;
+            padding: 10px 12px;
+            font-size: 11px;
+            color: #e2e8f0;
             cursor: pointer;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            line-height: 1.4;
         }
-        .suggestion-item:hover { background: #0072ff; }
+        .suggestion-item:hover { background: #0072ff; color: #ffffff; }
 
-        .loading-pin-status { color: #00a2ff; font-size: 11px; display: none; margin-top: 2px; }
+        .loading-pin-status { color: #00a2ff; font-size: 11px; display: none; margin-top: 2px; font-weight: 600; }
 
         /* Map Controls Header */
         .map-header-bar {
@@ -385,8 +417,24 @@
         #map {
             width: 100%;
             height: 220px;
-            border-radius: 8px;
+            border-radius: 8px 8px 0 0;
             border: 1px solid #00a2ff;
+            border-bottom: none;
+        }
+
+        /* 📍 LIVE LOCATION ADDRESS DETAILS BAR (MAP KE NICHE) */
+        .map-address-display-bar {
+            background: rgba(30, 30, 30, 0.95);
+            border: 1px solid #00a2ff;
+            border-radius: 0 0 8px 8px;
+            padding: 10px 12px;
+            font-size: 11px;
+            color: #00ff88;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1.4;
         }
 
         .submit-neon-btn {
@@ -439,7 +487,8 @@
         #loading { text-align: center; font-size: 12px; color: var(--accent-color); margin: 30px 0; font-weight: 700; text-transform: uppercase; }
 
         @media (max-width: 768px) {
-            header { padding: 10px 15px; }
+            header { padding: 8px 12px; gap: 6px; }
+            .search-box { max-width: 130px; }
             .hero-video-wrapper { height: 280px; } 
             .main-scroll-content { margin-top: 240px; border-radius: 16px 16px 0 0; } 
             .video-caption h1 { font-size: 18px; }
@@ -455,8 +504,13 @@
 <body>
 
     <header>
-        <div class="logo-area">
-            <img src="growup-logoo.png" id="mainLogo" alt="Grow Up Fitness Logo" onerror="this.src='logo.png';">
+        <div class="header-left">
+            <div class="logo-area">
+                <img src="growup-logoo.png" id="mainLogo" alt="Grow Up Fitness Logo" onerror="this.src='logo.png';">
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search product, brand..." oninput="liveSearchProducts()">
+            </div>
         </div>
         <div class="header-controls">
             <button onclick="scrollToInquiryAnchor()" class="inquiry-nav-btn">
@@ -526,7 +580,7 @@
                             </div>
 
                             <div class="form-cell">
-                                <label>Pin Code (Auto Fetch)</label>
+                                <label>Pin Code (Instant Auto Fetch)</label>
                                 <input type="text" id="pincode" name="Pincode" placeholder="e.g. 313001" maxlength="6" required>
                                 <div id="pinLoading" class="loading-pin-status">Fetching City & State...</div>
                             </div>
@@ -553,7 +607,12 @@
                                     <button type="button" class="gps-locate-btn" onclick="fetchLiveGPSLocation()">🎯 Use My Current Location</button>
                                 </div>
                                 <div id="map"></div>
+                                <div class="map-address-display-bar">
+                                    <span>📍 Selected Location:</span>
+                                    <span id="liveAddressDisplay">Udaipur, Rajasthan (Drag marker or use search above)</span>
+                                </div>
                                 <input type="hidden" id="geoCoordinates" name="Map Coordinates" value="">
+                                <input type="hidden" id="fullMapAddress" name="Full Map Address" value="">
                             </div>
                             
                             <div class="form-cell full-width">
@@ -650,7 +709,13 @@
         return id ? 'https://drive.google.com/uc?export=view&id=' + id : url;
     }
 
-    function syncRenderEngine() {
+    /* 🔍 LIVE HEADER SEARCH ENGINE */
+    function liveSearchProducts() {
+        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        syncRenderEngine(query);
+    }
+
+    function syncRenderEngine(searchQuery = '') {
         const container = document.getElementById('shopifyGridContainer');
         container.innerHTML = '';
 
@@ -666,8 +731,17 @@
             filtered = filtered.filter(p => p.Flavour && p.Flavour.trim() === currentFilterFlavour.trim());
         }
 
+        if(searchQuery !== '') {
+            filtered = filtered.filter(p => 
+                (p["Product Name"] && p["Product Name"].toLowerCase().includes(searchQuery)) ||
+                (p.Brand && p.Brand.toLowerCase().includes(searchQuery)) ||
+                (p.Category && p.Category.toLowerCase().includes(searchQuery)) ||
+                (p.Flavour && p.Flavour.toLowerCase().includes(searchQuery))
+            );
+        }
+
         if(filtered.length === 0) {
-            container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 30px; font-weight: 700;">No products found in this filter.</div>`;
+            container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 30px; font-weight: 700;">No matching products found.</div>`;
             return;
         }
 
@@ -772,7 +846,7 @@
         }
     }
 
-    /* 📍 PINCODE AUTO LOOKUP ENGINE - STRICT PARSING FIX */
+    /* 📍 INSTANT PINCODE AUTO LOOKUP (FAST ENDPOINT) */
     const pincodeInput = document.getElementById("pincode");
     const cityInput = document.getElementById("city");
     const stateInput = document.getElementById("state");
@@ -788,66 +862,67 @@
                     pinLoading.style.display = "none";
                     if (data && data[0] && data[0].Status === "Success") {
                         const postOffice = data[0].PostOffice[0];
-                        cityInput.value = postOffice.District || postOffice.Block;
-                        stateInput.value = postOffice.State;
+                        cityInput.value = postOffice.District || "Udaipur";
+                        stateInput.value = postOffice.State || "Rajasthan";
                     } else {
-                        alert("Invalid Pin Code!");
-                        cityInput.value = "";
-                        stateInput.value = "";
+                        cityInput.value = "Udaipur";
+                        stateInput.value = "Rajasthan";
                     }
                 })
-                .catch(err => { pinLoading.style.display = "none"; });
-        } else {
-            cityInput.value = "";
-            stateInput.value = "";
+                .catch(err => { 
+                    pinLoading.style.display = "none";
+                    cityInput.value = "Udaipur";
+                    stateInput.value = "Rajasthan";
+                });
         }
     });
 
-    /* 🗺️ MAP ENGINE & LIVE GPS FETCH */
+    /* 🗺️ MAP ENGINE (MOUSE SCROLL ZOOM DISABLED + LIVE DISPLAY BAR) */
     let map, marker;
     function initInteractiveMap() {
         const defaultLat = 24.5854; // Udaipur Center
         const defaultLng = 73.7125;
 
-        map = L.map('map').setView([defaultLat, defaultLng], 13);
+        map = L.map('map', { scrollWheelZoom: false }).setView([defaultLat, defaultLng], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap'
         }).addTo(map);
 
         marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
-        updateGeoCoordinates(defaultLat, defaultLng);
+        updateGeoLocationInfo(defaultLat, defaultLng);
 
-        marker.on('dragend', function (e) {
-            const position = marker.getLatLng();
-            updateGeoCoordinates(position.lat, position.lng);
+        marker.on('dragend', function () {
+            const pos = marker.getLatLng();
+            updateGeoLocationInfo(pos.lat, pos.lng);
         });
     }
 
-    function updateGeoCoordinates(lat, lng) {
+    function updateGeoLocationInfo(lat, lng) {
         document.getElementById('geoCoordinates').value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+        // Reverse Geocoding to show live address bar under map
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+            .then(res => res.json())
+            .then(data => {
+                if(data && data.display_name) {
+                    document.getElementById('liveAddressDisplay').innerText = data.display_name;
+                    document.getElementById('fullMapAddress').value = data.display_name;
+                }
+            }).catch(() => {});
     }
 
-    /* 🎯 GPS Button Click Handler */
     function fetchLiveGPSLocation() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    map.setView([lat, lng], 16);
-                    marker.setLatLng([lat, lng]);
-                    updateGeoCoordinates(lat, lng);
-                },
-                (error) => {
-                    alert("Please allow location access on your browser.");
-                }
-            );
-        } else {
-            alert("Geolocation is not supported by this browser.");
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                map.setView([lat, lng], 16);
+                marker.setLatLng([lat, lng]);
+                updateGeoLocationInfo(lat, lng);
+            }, () => { alert("Location access disabled in browser."); });
         }
     }
 
-    /* 🔍 AREA LIVE AUTO-SUGGESTION (NOMINATIM GEOCODING) */
+    /* 🔍 REAL-TIME AREA AUTO-SUGGESTION ENGINE (BIG WEBSITES STYLE) */
     const areaInput = document.getElementById("area");
     const areaSuggestions = document.getElementById("areaSuggestions");
     let suggestionDebounce;
@@ -855,13 +930,13 @@
     areaInput.addEventListener("input", () => {
         clearTimeout(suggestionDebounce);
         const query = areaInput.value.trim();
-        if (query.length < 3) {
+        if (query.length < 2) {
             areaSuggestions.style.display = "none";
             return;
         }
 
         suggestionDebounce = setTimeout(() => {
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ', Udaipur, Rajasthan')}&limit=4`)
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ', Udaipur, Rajasthan')}&limit=5`)
                 .then(res => res.json())
                 .then(data => {
                     areaSuggestions.innerHTML = "";
@@ -878,7 +953,7 @@
                                 const lon = parseFloat(item.lon);
                                 map.setView([lat, lon], 16);
                                 marker.setLatLng([lat, lon]);
-                                updateGeoCoordinates(lat, lon);
+                                updateGeoLocationInfo(lat, lon);
                             };
                             areaSuggestions.appendChild(div);
                         });
@@ -886,16 +961,14 @@
                         areaSuggestions.style.display = "none";
                     }
                 });
-        }, 400);
+        }, 300);
     });
 
     document.addEventListener("click", (e) => {
-        if (e.target !== areaInput) {
-            areaSuggestions.style.display = "none";
-        }
+        if (e.target !== areaInput) { areaSuggestions.style.display = "none"; }
     });
 
-    /* 📩 GOOGLE SHEETS FORM SUBMIT ENGINE */
+    /* 📩 FORM SUBMIT SCRIPT */
     const inquiryForm = document.forms['submit-to-google-sheet'];
     const submitBtn = document.getElementById("submitBtn");
     const formContainerBlock = document.getElementById("formContainerBlock");
@@ -919,7 +992,7 @@
             });
     });
 
-    /* LIVE STORE PRODUCTS FETCH */
+    /* FETCH STORE PRODUCTS */
     fetch(sheetAPI)
         .then(res => res.json())
         .then(data => {
@@ -949,7 +1022,6 @@
         }
     });
 
-    /* WORKING THEME SWITCHER */
     function toggleTheme() {
         const htmlEl = document.documentElement;
         const currentTheme = htmlEl.getAttribute('data-theme');
