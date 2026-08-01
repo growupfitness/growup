@@ -969,6 +969,24 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="checkoutModal">
+        <div class="modal-card" style="max-width: 480px;">
+            <button class="close-modal-btn" onclick="closeCheckoutModal()">✕</button>
+            <h2 style="font-size: 16px; font-weight: 800; margin-bottom: 5px;">Delivery Details</h2>
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px;">Fill details to place instant order in Google Sheet & WhatsApp</p>
+            
+            <form id="checkoutForm" onsubmit="handleCheckoutSubmit(event)">
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <input type="text" id="coName" placeholder="Full Name *" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main);" required>
+                    <input type="tel" id="coPhone" placeholder="10-Digit Mobile Number *" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main);" required>
+                    <textarea id="coAddress" rows="3" placeholder="Complete Delivery Address (House No, Colony, Pincode) *" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main);" required></textarea>
+                    
+                    <button type="submit" id="coSubmitBtn" class="action-btn" style="padding: 12px; font-size: 11px; margin-top: 10px;">🛒 Confirm & Place Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="loginModal">
         <div class="modal-card">
             <button class="close-modal-btn" onclick="closeLoginModal()">✕</button>
@@ -1020,7 +1038,7 @@
                 <span>Total Amount:</span>
                 <span id="cartGrandTotal">₹0</span>
             </div>
-            <button class="action-btn" style="width: 100%; padding: 12px;" onclick="checkoutCartWhatsApp()">Proceed to WhatsApp Order</button>
+            <button class="action-btn" style="width: 100%; padding: 12px;" onclick="openCheckoutModal()">Proceed to Order</button>
         </div>
     </div>
 
@@ -1252,6 +1270,82 @@
         document.getElementById('productQuickModal').style.display = 'none';
     }
 
+    /* 🛒 CHECKOUT ENGINE & GOOGLE SHEET SYNC */
+    function openCheckoutModal() {
+        if (userCart.length === 0) {
+            alert("Your cart is empty!");
+            return;
+        }
+        toggleDrawer('cartDrawer');
+        document.getElementById('checkoutModal').style.display = 'flex';
+        
+        if (currentUser) {
+            document.getElementById('coName').value = currentUser.name || '';
+            document.getElementById('coPhone').value = currentUser.phone || '';
+        }
+    }
+
+    function closeCheckoutModal() {
+        document.getElementById('checkoutModal').style.display = 'none';
+    }
+
+    function handleCheckoutSubmit(e) {
+        e.preventDefault();
+        const btn = document.getElementById('coSubmitBtn');
+        btn.innerText = "Placing Order...";
+        btn.disabled = true;
+
+        const name = document.getElementById('coName').value;
+        const phone = document.getElementById('coPhone').value;
+        const address = document.getElementById('coAddress').value;
+
+        const orderId = 'GU-ORD-' + Math.floor(100000 + Math.random() * 900000);
+        const grandTotal = userCart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+        const itemsStr = userCart.map(i => `${i.fullTitle || i.name} (x${i.qty})`).join(', ');
+
+        const formData = new FormData();
+        formData.append('action', 'placeOrder');
+        formData.append('orderId', orderId);
+        formData.append('name', name);
+        formData.append('phone', phone);
+        formData.append('address', address);
+        formData.append('items', itemsStr);
+        formData.append('total', grandTotal);
+
+        fetch(sheetAPI, { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                btn.innerText = "🛒 Confirm & Place Order";
+                btn.disabled = false;
+                closeCheckoutModal();
+
+                // Open WhatsApp Order Message
+                const waItemsStr = userCart.map(i => `• ${i.fullTitle || i.name} (x${i.qty}) - ₹${i.price * i.qty}`).join('\n');
+                const msg = encodeURIComponent(`⚡ *NEW ORDER PLACED* ⚡\n\n🆔 *Order ID:* ${orderId}\n👤 *Customer:* ${name}\n📞 *Phone:* ${phone}\n📍 *Address:* ${address}\n\n*Items Ordered:*\n${waItemsStr}\n\n💰 *Total Amount:* ₹${grandTotal}`);
+                
+                userCart = [];
+                localStorage.setItem('gu_cart', JSON.stringify(userCart));
+                updateBadges();
+
+                window.open(`https://wa.me/919571214461?text=${msg}`, '_blank');
+            })
+            .catch(() => {
+                btn.innerText = "🛒 Confirm & Place Order";
+                btn.disabled = false;
+                alert("Connection error! Placing WhatsApp order directly...");
+                closeCheckoutModal();
+                
+                const waItemsStr = userCart.map(i => `• ${i.fullTitle || i.name} (x${i.qty}) - ₹${i.price * i.qty}`).join('\n');
+                const msg = encodeURIComponent(`⚡ *NEW ORDER PLACED* ⚡\n\n🆔 *Order ID:* ${orderId}\n👤 *Customer:* ${name}\n📞 *Phone:* ${phone}\n📍 *Address:* ${address}\n\n*Items Ordered:*\n${waItemsStr}\n\n💰 *Total Amount:* ₹${grandTotal}`);
+                
+                userCart = [];
+                localStorage.setItem('gu_cart', JSON.stringify(userCart));
+                updateBadges();
+
+                window.open(`https://wa.me/919571214461?text=${msg}`, '_blank');
+            });
+    }
+
     /* 🛒 ACCURATE ADD TO CART ENGINE (NO OVERWRITE) */
     function addToCartByIndex(index) {
         const prod = globalStoreData[index];
@@ -1378,17 +1472,6 @@
             `;
             container.appendChild(div);
         });
-    }
-
-    function checkoutCartWhatsApp() {
-        if(userCart.length === 0) { alert("Cart is empty!"); return; }
-        const itemsStr = userCart.map(i => `• ${i.fullTitle || i.name} (x${i.qty}) - ₹${i.price * i.qty}`).join('\n');
-        const grandTotal = userCart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-        
-        let custInfoStr = currentUser ? `\n👤 *Customer:* ${currentUser.name}\n📞 *Phone:* ${currentUser.phone}` : '';
-
-        const msg = encodeURIComponent(`⚡ *NEW STORE ORDER* ⚡\n${custInfoStr}\n\n*Ordered Items:*\n${itemsStr}\n\n💰 *Total Amount:* ₹${grandTotal}`);
-        window.open(`https://wa.me/919571214461?text=${msg}`, '_blank');
     }
 
     function handleSmartTopSearch(query) {
