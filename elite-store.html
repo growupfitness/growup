@@ -973,13 +973,24 @@
         <div class="modal-card" style="max-width: 480px;">
             <button class="close-modal-btn" onclick="closeCheckoutModal()">✕</button>
             <h2 style="font-size: 16px; font-weight: 800; margin-bottom: 5px;">Delivery Details</h2>
-            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px;">Fill details to place instant order in Google Sheet & WhatsApp</p>
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px;">Please check and enter your complete delivery details below</p>
             
             <form id="checkoutForm" onsubmit="handleCheckoutSubmit(event)">
                 <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <input type="text" id="coName" placeholder="Full Name *" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main);" required>
-                    <input type="tel" id="coPhone" placeholder="10-Digit Mobile Number *" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main);" required>
-                    <textarea id="coAddress" rows="3" placeholder="Complete Delivery Address (House No, Colony, Pincode) *" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main);" required></textarea>
+                    <div>
+                        <label style="font-size: 10px; font-weight: 800; color: var(--accent-color);">FULL NAME *</label>
+                        <input type="text" id="coName" placeholder="Full Name *" style="width:100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main); margin-top:2px;" required>
+                    </div>
+
+                    <div>
+                        <label style="font-size: 10px; font-weight: 800; color: var(--accent-color);">MOBILE NUMBER *</label>
+                        <input type="tel" id="coPhone" placeholder="10-Digit Mobile Number *" style="width:100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main); margin-top:2px;" required readonly>
+                    </div>
+
+                    <div>
+                        <label style="font-size: 10px; font-weight: 800; color: var(--accent-color);">FULL DELIVERY ADDRESS (STRICTLY REQUIRED) *</label>
+                        <textarea id="coAddress" rows="4" placeholder="Please enter complete house/flat no., street name, landmark, area, city & 6-digit pincode carefully for smooth delivery." style="width:100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main); margin-top:2px; font-size:11px;" required></textarea>
+                    </div>
                     
                     <button type="submit" id="coSubmitBtn" class="action-btn" style="padding: 12px; font-size: 11px; margin-top: 10px;">🛒 Confirm & Place Order</button>
                 </div>
@@ -991,7 +1002,7 @@
         <div class="modal-card">
             <button class="close-modal-btn" onclick="closeLoginModal()">✕</button>
             <h2 style="font-size: 16px; font-weight: 800; margin-bottom: 5px;">Customer Account Login</h2>
-            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px;">Enter your phone number to login / create account</p>
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px;">Login is required to maintain your order history!</p>
             
             <form id="loginForm" onsubmit="handleUserLogin(event)">
                 <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -1165,6 +1176,10 @@
                     syncUserAccountBtn();
                     closeLoginModal();
                     alert(`Welcome ${currentUser.name}! Account active.`);
+                    // Auto-resume checkout if cart has items
+                    if(userCart.length > 0) {
+                        openCheckoutModal();
+                    }
                 }
             }).catch(() => {
                 btn.innerText = "Login / Register";
@@ -1270,19 +1285,26 @@
         document.getElementById('productQuickModal').style.display = 'none';
     }
 
-    /* 🛒 CHECKOUT ENGINE & GOOGLE SHEET SYNC */
+    /* 🛒 MANDATORY LOGIN CHECKOUT ENGINE & GOOGLE SHEET SYNC */
     function openCheckoutModal() {
         if (userCart.length === 0) {
             alert("Your cart is empty!");
             return;
         }
+
+        // 🔒 STRICT MANDATORY LOGIN ENFORCEMENT
+        if (!currentUser) {
+            alert("🔒 Please login to your account first so that your order history gets saved!");
+            toggleDrawer('cartDrawer');
+            openLoginModal();
+            return;
+        }
+
         toggleDrawer('cartDrawer');
         document.getElementById('checkoutModal').style.display = 'flex';
         
-        if (currentUser) {
-            document.getElementById('coName').value = currentUser.name || '';
-            document.getElementById('coPhone').value = currentUser.phone || '';
-        }
+        document.getElementById('coName').value = currentUser.name || '';
+        document.getElementById('coPhone').value = currentUser.phone || '';
     }
 
     function closeCheckoutModal() {
@@ -1291,13 +1313,27 @@
 
     function handleCheckoutSubmit(e) {
         e.preventDefault();
+        if(!currentUser) {
+            alert("Please login first!");
+            closeCheckoutModal();
+            openLoginModal();
+            return;
+        }
+
         const btn = document.getElementById('coSubmitBtn');
         btn.innerText = "Placing Order...";
         btn.disabled = true;
 
         const name = document.getElementById('coName').value;
-        const phone = document.getElementById('coPhone').value;
+        const phone = currentUser.phone || document.getElementById('coPhone').value;
         const address = document.getElementById('coAddress').value;
+
+        if(!address || address.trim().length < 10) {
+            alert("⚠️ Please enter complete delivery address (House No, Area, Landmark & Pincode)!");
+            btn.innerText = "🛒 Confirm & Place Order";
+            btn.disabled = false;
+            return;
+        }
 
         const orderId = 'GU-ORD-' + Math.floor(100000 + Math.random() * 900000);
         const grandTotal = userCart.reduce((sum, i) => sum + (i.price * i.qty), 0);
@@ -1332,7 +1368,6 @@
             .catch(() => {
                 btn.innerText = "🛒 Confirm & Place Order";
                 btn.disabled = false;
-                alert("Connection error! Placing WhatsApp order directly...");
                 closeCheckoutModal();
                 
                 const waItemsStr = userCart.map(i => `• ${i.fullTitle || i.name} (x${i.qty}) - ₹${i.price * i.qty}`).join('\n');
