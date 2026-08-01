@@ -987,6 +987,7 @@
 
     function scrollToTopHome() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
+    /* 📋 INQUIRY FORM TOGGLE FUNCTION */
     function toggleInquiryForm() {
         const formTarget = document.getElementById('inquiryFormTarget');
         if (formTarget.style.display === 'block') {
@@ -1230,9 +1231,9 @@
         globalStoreData.forEach(prod => {
             if (suggestions.length >= 5) return;
 
-            const pName = (prod["Product Name"] || prod["Name"] || prod["Title"] || "").toString();
-            const pBrand = (prod.Brand || "").toString();
-            const pFlavour = (prod.Flavour || "").toString();
+            const pName = getVal(prod, ["Product Name", "Name", "Title"]);
+            const pBrand = getVal(prod, ["Brand"]);
+            const pFlavour = getVal(prod, ["Flavour", "Flavor"]);
 
             if (pName.toLowerCase().includes(queryClean) && !addedKeys.has('prod:' + pName)) {
                 suggestions.push({ text: pName, tag: 'Product' });
@@ -1279,7 +1280,20 @@
         }
     });
 
-    /* 🛒 PRODUCTS RENDER ENGINE (SAFE & ROBUST FILTER FIX) */
+    /* 🛠️ HELPER TO GET FLEXIBLE COLUMN KEYS FROM GOOGLE SHEET OBJECT */
+    function getVal(obj, possibleKeys) {
+        if (!obj) return '';
+        for (let key of Object.keys(obj)) {
+            for (let target of possibleKeys) {
+                if (key.trim().toLowerCase() === target.trim().toLowerCase()) {
+                    return obj[key] !== undefined ? obj[key].toString() : '';
+                }
+            }
+        }
+        return '';
+    }
+
+    /* 🛒 PRODUCTS RENDER ENGINE (DYNAMIC FLEXIBLE MATCHING + 3 IMAGES SUPPORT) */
     function syncRenderEngine(searchQuery = '') {
         const container = document.getElementById('shopifyGridContainer');
         container.innerHTML = '';
@@ -1292,26 +1306,26 @@
         // Filter valid products array
         let filtered = globalStoreData.filter(p => {
             if(!p) return false;
-            const bName = (p.Brand || '').toString().trim().toUpperCase();
+            const bName = getVal(p, ["Brand"]).toUpperCase();
             return bName !== 'BACKGROUND';
         });
 
         if(currentFilterCategory !== 'All') {
-            filtered = filtered.filter(p => p.Category && p.Category.toString().trim().toLowerCase() === currentFilterCategory.trim().toLowerCase());
+            filtered = filtered.filter(p => getVal(p, ["Category"]).trim().toLowerCase() === currentFilterCategory.trim().toLowerCase());
         }
         if(currentFilterBrand !== 'All') {
-            filtered = filtered.filter(p => p.Brand && p.Brand.toString().trim().toLowerCase() === currentFilterBrand.trim().toLowerCase());
+            filtered = filtered.filter(p => getVal(p, ["Brand"]).trim().toLowerCase() === currentFilterBrand.trim().toLowerCase());
         }
         if(currentFilterFlavour !== 'All') {
-            filtered = filtered.filter(p => p.Flavour && p.Flavour.toString().trim().toLowerCase() === currentFilterFlavour.trim().toLowerCase());
+            filtered = filtered.filter(p => getVal(p, ["Flavour", "Flavor"]).trim().toLowerCase() === currentFilterFlavour.trim().toLowerCase());
         }
 
         if(searchQuery !== '') {
             filtered = filtered.filter(p => {
-                const name = (p["Product Name"] || p["Name"] || p["Title"] || '').toString().toLowerCase();
-                const brand = (p.Brand || '').toString().toLowerCase();
-                const cat = (p.Category || '').toString().toLowerCase();
-                const flav = (p.Flavour || '').toString().toLowerCase();
+                const name = getVal(p, ["Product Name", "Name", "Title"]).toLowerCase();
+                const brand = getVal(p, ["Brand"]).toLowerCase();
+                const cat = getVal(p, ["Category"]).toLowerCase();
+                const flav = getVal(p, ["Flavour", "Flavor"]).toLowerCase();
                 const q = searchQuery.toLowerCase().trim();
                 return name.includes(q) || brand.includes(q) || cat.includes(q) || flav.includes(q);
             });
@@ -1323,41 +1337,49 @@
         }
 
         filtered.forEach((prod) => {
-            const pTitle = (prod["Product Name"] || prod["Name"] || prod["Title"] || 'Premium Supplement').toString();
-            const mrp = parseFloat(prod.MRP || 0);
-            const sp = parseFloat(prod["Selling Price"] || prod["Price"] || prod["SP"] || 0);
+            const pTitle = getVal(prod, ["Product Name", "Name", "Title"]) || 'Premium Supplement';
+            const brandName = getVal(prod, ["Brand"]) || 'GrowUp';
+            const weightVal = getVal(prod, ["Weight / Size", "Weight", "Size"]);
+            const flavVal = getVal(prod, ["Flavour", "Flavor"]);
+            
+            const mrp = parseFloat(getVal(prod, ["MRP"])) || 0;
+            const sp = parseFloat(getVal(prod, ["Selling Price", "Price", "SP"])) || 0;
             let discount = (mrp > sp && mrp > 0) ? Math.round(((mrp - sp) / mrp) * 100) : 0;
 
-            const rawImg = prod["Image 1"] || prod["Image"] || prod["Image URL"] || '';
-            const img1 = cleanDriveUrl(rawImg);
-            const fallback = `https://via.placeholder.com/300/f1f5f9/0072ff?text=${encodeURIComponent(prod.Brand || 'GrowUp')}`;
+            // Multi-Images Fetch (Image 1, Image 2, Image 3)
+            const rawImg1 = getVal(prod, ["Image 1", "Image1", "Image"]);
+            const rawImg2 = getVal(prod, ["Image 2", "Image2"]);
+            const rawImg3 = getVal(prod, ["Image 3", "Image3"]);
+
+            const img1 = cleanDriveUrl(rawImg1);
+            const fallback = `https://via.placeholder.com/300/f1f5f9/0072ff?text=${encodeURIComponent(brandName)}`;
 
             const inWishlist = userWishlist.some(i => i.name === pTitle);
-            const stockVal = (prod["Stock Status"] || prod["Stock"] || "In Stock").toString().toLowerCase();
-            const inStock = stockVal.includes("in") || stockVal.includes("stock") || stockVal === "yes" || stockVal === "available";
+            const stockVal = getVal(prod, ["Stock Status", "Stock"]).toLowerCase();
+            const inStock = stockVal === '' || stockVal.includes("in") || stockVal.includes("stock") || stockVal === "yes" || stockVal === "available";
 
             const card = document.createElement('div');
             card.className = 'prod-card';
             card.innerHTML = `
                 ${discount > 0 ? `<div class="badge-discount">${discount}% OFF</div>` : ''}
-                <div class="wishlist-btn-card" onclick="toggleWishlist('${pTitle.replace(/'/g, "\\'")}', '${(prod.Brand || 'GrowUp').replace(/'/g, "\\'")}', '${sp}', '${img1}')">
+                <div class="wishlist-btn-card" onclick="toggleWishlist('${pTitle.replace(/'/g, "\\'")}', '${brandName.replace(/'/g, "\\'")}', '${sp}', '${img1}')">
                     ${inWishlist ? '❤️' : '🤍'}
                 </div>
                 <div class="prod-media">
                     <img src="${img1}" onerror="this.src='${fallback}';">
                 </div>
                 <div class="prod-details">
-                    <span class="prod-brand">${prod.Brand || 'GrowUp'}</span>
+                    <span class="prod-brand">${brandName}</span>
                     <h3 class="prod-title">${pTitle}</h3>
-                    <span class="prod-weight">${prod["Weight / Size"] || prod["Size"] || prod["Weight"] || ''} ${prod["Flavour"] ? '• ' + prod["Flavour"] : ''}</span>
+                    <span class="prod-weight">${weightVal} ${flavVal ? '• ' + flavVal : ''}</span>
                     <div class="prod-pricing">
                         <span class="price-sale">₹${sp}</span>
                         ${mrp > sp ? `<span class="price-mrp">₹${mrp}</span>` : ''}
                     </div>
                     ${inStock ? 
                         `<div class="card-actions-grid">
-                            <button class="action-btn secondary" onclick="addToCart('${pTitle.replace(/'/g, "\\'")}', '${(prod.Brand || 'GrowUp').replace(/'/g, "\\'")}', '${sp}', '${img1}')">🛒 +Cart</button>
-                            <button class="action-btn" onclick="addToCart('${pTitle.replace(/'/g, "\\'")}', '${(prod.Brand || 'GrowUp').replace(/'/g, "\\'")}', '${sp}', '${img1}')">Order</button>
+                            <button class="action-btn secondary" onclick="addToCart('${pTitle.replace(/'/g, "\\'")}', '${brandName.replace(/'/g, "\\'")}', '${sp}', '${img1}')">🛒 +Cart</button>
+                            <button class="action-btn" onclick="addToCart('${pTitle.replace(/'/g, "\\'")}', '${brandName.replace(/'/g, "\\'")}', '${sp}', '${img1}')">Order</button>
                         </div>` : 
                         `<button class="action-btn out-of-stock" disabled>OUT OF STOCK</button>`
                     }
@@ -1387,12 +1409,12 @@
         const brandRow = document.getElementById('brandContainer');
         const flavRow = document.getElementById('flavourContainer');
 
-        const validItems = data.filter(p => p && p.Brand && p.Brand.toString().toUpperCase() !== 'BACKGROUND');
+        const validItems = data.filter(p => p && getVal(p, ["Brand"]).toUpperCase() !== 'BACKGROUND');
 
-        const categories = [...new Set(validItems.map(p => p.Category).filter(c => c && c.toString().trim() !== ''))];
+        const categories = [...new Set(validItems.map(p => getVal(p, ["Category"])).filter(c => c && c.trim() !== ''))];
         const emojiMap = { 'Protein': '🥛', 'Mass Gainer': '💪', 'Pre Workout': '⚡', 'Creatine': '🔋', 'Vitamins': '💊', 'EAA': '🥤', 'Fat Loss': '🔥', 'Wellness': '🌱' };
         categories.forEach(cat => {
-            const emoji = emojiMap[cat.toString().trim()] || '📦';
+            const emoji = emojiMap[cat.trim()] || '📦';
             const card = document.createElement('div');
             card.className = 'cat-card';
             card.onclick = function() { filterBySpec('Category', cat, card); };
@@ -1400,7 +1422,7 @@
             catRow.appendChild(card);
         });
 
-        const brands = [...new Set(validItems.map(p => p.Brand).filter(b => b && b.toString().trim() !== ''))];
+        const brands = [...new Set(validItems.map(p => getVal(p, ["Brand"])).filter(b => b && b.trim() !== ''))];
         brands.forEach(brand => {
             const card = document.createElement('div');
             card.className = 'brand-scroll-box';
@@ -1409,9 +1431,9 @@
             brandRow.appendChild(card);
         });
 
-        const flavours = [...new Set(validItems.map(p => p.Flavour).filter(f => f && f.toString().trim() !== ''))];
+        const flavours = [...new Set(validItems.map(p => getVal(p, ["Flavour", "Flavor"])).filter(f => f && f.trim() !== ''))];
         flavours.forEach(flav => {
-            const imgUrl = flavorImageAssets[flav.toString().trim()] || '';
+            const imgUrl = flavorImageAssets[flav.trim()] || '';
             const box = document.createElement('div');
             box.className = 'flav-scroll-box';
             box.onclick = function() { filterBySpec('Flavour', flav, box); };
