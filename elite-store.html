@@ -388,8 +388,35 @@
             align-items: center;
             justify-content: center;
             padding: 10px;
+            position: relative;
         }
-        .prod-media img { max-width: 90%; max-height: 90%; object-fit: contain; }
+        .prod-media img { max-width: 90%; max-height: 90%; object-fit: contain; transition: transform 0.2s ease; }
+
+        /* 🖼️ MULTI-IMAGE THUMBNAIL BAR UNDER MEDIA */
+        .image-dots-bar {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            padding: 4px 0;
+            background: rgba(0,0,0,0.02);
+        }
+
+        .img-dot-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            object-fit: cover;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.2s ease;
+        }
+
+        .img-dot-thumb.active {
+            opacity: 1;
+            border-color: var(--accent-color);
+            transform: scale(1.1);
+        }
 
         .prod-details { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
         .prod-brand { font-size: 8px; font-weight: 800; color: var(--accent-color); text-transform: uppercase; margin-bottom: 2px; }
@@ -987,7 +1014,6 @@
 
     function scrollToTopHome() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
-    /* 📋 INQUIRY FORM TOGGLE FUNCTION */
     function toggleInquiryForm() {
         const formTarget = document.getElementById('inquiryFormTarget');
         if (formTarget.style.display === 'block') {
@@ -1110,28 +1136,63 @@
         if(id === 'wishlistDrawer') renderWishlistDrawer();
     }
 
-    function addToCart(prodName, brand, price, img) {
-        const existing = userCart.find(i => i.name === prodName);
+    /* 🛒 ACCURATE ADD TO CART ENGINE (NO OVERWRITE) */
+    function addToCartByIndex(index) {
+        const prod = globalStoreData[index];
+        if(!prod) return;
+
+        const pTitle = getVal(prod, ["Product Name", "Name", "Title"]) || 'Premium Supplement';
+        const brandName = getVal(prod, ["Brand"]) || 'GrowUp';
+        const weightVal = getVal(prod, ["Weight / Size", "Weight", "Size"]);
+        const flavVal = getVal(prod, ["Flavour", "Flavor"]);
+        const sp = parseFloat(getVal(prod, ["Selling Price", "Price", "SP"])) || 0;
+        const img1 = cleanDriveUrl(getVal(prod, ["Image 1", "Image1", "Image"]));
+
+        const fullTitle = `${pTitle} (${weightVal}${flavVal ? ' - ' + flavVal : ''})`;
+
+        const existing = userCart.find(i => i.id === index || i.fullTitle === fullTitle);
         if(existing) {
             existing.qty += 1;
         } else {
-            userCart.push({ name: prodName, brand: brand, price: parseFloat(price), img: img, qty: 1 });
+            userCart.push({ id: index, name: pTitle, fullTitle: fullTitle, brand: brandName, price: sp, img: img1, qty: 1 });
         }
         localStorage.setItem('gu_cart', JSON.stringify(userCart));
         updateBadges();
         toggleDrawer('cartDrawer');
     }
 
-    function toggleWishlist(prodName, brand, price, img) {
-        const idx = userWishlist.findIndex(i => i.name === prodName);
+    /* ❤️ ACCURATE WISHLIST TOGGLE ENGINE (PER-PRODUCT Heart CONTROL) */
+    function toggleWishlistByIndex(index) {
+        const prod = globalStoreData[index];
+        if(!prod) return;
+
+        const pTitle = getVal(prod, ["Product Name", "Name", "Title"]) || 'Premium Supplement';
+        const brandName = getVal(prod, ["Brand"]) || 'GrowUp';
+        const sp = parseFloat(getVal(prod, ["Selling Price", "Price", "SP"])) || 0;
+        const img1 = cleanDriveUrl(getVal(prod, ["Image 1", "Image1", "Image"]));
+
+        const idx = userWishlist.findIndex(i => i.id === index || i.name === pTitle);
         if(idx > -1) {
             userWishlist.splice(idx, 1);
         } else {
-            userWishlist.push({ name: prodName, brand: brand, price: parseFloat(price), img: img });
+            userWishlist.push({ id: index, name: pTitle, brand: brandName, price: sp, img: img1 });
         }
         localStorage.setItem('gu_wishlist', JSON.stringify(userWishlist));
         updateBadges();
         syncRenderEngine();
+    }
+
+    /* 🖼️ SWITCH PRODUCT IMAGE SLIDER ENGINE */
+    function switchProductImage(cardIdx, imgUrl, element) {
+        const imgEl = document.getElementById(`mainImg_${cardIdx}`);
+        if(imgEl) {
+            imgEl.src = imgUrl;
+        }
+        const parent = element.parentElement;
+        if(parent) {
+            parent.querySelectorAll('.img-dot-thumb').forEach(dot => dot.classList.remove('active'));
+            element.classList.add('active');
+        }
     }
 
     function updateBadges() {
@@ -1165,7 +1226,7 @@
             div.innerHTML = `
                 <img src="${item.img}">
                 <div style="flex-grow: 1;">
-                    <div style="font-size: 11px; font-weight: 700;">${item.name}</div>
+                    <div style="font-size: 11px; font-weight: 700;">${item.fullTitle || item.name}</div>
                     <div style="font-size: 10px; color: #059669; font-weight: 800;">₹${item.price}</div>
                     <div class="qty-control">
                         <button class="qty-btn" onclick="updateCartQty(${idx}, -1)">-</button>
@@ -1198,7 +1259,7 @@
                     <div style="font-size: 11px; font-weight: 700;">${item.name}</div>
                     <div style="font-size: 10px; color: #059669; font-weight: 800;">₹${item.price}</div>
                 </div>
-                <button class="action-btn" onclick="addToCart('${item.name}', '${item.brand}', '${item.price}', '${item.img}')">Add Cart</button>
+                <button class="action-btn" onclick="addToCartByIndex(${item.id})">Add Cart</button>
             `;
             container.appendChild(div);
         });
@@ -1206,7 +1267,7 @@
 
     function checkoutCartWhatsApp() {
         if(userCart.length === 0) { alert("Cart is empty!"); return; }
-        const itemsStr = userCart.map(i => `• ${i.name} (x${i.qty}) - ₹${i.price * i.qty}`).join('\n');
+        const itemsStr = userCart.map(i => `• ${i.fullTitle || i.name} (x${i.qty}) - ₹${i.price * i.qty}`).join('\n');
         const grandTotal = userCart.reduce((sum, i) => sum + (i.price * i.qty), 0);
         
         let custInfoStr = currentUser ? `\n👤 *Customer:* ${currentUser.name}\n📞 *Phone:* ${currentUser.phone}` : '';
@@ -1280,7 +1341,6 @@
         }
     });
 
-    /* 🛠️ HELPER TO GET FLEXIBLE COLUMN KEYS FROM GOOGLE SHEET OBJECT */
     function getVal(obj, possibleKeys) {
         if (!obj) return '';
         for (let key of Object.keys(obj)) {
@@ -1293,7 +1353,7 @@
         return '';
     }
 
-    /* 🛒 PRODUCTS RENDER ENGINE (DYNAMIC FLEXIBLE MATCHING + 3 IMAGES SUPPORT) */
+    /* 🛒 PRODUCTS RENDER ENGINE (WITH MULTI-IMAGE THUMBNAIL SLIDER) */
     function syncRenderEngine(searchQuery = '') {
         const container = document.getElementById('shopifyGridContainer');
         container.innerHTML = '';
@@ -1303,8 +1363,8 @@
             return;
         }
 
-        // Filter valid products array
-        let filtered = globalStoreData.filter(p => {
+        let filtered = globalStoreData.map((p, index) => ({ ...p, _originalIndex: index }))
+        .filter(p => {
             if(!p) return false;
             const bName = getVal(p, ["Brand"]).toUpperCase();
             return bName !== 'BACKGROUND';
@@ -1337,6 +1397,7 @@
         }
 
         filtered.forEach((prod) => {
+            const index = prod._originalIndex;
             const pTitle = getVal(prod, ["Product Name", "Name", "Title"]) || 'Premium Supplement';
             const brandName = getVal(prod, ["Brand"]) || 'GrowUp';
             const weightVal = getVal(prod, ["Weight / Size", "Weight", "Size"]);
@@ -1346,15 +1407,13 @@
             const sp = parseFloat(getVal(prod, ["Selling Price", "Price", "SP"])) || 0;
             let discount = (mrp > sp && mrp > 0) ? Math.round(((mrp - sp) / mrp) * 100) : 0;
 
-            // Multi-Images Fetch (Image 1, Image 2, Image 3)
-            const rawImg1 = getVal(prod, ["Image 1", "Image1", "Image"]);
-            const rawImg2 = getVal(prod, ["Image 2", "Image2"]);
-            const rawImg3 = getVal(prod, ["Image 3", "Image3"]);
+            const img1 = cleanDriveUrl(getVal(prod, ["Image 1", "Image1", "Image"]));
+            const img2 = cleanDriveUrl(getVal(prod, ["Image 2", "Image2"]));
+            const img3 = cleanDriveUrl(getVal(prod, ["Image 3", "Image3"]));
 
-            const img1 = cleanDriveUrl(rawImg1);
             const fallback = `https://via.placeholder.com/300/f1f5f9/0072ff?text=${encodeURIComponent(brandName)}`;
 
-            const inWishlist = userWishlist.some(i => i.name === pTitle);
+            const inWishlist = userWishlist.some(i => i.id === index || i.name === pTitle);
             const stockVal = getVal(prod, ["Stock Status", "Stock"]).toLowerCase();
             const inStock = stockVal === '' || stockVal.includes("in") || stockVal.includes("stock") || stockVal === "yes" || stockVal === "available";
 
@@ -1362,12 +1421,19 @@
             card.className = 'prod-card';
             card.innerHTML = `
                 ${discount > 0 ? `<div class="badge-discount">${discount}% OFF</div>` : ''}
-                <div class="wishlist-btn-card" onclick="toggleWishlist('${pTitle.replace(/'/g, "\\'")}', '${brandName.replace(/'/g, "\\'")}', '${sp}', '${img1}')">
+                <div class="wishlist-btn-card" onclick="toggleWishlistByIndex(${index})">
                     ${inWishlist ? '❤️' : '🤍'}
                 </div>
                 <div class="prod-media">
-                    <img src="${img1}" onerror="this.src='${fallback}';">
+                    <img id="mainImg_${index}" src="${img1}" onerror="this.src='${fallback}';">
                 </div>
+
+                <div class="image-dots-bar">
+                    ${img1 ? `<img src="${img1}" class="img-dot-thumb active" onclick="switchProductImage(${index}, '${img1}', this)" onerror="this.style.display='none'">` : ''}
+                    ${img2 ? `<img src="${img2}" class="img-dot-thumb" onclick="switchProductImage(${index}, '${img2}', this)" onerror="this.style.display='none'">` : ''}
+                    ${img3 ? `<img src="${img3}" class="img-dot-thumb" onclick="switchProductImage(${index}, '${img3}', this)" onerror="this.style.display='none'">` : ''}
+                </div>
+
                 <div class="prod-details">
                     <span class="prod-brand">${brandName}</span>
                     <h3 class="prod-title">${pTitle}</h3>
@@ -1378,8 +1444,8 @@
                     </div>
                     ${inStock ? 
                         `<div class="card-actions-grid">
-                            <button class="action-btn secondary" onclick="addToCart('${pTitle.replace(/'/g, "\\'")}', '${brandName.replace(/'/g, "\\'")}', '${sp}', '${img1}')">🛒 +Cart</button>
-                            <button class="action-btn" onclick="addToCart('${pTitle.replace(/'/g, "\\'")}', '${brandName.replace(/'/g, "\\'")}', '${sp}', '${img1}')">Order</button>
+                            <button class="action-btn secondary" onclick="addToCartByIndex(${index})">🛒 +Cart</button>
+                            <button class="action-btn" onclick="addToCartByIndex(${index})">Order</button>
                         </div>` : 
                         `<button class="action-btn out-of-stock" disabled>OUT OF STOCK</button>`
                     }
