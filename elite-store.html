@@ -442,7 +442,7 @@
             margin: 40px 0;
             box-shadow: 0 0 20px rgba(0, 162, 255, 0.3);
             color: #ffffff;
-            display: none; /* 👈 Default Me Hidden */
+            display: none;
         }
 
         .inquiry-grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
@@ -977,7 +977,7 @@
 
     function cleanDriveUrl(url) {
         if (!url) return '';
-        url = url.trim();
+        url = url.toString().trim();
         if (url.includes('drive.google.com/uc?')) return url;
         var id = '';
         if (url.includes('id=')) id = url.split('id=')[1].split('&')[0];
@@ -987,7 +987,6 @@
 
     function scrollToTopHome() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
-    /* 📋 INQUIRY FORM TOGGLE FUNCTION */
     function toggleInquiryForm() {
         const formTarget = document.getElementById('inquiryFormTarget');
         if (formTarget.style.display === 'block') {
@@ -1231,9 +1230,9 @@
         globalStoreData.forEach(prod => {
             if (suggestions.length >= 5) return;
 
-            const pName = prod["Product Name"] || prod["Name"] || prod["Title"] || "";
-            const pBrand = prod.Brand || "";
-            const pFlavour = prod.Flavour || "";
+            const pName = (prod["Product Name"] || prod["Name"] || prod["Title"] || "").toString();
+            const pBrand = (prod.Brand || "").toString();
+            const pFlavour = (prod.Flavour || "").toString();
 
             if (pName.toLowerCase().includes(queryClean) && !addedKeys.has('prod:' + pName)) {
                 suggestions.push({ text: pName, tag: 'Product' });
@@ -1280,7 +1279,7 @@
         }
     });
 
-    /* 🛒 PRODUCTS RENDER ENGINE SAFE FIX */
+    /* 🛒 PRODUCTS RENDER ENGINE (SAFE & ROBUST FILTER FIX) */
     function syncRenderEngine(searchQuery = '') {
         const container = document.getElementById('shopifyGridContainer');
         container.innerHTML = '';
@@ -1290,19 +1289,21 @@
             return;
         }
 
+        // Filter valid products array
         let filtered = globalStoreData.filter(p => {
-            const bName = (p.Brand || '').toString().toUpperCase();
-            return bName !== 'BACKGROUND' && bName !== '';
+            if(!p) return false;
+            const bName = (p.Brand || '').toString().trim().toUpperCase();
+            return bName !== 'BACKGROUND';
         });
 
         if(currentFilterCategory !== 'All') {
-            filtered = filtered.filter(p => p.Category && p.Category.toString().trim() === currentFilterCategory.trim());
+            filtered = filtered.filter(p => p.Category && p.Category.toString().trim().toLowerCase() === currentFilterCategory.trim().toLowerCase());
         }
         if(currentFilterBrand !== 'All') {
-            filtered = filtered.filter(p => p.Brand && p.Brand.toString().trim() === currentFilterBrand.trim());
+            filtered = filtered.filter(p => p.Brand && p.Brand.toString().trim().toLowerCase() === currentFilterBrand.trim().toLowerCase());
         }
         if(currentFilterFlavour !== 'All') {
-            filtered = filtered.filter(p => p.Flavour && p.Flavour.toString().trim() === currentFilterFlavour.trim());
+            filtered = filtered.filter(p => p.Flavour && p.Flavour.toString().trim().toLowerCase() === currentFilterFlavour.trim().toLowerCase());
         }
 
         if(searchQuery !== '') {
@@ -1311,7 +1312,7 @@
                 const brand = (p.Brand || '').toString().toLowerCase();
                 const cat = (p.Category || '').toString().toLowerCase();
                 const flav = (p.Flavour || '').toString().toLowerCase();
-                const q = searchQuery.toLowerCase();
+                const q = searchQuery.toLowerCase().trim();
                 return name.includes(q) || brand.includes(q) || cat.includes(q) || flav.includes(q);
             });
         }
@@ -1322,22 +1323,24 @@
         }
 
         filtered.forEach((prod) => {
-            const pTitle = prod["Product Name"] || prod["Name"] || prod["Title"] || 'Premium Supplement';
+            const pTitle = (prod["Product Name"] || prod["Name"] || prod["Title"] || 'Premium Supplement').toString();
             const mrp = parseFloat(prod.MRP || 0);
-            const sp = parseFloat(prod["Selling Price"] || prod["Price"] || 0);
+            const sp = parseFloat(prod["Selling Price"] || prod["Price"] || prod["SP"] || 0);
             let discount = (mrp > sp && mrp > 0) ? Math.round(((mrp - sp) / mrp) * 100) : 0;
 
-            const img1 = cleanDriveUrl(prod["Image 1"] || prod["Image"]);
+            const rawImg = prod["Image 1"] || prod["Image"] || prod["Image URL"] || '';
+            const img1 = cleanDriveUrl(rawImg);
             const fallback = `https://via.placeholder.com/300/f1f5f9/0072ff?text=${encodeURIComponent(prod.Brand || 'GrowUp')}`;
 
             const inWishlist = userWishlist.some(i => i.name === pTitle);
-            const inStock = (prod["Stock Status"] || prod["Stock"] || "In Stock").toString().toLowerCase().includes("stock");
+            const stockVal = (prod["Stock Status"] || prod["Stock"] || "In Stock").toString().toLowerCase();
+            const inStock = stockVal.includes("in") || stockVal.includes("stock") || stockVal === "yes" || stockVal === "available";
 
             const card = document.createElement('div');
             card.className = 'prod-card';
             card.innerHTML = `
                 ${discount > 0 ? `<div class="badge-discount">${discount}% OFF</div>` : ''}
-                <div class="wishlist-btn-card" onclick="toggleWishlist('${pTitle}', '${prod.Brand || 'GrowUp'}', '${sp}', '${img1}')">
+                <div class="wishlist-btn-card" onclick="toggleWishlist('${pTitle.replace(/'/g, "\\'")}', '${(prod.Brand || 'GrowUp').replace(/'/g, "\\'")}', '${sp}', '${img1}')">
                     ${inWishlist ? '❤️' : '🤍'}
                 </div>
                 <div class="prod-media">
@@ -1346,15 +1349,15 @@
                 <div class="prod-details">
                     <span class="prod-brand">${prod.Brand || 'GrowUp'}</span>
                     <h3 class="prod-title">${pTitle}</h3>
-                    <span class="prod-weight">${prod["Weight / Size"] || prod["Size"] || ''} ${prod["Flavour"] ? '• ' + prod["Flavour"] : ''}</span>
+                    <span class="prod-weight">${prod["Weight / Size"] || prod["Size"] || prod["Weight"] || ''} ${prod["Flavour"] ? '• ' + prod["Flavour"] : ''}</span>
                     <div class="prod-pricing">
                         <span class="price-sale">₹${sp}</span>
-                        ${mrp > sp ? `<span class="price-mrp">₹${prod.MRP}</span>` : ''}
+                        ${mrp > sp ? `<span class="price-mrp">₹${mrp}</span>` : ''}
                     </div>
                     ${inStock ? 
                         `<div class="card-actions-grid">
-                            <button class="action-btn secondary" onclick="addToCart('${pTitle}', '${prod.Brand || 'GrowUp'}', '${sp}', '${img1}')">🛒 +Cart</button>
-                            <button class="action-btn" onclick="addToCart('${pTitle}', '${prod.Brand || 'GrowUp'}', '${sp}', '${img1}')">Order</button>
+                            <button class="action-btn secondary" onclick="addToCart('${pTitle.replace(/'/g, "\\'")}', '${(prod.Brand || 'GrowUp').replace(/'/g, "\\'")}', '${sp}', '${img1}')">🛒 +Cart</button>
+                            <button class="action-btn" onclick="addToCart('${pTitle.replace(/'/g, "\\'")}', '${(prod.Brand || 'GrowUp').replace(/'/g, "\\'")}', '${sp}', '${img1}')">Order</button>
                         </div>` : 
                         `<button class="action-btn out-of-stock" disabled>OUT OF STOCK</button>`
                     }
@@ -1384,7 +1387,7 @@
         const brandRow = document.getElementById('brandContainer');
         const flavRow = document.getElementById('flavourContainer');
 
-        const validItems = data.filter(p => p.Brand && p.Brand.toString().toUpperCase() !== 'BACKGROUND');
+        const validItems = data.filter(p => p && p.Brand && p.Brand.toString().toUpperCase() !== 'BACKGROUND');
 
         const categories = [...new Set(validItems.map(p => p.Category).filter(c => c && c.toString().trim() !== ''))];
         const emojiMap = { 'Protein': '🥛', 'Mass Gainer': '💪', 'Pre Workout': '⚡', 'Creatine': '🔋', 'Vitamins': '💊', 'EAA': '🥤', 'Fat Loss': '🔥', 'Wellness': '🌱' };
