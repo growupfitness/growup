@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Grow Up Fitness - Elite Premium Store & Inquiry</title>
+    <!-- Leaflet OpenStreetMap CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', sans-serif; transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
@@ -753,6 +754,7 @@
 </head>
 <body>
 
+    <!-- 🛍️ HEADER -->
     <header>
         <div class="header-left">
             <div class="logo-area" onclick="scrollToTopHome()" title="Go to Home / Top">
@@ -766,20 +768,25 @@
         </div>
 
         <div class="header-controls">
+            <!-- 1. Inquiry Form Toggle Button -->
             <button onclick="toggleInquiryForm()" class="inquiry-nav-btn">
                 📝 Inquiry Form
             </button>
 
+            <!-- 2. Dark / Light Toggle -->
             <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
 
+            <!-- 3. Cart Icon -->
             <div class="header-icon-btn" onclick="toggleDrawer('cartDrawer')" title="Cart / Trolley">
                 🛒 <span class="icon-badge" id="cartBadge">0</span>
             </div>
 
+            <!-- 4. Wishlist Icon -->
             <div class="header-icon-btn" onclick="toggleDrawer('wishlistDrawer')" title="Wishlist">
                 ❤️ <span class="icon-badge" id="wishlistBadge">0</span>
             </div>
 
+            <!-- 5. Account / Login Button -->
             <div id="userAccountBtnSlot">
                 <button class="header-login-btn" onclick="openLoginModal()">
                     👤 Login
@@ -830,6 +837,7 @@
             <div id="loading">Syncing Live Products...</div>
             <div class="products-grid" id="shopifyGridContainer"></div>
 
+            <!-- 📋 REQUIREMENT FORM (TOGGLE / HIDDEN BY DEFAULT) -->
             <div class="inquiry-wrapper-card" id="inquiryFormTarget">
                 <h2 class="section-title" style="color: #00a2ff;">Grow Up Fitness - Requirement Form</h2>
                 
@@ -946,6 +954,7 @@
         </footer>
     </div>
 
+    <!-- 🔍 PRODUCT QUICK VIEW POPUP MODAL -->
     <div id="productQuickModal" class="product-modal-overlay">
         <div class="product-modal-content">
             <span class="modal-close-btn" onclick="closeProductModal()">✕</span>
@@ -969,6 +978,7 @@
         </div>
     </div>
 
+    <!-- 💳 CHECKOUT DETAILS MODAL WITH MANDATORY FULL ADDRESS -->
     <div class="modal-overlay" id="checkoutModal">
         <div class="modal-card" style="max-width: 480px;">
             <button class="close-modal-btn" onclick="closeCheckoutModal()">✕</button>
@@ -998,6 +1008,7 @@
         </div>
     </div>
 
+    <!-- 👤 LOGIN MODAL -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-card">
             <button class="close-modal-btn" onclick="closeLoginModal()">✕</button>
@@ -1016,6 +1027,7 @@
         </div>
     </div>
 
+    <!-- 📦 ACCOUNT DASHBOARD & ORDER HISTORY MODAL -->
     <div class="modal-overlay" id="accountModal">
         <div class="modal-card" style="max-width: 500px;">
             <button class="close-modal-btn" onclick="closeAccountModal()">✕</button>
@@ -1036,6 +1048,7 @@
         </div>
     </div>
 
+    <!-- 🛒 CART DRAWER -->
     <div class="drawer-overlay" id="cartDrawer">
         <div class="drawer-header">
             <h3 style="font-size: 14px; font-weight: 800;">Your Cart</h3>
@@ -1053,6 +1066,7 @@
         </div>
     </div>
 
+    <!-- ❤️ WISHLIST DRAWER -->
     <div class="drawer-overlay" id="wishlistDrawer">
         <div class="drawer-header">
             <h3 style="font-size: 14px; font-weight: 800;">Saved Wishlist</h3>
@@ -1063,10 +1077,11 @@
         </div>
     </div>
 
+    <!-- Leaflet JS Map Script Engine -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-    const sheetAPI = 'https://script.google.com/macros/s/AKfycbwYYkHK0vrR30ZzrI2t066TFoXJ7GFXypOJCMfd1MnVkqgv-n5vo65Nfkyh5HhVVQGrLw/exec';
+    const sheetAPI = 'https://script.google.com/macros/s/AKfycbwhWX3xS0qTMlsje2HxYGRL-nlyyykcbKSTyxXaAIR6QYuv7Z-3iVr5uB3gy_4tF_hkZQ/exec';
     const inquiryScriptURL = 'https://script.google.com/macros/s/AKfycbwjpu4olgDnXHNg7aJOoN9igPCXh8adtO1cwtF6CC_MKhLPyk-UfKqP5i6PUQhoJY3uMA/exec';
     
     let globalStoreData = [];
@@ -1285,7 +1300,7 @@
         document.getElementById('productQuickModal').style.display = 'none';
     }
 
-    /* 🛒 MANDATORY LOGIN CHECKOUT ENGINE & GOOGLE SHEET SYNC */
+    /* 🛒 MANDATORY LOGIN CHECKOUT ENGINE & GOOGLE SHEET + SHIPROCKET SYNC */
     function openCheckoutModal() {
         if (userCart.length === 0) {
             alert("Your cart is empty!");
