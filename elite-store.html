@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Grow Up Fitness - Elite Premium Store & Inquiry</title>
     <!-- Leaflet OpenStreetMap CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -186,7 +189,6 @@
             overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.02); cursor: pointer;
         }
 
-        /* 🏷️ DISCOUNT BADGE */
         .badge-discount {
             position: absolute; top: 8px; left: 8px; background: #ff0844; color: white;
             font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: 4px; z-index: 5; text-transform: uppercase;
@@ -645,7 +647,7 @@
     </div>
 
 <script>
-    const sheetAPI = 'https://script.google.com/macros/s/AKfycbxZ5ddxj3D0uZFWXzDsifEeHwf9XVIJ7cEp_bXW7Ug0B2V1LyLxoplV5IE7g-05jDpRJw/exec';
+    const sheetAPI = 'https://script.google.com/macros/s/AKfycbxZ5ddxj3D0uZFWXzDsifEeHwf9XVIJ7cEp_bXW7Ug0B2V1LyLxoplV5IE7g-05jDpRJw/exec?v=' + Date.now();
     const merchantUPI = 'Salvinitinudr-2@oksbi';
     
     let globalStoreData = [];
@@ -736,7 +738,7 @@
     function fetchOrderHistory() {
         if(!currentUser) return;
         const container = document.getElementById('orderHistoryContainer');
-        fetch(`${sheetAPI}?action=getOrders&phone=${currentUser.phone}`)
+        fetch(`${sheetAPI}&action=getOrders&phone=${currentUser.phone}`)
             .then(res => res.json())
             .then(orders => {
                 container.innerHTML = '';
