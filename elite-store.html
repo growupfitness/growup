@@ -3,9 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <title>Grow Up Fitness - Elite Premium Store & Inquiry</title>
     <!-- Leaflet OpenStreetMap CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -404,26 +401,6 @@
                 </div>
             </div>
 
-            <h2 class="section-title">Shop By Flavours</h2>
-            <div class="flavours-scroll-row" id="flavourContainer">
-                <div class="flav-scroll-box active-filter" onclick="filterBySpec('Flavour', 'All', this)">
-                    <div class="flav-box-square">🍫</div>
-                    <p>Swiss Chocolate</p>
-                </div>
-                <div class="flav-scroll-box" onclick="filterBySpec('Flavour', 'Kulfi', this)">
-                    <div class="flav-box-square">🍦</div>
-                    <p>Malai Kulfi</p>
-                </div>
-                <div class="flav-scroll-box" onclick="filterBySpec('Flavour', 'Coffee', this)">
-                    <div class="flav-box-square">☕</div>
-                    <p>Swiss Coffee</p>
-                </div>
-                <div class="flav-scroll-box" onclick="filterBySpec('Flavour', 'Orange', this)">
-                    <div class="flav-box-square">🍊</div>
-                    <p>Tangy Orange</p>
-                </div>
-            </div>
-
             <h2 class="section-title" id="productsTarget">Shop By Brand</h2>
             <div class="brands-scroll-row" id="brandContainer">
                 <div class="brand-scroll-box active-filter" onclick="filterBySpec('Brand', 'All', this)">
@@ -647,7 +624,7 @@
     </div>
 
 <script>
-    const sheetAPI = 'https://script.google.com/macros/s/AKfycbxZ5ddxj3D0uZFWXzDsifEeHwf9XVIJ7cEp_bXW7Ug0B2V1LyLxoplV5IE7g-05jDpRJw/exec?v=' + Date.now();
+    const sheetAPI = 'https://script.google.com/macros/s/AKfycbxZ5ddxj3D0uZFWXzDsifEeHwf9XVIJ7cEp_bXW7Ug0B2V1LyLxoplV5IE7g-05jDpRJw/exec';
     const merchantUPI = 'Salvinitinudr-2@oksbi';
     
     let globalStoreData = [];
@@ -738,7 +715,7 @@
     function fetchOrderHistory() {
         if(!currentUser) return;
         const container = document.getElementById('orderHistoryContainer');
-        fetch(`${sheetAPI}&action=getOrders&phone=${currentUser.phone}`)
+        fetch(`${sheetAPI}?action=getOrders&phone=${currentUser.phone}`)
             .then(res => res.json())
             .then(orders => {
                 container.innerHTML = '';
@@ -1123,15 +1100,14 @@
             const brandName = getVal(prod, ["Brand"]) || 'GrowUp';
             const weightVal = getVal(prod, ["Weight / Size", "Weight", "Size"]);
             const flavVal = getVal(prod, ["Flavour", "Flavor"]);
-            const mrp = parseFloat(getVal(prod, ["MRP"])) || 0;
             const sp = parseFloat(getVal(prod, ["Selling Price", "Price", "SP"])) || 0;
-            const img1 = cleanDriveUrl(getVal(prod, ["Image 1", "Image1", "Image"]));
+            let mrp = parseFloat(getVal(prod, ["MRP"])) || 0;
 
-            let discountBadge = '';
-            if(mrp > sp && mrp > 0) {
-                const offPct = Math.round(((mrp - sp) / mrp) * 100);
-                discountBadge = `<div class="badge-discount">-${offPct}% OFF</div>`;
-            }
+            if(!mrp || mrp <= sp) mrp = Math.round(sp * 1.2); // Default MRP calculation for Discount tag
+
+            const offPct = Math.round(((mrp - sp) / mrp) * 100);
+            const discountBadge = `<div class="badge-discount">-${offPct}% OFF</div>`;
+            const img1 = cleanDriveUrl(getVal(prod, ["Image 1", "Image1", "Image"]));
 
             const card = document.createElement('div');
             card.className = 'prod-card';
@@ -1146,7 +1122,7 @@
                     <span class="prod-weight">${weightVal} ${flavVal ? '• ' + flavVal : ''}</span>
                     <div class="prod-pricing">
                         <span class="price-sale">₹${sp}</span>
-                        ${mrp ? `<span class="price-mrp">₹${mrp}</span>` : ''}
+                        <span class="price-mrp">₹${mrp}</span>
                     </div>
                     <div class="card-actions-grid">
                         <button class="action-btn secondary" onclick="addToCartByIndex(${index})">🛒 +Cart</button>
