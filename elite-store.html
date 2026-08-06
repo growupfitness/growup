@@ -3,240 +3,559 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Grow Up Fitness - Elite Supplement Store</title>
+    <title>Grow Up Fitness - Elite Premium Store & Inquiry</title>
+    <!-- Leaflet OpenStreetMap CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', sans-serif; transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
         
         :root {
-            --bg-primary: #0a0e17;
-            --bg-card: #141c2e;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --accent-color: #ff3366;
-            --accent-gradient: linear-gradient(135deg, #ff3366, #ff6b35);
-            --bg-header: rgba(10, 14, 23, 0.95);
-            --logo-filter: invert(0);
-        }
-
-        [data-theme="light"] {
             --bg-primary: #f8fafc;
             --bg-card: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
             --border-color: rgba(15, 23, 42, 0.08);
-            --accent-color: #e11d48;
-            --accent-gradient: linear-gradient(135deg, #e11d48, #f97316);
-            --bg-header: rgba(255, 255, 255, 0.95);
+            --accent-color: #0072ff;
+            --bg-header: rgba(255, 255, 255, 0.98);
             --logo-filter: invert(1);
         }
-        
-        body { background: var(--bg-primary); color: var(--text-main); min-height: 100vh; overflow-x: hidden; letter-spacing: 0.3px; }
 
+        [data-theme="dark"] {
+            --bg-primary: #090d16;
+            --bg-card: #131a26;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-color: #00f2fe;
+            --bg-header: rgba(13, 20, 33, 0.98);
+            --logo-filter: invert(0);
+        }
+        
+        body { 
+            background: var(--bg-primary);
+            color: var(--text-main); 
+            min-height: 100vh;
+            overflow-x: hidden;
+            letter-spacing: 0.3px;
+        }
+
+        /* 🛍️ HEADER STYLING */
         header {
-            position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
-            background: var(--bg-header); backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--border-color); padding: 10px 18px; 
-            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            z-index: 100;
+            background: var(--bg-header); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px 20px; 
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
 
-        .header-left { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .header-left { display: flex; align-items: center; gap: 15px; flex: 1; }
         .logo-area { cursor: pointer; display: flex; align-items: center; }
-        .logo-area img#mainLogo { max-height: 32px; width: auto; display: block; filter: var(--logo-filter) !important; }
 
-        .search-box { position: relative; max-width: 260px; width: 100%; }
-        .search-box input {
-            width: 100%; padding: 8px 12px 8px 34px; background: var(--bg-card);
-            border: 1px solid var(--border-color); border-radius: 20px; font-size: 11px;
-            font-weight: 600; color: var(--text-main); outline: none;
+        .logo-area img#mainLogo {
+            max-height: 32px; width: auto; display: block;
+            filter: var(--logo-filter) !important;
+            transition: filter 0.3s ease, transform 0.2s ease;
         }
-        .search-box::before { content: '🔍'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; opacity: 0.6; }
 
-        .header-controls { display: flex; align-items: center; gap: 8px; }
-        .theme-toggle-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; }
-        
+        .search-box { position: relative; max-width: 280px; width: 100%; }
+
+        .search-box input {
+            width: 100%; padding: 8px 12px 8px 34px;
+            background: var(--bg-primary); border: 1px solid var(--border-color);
+            border-radius: 20px; font-size: 11px; font-weight: 600;
+            color: var(--text-main); outline: none;
+        }
+
+        .search-box::before {
+            content: '🔍'; position: absolute; left: 10px; top: 50%;
+            transform: translateY(-50%); font-size: 12px; opacity: 0.6;
+        }
+
+        .top-search-dropdown {
+            position: absolute; top: 110%; left: 0; width: 100%;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            max-height: 220px; overflow-y: auto; z-index: 200; display: none;
+        }
+
+        .header-controls { display: flex; align-items: center; gap: 10px; }
+
+        .theme-toggle-btn {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            color: var(--text-main); padding: 6px 14px; border-radius: 20px;
+            font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;
+        }
+
         .header-icon-btn {
-            background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main);
-            width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            color: var(--text-main); width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
             cursor: pointer; font-size: 13px; position: relative; text-decoration: none;
         }
+
         .header-login-btn {
-            background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main);
-            padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            color: var(--text-main); padding: 6px 12px; border-radius: 20px;
+            font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; white-space: nowrap;
         }
+
         .icon-badge {
-            position: absolute; top: -4px; right: -4px; background: var(--accent-color); color: #ffffff;
-            font-size: 8px; font-weight: 800; width: 15px; height: 15px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+            position: absolute; top: -4px; right: -4px; background: #ff0844;
+            color: #ffffff; font-size: 8px; font-weight: 800; width: 15px; height: 15px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
         }
 
-        .hero-banner {
-            margin-top: 60px; position: relative; width: 100%; height: 260px;
-            background: #000; overflow: hidden; display: flex; align-items: center; justify-content: center;
+        .hero-video-wrapper {
+            position: fixed; top: 0; left: 0; width: 100%; height: 65vh;
+            z-index: 1; background: #000000; overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
-        .hero-banner video { width: 100%; height: 100%; object-fit: cover; opacity: 0.75; }
-        .banner-text { position: absolute; text-align: center; color: #fff; z-index: 5; padding: 0 15px; }
-        .banner-text h1 { font-size: 26px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
-        .banner-text p { font-size: 12px; font-weight: 600; opacity: 0.9; margin-top: 4px; }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 25px 15px; }
+        .hero-video-wrapper video { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
+
+        .glass-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.1); pointer-events: none;
+        }
+
+        .video-caption { position: absolute; bottom: 15%; left: 5%; color: #ffffff; z-index: 5; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+        .video-caption h1 { font-size: 28px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; }
+
+        .main-scroll-content {
+            position: relative; z-index: 10; margin-top: 58vh;
+            background: var(--bg-primary); border-radius: 24px 24px 0 0;
+            box-shadow: 0 -15px 35px rgba(0,0,0,0.12); padding-top: 30px; min-height: 100vh;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+
         .section-title {
-            font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-            margin-bottom: 15px; display: flex; align-items: center; gap: 8px; color: var(--text-main);
+            font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 15px; position: relative; padding-left: 10px; color: var(--text-main);
         }
-        .section-title::before { content: ''; display: inline-block; width: 4px; height: 16px; background: var(--accent-color); border-radius: 2px; }
+        .section-title::before {
+            content: ''; position: absolute; left: 0; top: 15%; width: 4px; height: 70%;
+            background: var(--accent-color); border-radius: 4px;
+        }
 
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 40px; }
+        .category-row, .brands-scroll-row {
+            display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 25px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .category-row::-webkit-scrollbar, .brands-scroll-row::-webkit-scrollbar { display: none; }
+
+        .cat-card, .brand-scroll-box { flex: 0 0 auto; width: 80px; text-align: center; cursor: pointer; }
+        
+        .cat-circle, .brand-circle {
+            width: 70px; height: 70px; background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 50%; margin: 0 auto 6px auto; display: flex; align-items: center; justify-content: center;
+            font-size: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); background-size: cover !important; background-position: center !important;
+        }
+
+        .cat-card.active-filter .cat-circle, 
+        .brand-scroll-box.active-filter .brand-circle {
+            border-color: var(--accent-color); box-shadow: 0 0 10px rgba(0, 114, 255, 0.3);
+        }
+
+        .cat-card p, .brand-scroll-box p { font-size: 9px; font-weight: 700; text-transform: uppercase; color: var(--text-main); line-height: 1.2; }
+
+        .products-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-bottom: 40px;
+        }
+
         .prod-card {
-            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px;
-            overflow: hidden; display: flex; flex-direction: column; position: relative;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.15); transition: transform 0.2s ease;
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px;
+            overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.02); cursor: pointer;
         }
-        .prod-card:hover { transform: translateY(-4px); }
 
-        .badge-discount {
-            position: absolute; top: 10px; left: 10px; background: var(--accent-gradient); color: white;
-            font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 20px; z-index: 5; text-transform: uppercase;
+        .prod-media {
+            width: 100%; height: 180px; background: rgba(15, 23, 42, 0.02);
+            display: flex; align-items: center; justify-content: center; padding: 10px; position: relative;
         }
-        .prod-media { width: 100%; height: 190px; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; padding: 12px; cursor: pointer; }
         .prod-media img { max-width: 90%; max-height: 90%; object-fit: contain; }
 
-        .prod-details { padding: 14px; display: flex; flex-direction: column; flex-grow: 1; }
-        .prod-brand { font-size: 9px; font-weight: 800; color: var(--accent-color); text-transform: uppercase; margin-bottom: 3px; }
-        .prod-title { font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; line-height: 1.3; min-height: 34px; cursor: pointer; }
-        .prod-weight { font-size: 10px; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; }
+        .prod-details { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
+        .prod-brand { font-size: 8px; font-weight: 800; color: var(--accent-color); text-transform: uppercase; margin-bottom: 2px; }
+        .prod-title { font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; line-height: 1.3; min-height: 32px; }
+        .prod-weight { font-size: 10px; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; }
 
-        .prod-pricing { display: flex; align-items: baseline; gap: 8px; margin-top: auto; margin-bottom: 12px; }
-        .price-sale { font-size: 17px; font-weight: 900; color: #10b981; }
-        .price-mrp { font-size: 11px; color: var(--text-muted); text-decoration: line-through; }
+        .prod-pricing { display: flex; align-items: baseline; gap: 6px; margin-top: auto; margin-bottom: 10px; }
+        .price-sale { font-size: 15px; font-weight: 800; color: #059669; }
 
-        .card-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .card-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
         .action-btn {
-            padding: 9px 4px; background: var(--accent-gradient); color: white; border: none;
-            font-size: 10px; font-weight: 800; border-radius: 8px; cursor: pointer; text-transform: uppercase; text-align: center;
+            padding: 8px 4px; background: linear-gradient(135deg, #0072ff, #00f2fe);
+            color: white; border: none; font-size: 9px; font-weight: 800; border-radius: 6px;
+            cursor: pointer; text-transform: uppercase; text-decoration: none; text-align: center;
+            display: flex; align-items: center; justify-content: center; gap: 4px;
         }
-        .action-btn.secondary { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
 
-        /* MODALS & DRAWERS */
-        .modal-overlay, .product-modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        .action-btn.secondary { background: var(--bg-primary); color: var(--text-main); border: 1px solid var(--border-color); }
+
+        .product-modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px); z-index: 9999;
+            justify-content: center; align-items: center; padding: 15px;
+        }
+
+        .product-modal-content {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; max-width: 750px; width: 100%; max-height: 90vh;
+            overflow-y: auto; position: relative; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); color: var(--text-main);
+        }
+
+        .modal-close-btn { position: absolute; top: 15px; right: 20px; font-size: 24px; font-weight: bold; cursor: pointer; color: var(--text-muted); line-height: 1; z-index: 10; }
+        .modal-grid { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 10px; }
+        .modal-left { flex: 1; min-width: 250px; text-align: center; position: relative; }
+        .modal-right { flex: 1.2; min-width: 250px; }
+        .modal-main-img { width: 100%; max-height: 280px; object-fit: contain; border-radius: 8px; cursor: zoom-in; }
+        .zoom-hint-tag { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); color: #ffffff; font-size: 9px; font-weight: 700; padding: 3px 7px; border-radius: 4px; pointer-events: none; }
+        .modal-thumbnails { display: flex; gap: 8px; justify-content: center; margin-top: 12px; }
+        .modal-thumb { width: 45px; height: 45px; object-fit: contain; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; }
+        .modal-thumb.active { border-color: var(--accent-color); }
+        .modal-badge { display: inline-block; background: #059669; color: #fff; font-size: 9px; font-weight: 800; padding: 4px 8px; border-radius: 4px; margin-bottom: 8px; text-transform: uppercase; }
+        .modal-title { font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
+        .modal-price { font-size: 20px; color: var(--accent-color); font-weight: 800; margin-bottom: 12px; }
+        .modal-mrp { text-decoration: line-through; color: var(--text-muted); font-size: 14px; margin-left: 8px; }
+        .modal-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 15px; }
+
+        .zoom-lightbox-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(8px); z-index: 10000;
+            justify-content: center; align-items: center; overflow: auto; padding: 20px;
+        }
+        .zoom-lightbox-img { max-width: 95%; max-height: 95vh; object-fit: contain; border-radius: 8px; cursor: zoom-out; }
+        .zoom-lightbox-close { position: absolute; top: 20px; right: 25px; color: #ffffff; font-size: 32px; font-weight: 800; cursor: pointer; z-index: 10001; }
+
+        .payment-method-row { display: flex; gap: 10px; margin-top: 5px; }
+        .pay-option-card {
+            flex: 1; padding: 12px 10px; border: 1px solid var(--border-color); border-radius: 8px;
+            background: var(--bg-primary); text-align: center; cursor: pointer; transition: all 0.2s ease;
+        }
+        .pay-option-card.active { border-color: var(--accent-color); background: rgba(0, 114, 255, 0.08); }
+        .pay-option-title { font-size: 11px; font-weight: 800; color: var(--text-main); }
+        .pay-option-desc { font-size: 8px; color: var(--text-muted); margin-top: 2px; }
+
+        .qr-display-box {
+            display: none; text-align: center; background: rgba(0,0,0,0.03); border: 1px dashed var(--accent-color);
+            padding: 15px; border-radius: 12px; margin-top: 10px;
+        }
+        .qr-display-box img { width: 160px; height: 160px; margin: 8px auto; display: block; border-radius: 8px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1000;
             display: none; align-items: center; justify-content: center; padding: 15px;
         }
-        .modal-card, .product-modal-content {
+
+        .modal-card {
             background: var(--bg-card); border: 1px solid var(--border-color);
-            width: 100%; max-width: 600px; border-radius: 16px; padding: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; max-height: 90vh; overflow-y: auto; color: var(--text-main);
+            width: 100%; max-width: 520px; border-radius: 16px; padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; max-height: 90vh; overflow-y: auto;
         }
-        .close-modal-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 22px; font-weight: bold; cursor: pointer; color: var(--text-muted); }
+
+        .close-modal-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 20px; font-weight: 800; color: var(--text-muted); cursor: pointer; }
+
+        .form-grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .form-grid-2col .full { grid-column: 1 / -1; }
+
+        .form-input-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-input-group label { font-size: 9px; font-weight: 800; color: var(--accent-color); text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-input-group input, .form-input-group select {
+            width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color);
+            background: var(--bg-primary); color: var(--text-main); font-size: 11px; font-weight: 600; outline: none;
+        }
+
+        .address-type-selector { display: flex; gap: 8px; margin-top: 2px; }
+        .type-btn {
+            flex: 1; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px;
+            background: var(--bg-primary); color: var(--text-muted); font-size: 10px; font-weight: 700;
+            cursor: pointer; text-align: center;
+        }
+        .type-btn.active { border-color: var(--accent-color); background: rgba(0, 114, 255, 0.1); color: var(--accent-color); }
 
         .drawer-overlay {
             position: fixed; top: 0; right: -100%; width: 100%; max-width: 380px; height: 100%;
-            background: var(--bg-card); box-shadow: -5px 0 25px rgba(0,0,0,0.3); z-index: 1000;
-            transition: right 0.3s ease; display: flex; flex-direction: column; border-left: 1px solid var(--border-color);
+            background: var(--bg-card); box-shadow: -5px 0 25px rgba(0,0,0,0.2); z-index: 1000;
+            transition: right 0.3s ease; display: flex; flex-direction: column;
         }
         .drawer-overlay.active { right: 0; }
+
         .drawer-header { padding: 18px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; }
         .drawer-body { padding: 15px; flex-grow: 1; overflow-y: auto; }
         .drawer-footer { padding: 15px; border-top: 1px solid var(--border-color); background: var(--bg-primary); }
 
         .cart-item-row { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
         .cart-item-row img { width: 50px; height: 50px; object-fit: contain; }
+
         .qty-control { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
         .qty-btn { width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main); font-weight: 800; cursor: pointer; }
 
-        .form-grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .form-grid-2col .full { grid-column: 1 / -1; }
-        .form-input-group { display: flex; flex-direction: column; gap: 4px; }
-        .form-input-group label { font-size: 9px; font-weight: 800; color: var(--accent-color); text-transform: uppercase; }
-        .form-input-group input, .form-input-group select {
-            width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color);
-            background: var(--bg-primary); color: var(--text-main); font-size: 11px; font-weight: 600; outline: none;
-        }
+        footer { background: #000000; color: #ffffff; padding: 30px 15px; margin-top: 40px; text-align: center; }
+        .footer-logo img { max-height: 30px; margin-bottom: 10px; }
+        .footer-text { font-size: 10px; color: #94a3b8; max-width: 400px; margin: 0 auto 15px auto; line-height: 1.5; }
+        .footer-credits { font-size: 9px; color: #64748b; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; }
 
-        .payment-method-row { display: flex; gap: 10px; margin-top: 5px; }
-        .pay-option-card {
-            flex: 1; padding: 12px 10px; border: 1px solid var(--border-color); border-radius: 8px;
-            background: var(--bg-primary); text-align: center; cursor: pointer;
-        }
-        .pay-option-card.active { border-color: var(--accent-color); background: rgba(255, 51, 102, 0.08); }
-        .qr-display-box {
-            display: none; text-align: center; background: rgba(0,0,0,0.05); border: 1px dashed var(--accent-color);
-            padding: 15px; border-radius: 12px; margin-top: 10px;
-        }
-        .qr-display-box img { width: 150px; height: 150px; margin: 8px auto; display: block; border-radius: 8px; border: 2px solid white; }
-
-        footer { background: #05080f; color: #ffffff; padding: 30px 15px; text-align: center; border-top: 1px solid var(--border-color); }
-        .footer-logo img { max-height: 30px; margin-bottom: 8px; filter: invert(0) !important; }
-        .footer-text { font-size: 10px; color: #94a3b8; max-width: 400px; margin: 0 auto 12px auto; }
-        .footer-credits { font-size: 9px; color: #64748b; }
-        #loading { text-align: center; font-size: 12px; color: var(--accent-color); margin: 30px 0; font-weight: 800; text-transform: uppercase; }
+        #loading { text-align: center; font-size: 12px; color: var(--accent-color); margin: 30px 0; font-weight: 700; text-transform: uppercase; }
 
         @media (max-width: 768px) {
-            header { padding: 8px 12px; }
+            header { padding: 8px 12px; gap: 6px; }
             .search-box { max-width: 130px; }
-            .hero-banner { height: 200px; }
-            .banner-text h1 { font-size: 20px; }
+            .hero-video-wrapper { height: 280px; } 
+            .main-scroll-content { margin-top: 240px; border-radius: 16px 16px 0 0; } 
             .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .prod-media { height: 140px; }
             .form-grid-2col { grid-template-columns: 1fr; }
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <header>
         <div class="header-left">
-            <div class="logo-area" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-                <img src="growup-logoo.png" id="mainLogo" alt="Grow Up Fitness" onerror="this.src='logo.png';">
+            <div class="logo-area" onclick="scrollToTopHome()" title="Go to Home / Top">
+                <img src="growup-logoo.png" id="mainLogo" alt="Grow Up Fitness Logo" onerror="this.src='logo.png';">
             </div>
+
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Search Supplement..." oninput="handleSearch(this.value)">
+                <input type="text" id="searchInput" placeholder="Search product, brand..." oninput="handleSmartTopSearch(this.value)" autocomplete="off">
             </div>
         </div>
 
         <div class="header-controls">
-            <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">☀️ Light</button>
-            <div class="header-icon-btn" onclick="toggleDrawer('cartDrawer')" title="Cart">
+            <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+
+            <div class="header-icon-btn" onclick="toggleDrawer('cartDrawer')" title="Cart / Trolley">
                 🛒 <span class="icon-badge" id="cartBadge">0</span>
             </div>
+
+            <div class="header-icon-btn" onclick="toggleDrawer('wishlistDrawer')" title="Wishlist">
+                ❤️ <span class="icon-badge" id="wishlistBadge">0</span>
+            </div>
+
             <div id="userAccountBtnSlot">
                 <button class="header-login-btn" onclick="openLoginModal()">👤 Login</button>
             </div>
         </div>
     </header>
 
-    <div class="hero-banner">
-        <video autoplay loop muted playsinline>
+    <div class="hero-video-wrapper">
+        <video autoplay loop muted playsinline id="bgVideo">
             <source src="Top-Banner.mp4" type="video/mp4">
+            <source src="https://raw.githubusercontent.com/growupfitness/growup/main/Top-Banner.mp4" type="video/mp4">
         </video>
-        <div class="banner-text">
-            <h1>100% Authentic Fuel</h1>
-            <p>MyLife & Premium Supplements Store</p>
+        <div class="glass-overlay" id="blurOverlay"></div>
+        <div class="video-caption" id="heroCaption">
+            <h1>Stronger Everyday</h1>
         </div>
     </div>
 
-    <div class="container">
-        <h2 class="section-title">Trending Supplements</h2>
-        <div id="loading">Loading Live Inventory...</div>
-        <div class="products-grid" id="productsGrid"></div>
+    <div class="main-scroll-content">
+        <div class="container">
+            
+            <h2 class="section-title">Shop By Category</h2>
+            <div class="category-row" id="categoryContainer">
+                <div class="cat-card active-filter" onclick="filterBySpec('Category', 'All', this)">
+                    <div class="cat-circle">📦</div>
+                    <p>All Products</p>
+                </div>
+            </div>
+
+            <h2 class="section-title" id="productsTarget">Shop By Brand</h2>
+            <div class="brands-scroll-row" id="brandContainer">
+                <div class="brand-scroll-box active-filter" onclick="filterBySpec('Brand', 'All', this)">
+                    <div class="brand-circle">🏷️</div>
+                    <p>All Brands</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">All Products</h2>
+            <div id="loading">Syncing Live Products...</div>
+            <div class="products-grid" id="shopifyGridContainer"></div>
+
+        </div>
+
+        <footer>
+            <div class="footer-logo">
+                <img src="growup-logoo.png" alt="Grow Up Fitness Logo" onerror="this.src='logo.png';">
+            </div>
+            <p class="footer-text">100% Authentic Supplements & Fitness Gear.</p>
+            <p class="footer-credits">© 2025-2026 Grow Up Fitness Supplements Store.</p>
+        </footer>
     </div>
 
-    <footer>
-        <div class="footer-logo">
-            <img src="growup-logoo.png" alt="Grow Up Fitness" onerror="this.src='logo.png';">
+    <!-- 🔍 PRODUCT QUICK VIEW POPUP MODAL -->
+    <div id="productQuickModal" class="product-modal-overlay">
+        <div class="product-modal-content">
+            <span class="modal-close-btn" onclick="closeProductModal()">✕</span>
+            <div class="modal-grid">
+                <div class="modal-left">
+                    <span class="zoom-hint-tag">🔍 Click to Zoom</span>
+                    <img id="modalMainImg" src="" class="modal-main-img" alt="Product Image" onclick="openFullZoomImage(this.src)">
+                    <div id="modalThumbnails" class="modal-thumbnails"></div>
+                </div>
+                <div class="modal-right">
+                    <span class="modal-badge">✔ 100% Authentic Supplement</span>
+                    <h2 id="modalTitle" class="modal-title">Product Name</h2>
+                    <div class="modal-price">
+                        <span id="modalPrice">₹0</span>
+                        <span id="modalMRP" class="modal-mrp">₹0</span>
+                    </div>
+                    <p id="modalDesc" class="modal-desc">Authentic and Lab Tested Product for maximum gains.</p>
+                    
+                    <button id="modalAddToCartBtn" class="action-btn" style="width: 100%; padding: 12px; font-size: 11px;">🛒 Add To Cart</button>
+                </div>
+            </div>
         </div>
-        <p class="footer-text">Guaranteed Authentic Products • Direct Brand Authorization</p>
-        <p class="footer-credits">© 2025-2026 Grow Up Fitness Supplements Store.</p>
-    </footer>
+    </div>
 
-    <!-- CART DRAWER -->
+    <!-- 🔍 FULL SCREEN ZOOM LIGHTBOX OVERLAY -->
+    <div id="zoomLightbox" class="zoom-lightbox-overlay">
+        <span class="zoom-lightbox-close" onclick="closeFullZoomImage()">✕</span>
+        <img id="zoomLightboxImg" class="zoom-lightbox-img" src="" alt="Zoomed Product Image" onclick="closeFullZoomImage()">
+    </div>
+
+    <!-- 👤 1. LOGIN MODAL -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-card">
+            <button class="close-modal-btn" onclick="closeLoginModal()">✕</button>
+            <h2 style="font-size: 16px; font-weight: 800; margin-bottom: 5px;">Customer Account Login</h2>
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px;">Login is required to maintain your order history!</p>
+            
+            <form id="loginForm" onsubmit="handleUserLogin(event)">
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <input type="text" id="userLoginName" placeholder="Full Name *" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main);" required>
+                    <input type="tel" id="userLoginPhone" placeholder="10-Digit Mobile Number *" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main);" required>
+                    <input type="email" id="userLoginEmail" placeholder="Email Address (Optional)" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main);">
+                    
+                    <button type="submit" id="loginSubmitBtn" class="action-btn" style="padding: 12px; font-size: 11px; margin-top: 10px;">LOGIN / REGISTER</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 🚚 2. PROFESSIONAL CHECKOUT MODAL (WITH DYNAMIC UPI QR & COD) -->
+    <div class="modal-overlay" id="checkoutModal">
+        <div class="modal-card">
+            <button class="close-modal-btn" onclick="closeCheckoutModal()">✕</button>
+            <h2 style="font-size: 16px; font-weight: 800; margin-bottom: 2px;">Shipping & Payment</h2>
+            <p style="font-size: 10px; color: var(--text-muted); margin-bottom: 12px;">Provide accurate address & choose your preferred payment option.</p>
+            
+            <form id="checkoutForm" onsubmit="handleCheckoutSubmit(event)">
+                <div class="form-grid-2col">
+                    <div class="form-input-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="coName" placeholder="Full Name" required>
+                    </div>
+
+                    <div class="form-input-group">
+                        <label>Mobile Number *</label>
+                        <input type="tel" id="coPhone" placeholder="10-Digit Mobile Number" required readonly>
+                    </div>
+
+                    <div class="form-input-group full">
+                        <label>Flat / House No. / Building Name *</label>
+                        <input type="text" id="coHouse" placeholder="e.g. Shop No. 2, Shreenath Colony" required>
+                    </div>
+
+                    <div class="form-input-group full">
+                        <label>Area / Colony / Street Name *</label>
+                        <input type="text" id="coStreet" placeholder="e.g. Opp. Champion Saloon, Pulla" required>
+                    </div>
+
+                    <div class="form-input-group full">
+                        <label>Landmark (Optional)</label>
+                        <input type="text" id="coLandmark" placeholder="e.g. Near Navratan Complex Road">
+                    </div>
+
+                    <div class="form-input-group">
+                        <label>Pincode *</label>
+                        <input type="text" id="coPincode" placeholder="6-Digit Pincode" maxlength="6" oninput="autoFetchCityState(this.value)" required>
+                    </div>
+
+                    <div class="form-input-group">
+                        <label>City *</label>
+                        <input type="text" id="coCity" placeholder="City" required>
+                    </div>
+
+                    <div class="form-input-group full">
+                        <label>State *</label>
+                        <input type="text" id="coState" placeholder="State" required>
+                    </div>
+
+                    <div class="form-input-group full">
+                        <label>Save Address As</label>
+                        <div class="address-type-selector">
+                            <button type="button" class="type-btn active" onclick="selectAddrType('Home', this)">🏠 Home</button>
+                            <button type="button" class="type-btn" onclick="selectAddrType('Work', this)">💼 Work / Shop</button>
+                            <button type="button" class="type-btn" onclick="selectAddrType('Other', this)">📍 Other</button>
+                        </div>
+                        <input type="hidden" id="coAddrType" value="Home">
+                    </div>
+
+                    <div class="form-input-group full">
+                        <label>Select Payment Method *</label>
+                        <div class="payment-method-row">
+                            <div class="pay-option-card active" id="payOptUPI" onclick="selectPaymentMode('UPI')">
+                                <div class="pay-option-title">⚡ Pay Online (UPI)</div>
+                                <div class="pay-option-desc">GPay / PhonePe / Paytm</div>
+                            </div>
+                            <div class="pay-option-card" id="payOptCOD" onclick="selectPaymentMode('COD')">
+                                <div class="pay-option-title">🚚 Cash on Delivery</div>
+                                <div class="pay-option-desc">Pay when delivered</div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="coPayMode" value="UPI">
+                    </div>
+
+                    <div class="form-input-group full">
+                        <div id="qrDisplayBox" class="qr-display-box">
+                            <div style="font-size: 11px; font-weight: 800; color: var(--accent-color);">Scan QR to Pay Exact Amount: <span id="qrAmountDisplay" style="color:#059669;">₹0</span></div>
+                            <img id="dynamicQRImg" src="" alt="UPI Dynamic QR">
+                            <div style="font-size: 9px; color: var(--text-muted); font-weight: 600;">UPI VPA: Salvinitinudr-2@oksbi</div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="coSubmitBtn" class="action-btn full" style="padding: 12px; font-size: 11px; margin-top: 10px;">
+                        🛒 CONFIRM & PLACE ORDER
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 📦 ACCOUNT DASHBOARD MODAL -->
+    <div class="modal-overlay" id="accountModal">
+        <div class="modal-card">
+            <button class="close-modal-btn" onclick="closeAccountModal()">✕</button>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--accent-color); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px;" id="userAvatar">U</div>
+                <div>
+                    <h3 style="font-size: 14px; font-weight: 800;" id="accUserName">Customer</h3>
+                    <p style="font-size: 11px; color: var(--text-muted);" id="accUserPhone">+91 ---------</p>
+                </div>
+            </div>
+
+            <h4 style="font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">My Purchase History</h4>
+            <div id="orderHistoryContainer" style="max-height: 250px; overflow-y: auto;">
+                <p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">Fetching order history...</p>
+            </div>
+
+            <button onclick="handleUserLogout()" class="action-btn secondary" style="width: 100%; margin-top: 15px; color: #ff0844; border-color: #ff0844;">🚪 Logout Account</button>
+        </div>
+    </div>
+
+    <!-- 🛒 CART DRAWER -->
     <div class="drawer-overlay" id="cartDrawer">
         <div class="drawer-header">
             <h3 style="font-size: 14px; font-weight: 800;">Your Cart</h3>
-            <button class="close-modal-btn" style="position:static;" onclick="toggleDrawer('cartDrawer')">✕</button>
+            <button class="close-modal-btn" style="position: static;" onclick="toggleDrawer('cartDrawer')">✕</button>
         </div>
         <div class="drawer-body" id="cartDrawerItems">
             <p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">Your cart is empty.</p>
@@ -246,69 +565,31 @@
                 <span>Total Amount:</span>
                 <span id="cartGrandTotal">₹0</span>
             </div>
-            <button class="action-btn" style="width: 100%; padding: 12px;" onclick="openCheckoutModal()">Proceed to Checkout</button>
+            <button class="action-btn" style="width: 100%; padding: 12px;" onclick="openCheckoutModal()">Proceed to Order</button>
         </div>
     </div>
 
-    <!-- LOGIN MODAL -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal-card">
-            <button class="close-modal-btn" onclick="closeLoginModal()">✕</button>
-            <h2 style="font-size: 16px; font-weight: 800; margin-bottom: 5px;">Customer Login</h2>
-            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px;">Required to maintain order history.</p>
-            <form onsubmit="handleUserLogin(event)">
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <input type="text" id="userLoginName" placeholder="Full Name *" required>
-                    <input type="tel" id="userLoginPhone" placeholder="10-Digit Mobile Number *" required>
-                    <button type="submit" id="loginSubmitBtn" class="action-btn" style="padding: 12px;">LOGIN / REGISTER</button>
-                </div>
-            </form>
+    <!-- ❤️ WISHLIST DRAWER -->
+    <div class="drawer-overlay" id="wishlistDrawer">
+        <div class="drawer-header">
+            <h3 style="font-size: 14px; font-weight: 800;">Saved Wishlist</h3>
+            <button class="close-modal-btn" style="position: static;" onclick="toggleDrawer('wishlistDrawer')">✕</button>
         </div>
-    </div>
-
-    <!-- CHECKOUT MODAL -->
-    <div class="modal-overlay" id="checkoutModal">
-        <div class="modal-card">
-            <button class="close-modal-btn" onclick="closeCheckoutModal()">✕</button>
-            <h2 style="font-size: 16px; font-weight: 800; margin-bottom: 2px;">Shipping & Payment</h2>
-            <form onsubmit="handleCheckoutSubmit(event)">
-                <div class="form-grid-2col">
-                    <div class="form-input-group"><label>Full Name *</label><input type="text" id="coName" required></div>
-                    <div class="form-input-group"><label>Mobile *</label><input type="tel" id="coPhone" required readonly></div>
-                    <div class="form-input-group full"><label>House / Building *</label><input type="text" id="coHouse" required></div>
-                    <div class="form-input-group full"><label>Street / Area *</label><input type="text" id="coStreet" required></div>
-                    <div class="form-input-group"><label>Pincode *</label><input type="text" id="coPincode" maxlength="6" required></div>
-                    <div class="form-input-group"><label>City *</label><input type="text" id="coCity" required></div>
-                    <div class="form-input-group full"><label>State *</label><input type="text" id="coState" required></div>
-                    <div class="form-input-group full">
-                        <label>Payment Method *</label>
-                        <div class="payment-method-row">
-                            <div class="pay-option-card active" id="payOptUPI" onclick="selectPaymentMode('UPI')">
-                                <div style="font-weight:800; font-size:11px;">⚡ UPI Online</div>
-                            </div>
-                            <div class="pay-option-card" id="payOptCOD" onclick="selectPaymentMode('COD')">
-                                <div style="font-weight:800; font-size:11px;">🚚 Cash on Delivery</div>
-                            </div>
-                        </div>
-                        <input type="hidden" id="coPayMode" value="UPI">
-                    </div>
-                    <div class="form-input-group full">
-                        <div id="qrDisplayBox" class="qr-display-box">
-                            <div style="font-size: 11px; font-weight: 800; color: var(--accent-color);">Scan to Pay: <span id="qrAmount">₹0</span></div>
-                            <img id="dynamicQR" src="" alt="QR">
-                        </div>
-                    </div>
-                    <button type="submit" id="coSubmitBtn" class="action-btn full" style="padding: 12px; margin-top: 10px;">PLACE ORDER</button>
-                </div>
-            </form>
+        <div class="drawer-body" id="wishlistDrawerItems">
+            <p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">No items saved in wishlist.</p>
         </div>
     </div>
 
 <script>
     const sheetAPI = 'https://script.google.com/macros/s/AKfycbxZ5ddxj3D0uZFWXzDsifEeHwf9XVIJ7cEp_bXW7Ug0B2V1LyLxoplV5IE7g-05jDpRJw/exec';
     const merchantUPI = 'Salvinitinudr-2@oksbi';
-    let globalData = [];
+    
+    let globalStoreData = [];
+    let currentFilterCategory = 'All';
+    let currentFilterBrand = 'All';
+
     let userCart = JSON.parse(localStorage.getItem('gu_cart') || '[]');
+    let userWishlist = JSON.parse(localStorage.getItem('gu_wishlist') || '[]');
     let currentUser = JSON.parse(localStorage.getItem('gu_user') || 'null');
 
     function cleanDriveUrl(url) {
@@ -321,199 +602,480 @@
         return id ? 'https://drive.google.com/uc?export=view&id=' + id : url;
     }
 
-    function getVal(obj, possibleKeys) {
-        if (!obj) return '';
-        for (let key of Object.keys(obj)) {
-            for (let target of possibleKeys) {
-                if (key.trim().toLowerCase() === target.trim().toLowerCase()) return obj[key] ? obj[key].toString() : '';
-            }
+    function scrollToTopHome() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+    function syncUserAccountBtn() {
+        const slot = document.getElementById('userAccountBtnSlot');
+        if (currentUser) {
+            slot.innerHTML = `<button class="header-login-btn" onclick="openAccountModal()">👤 ${currentUser.name.split(' ')[0]}</button>`;
+        } else {
+            slot.innerHTML = `<button class="header-login-btn" onclick="openLoginModal()">👤 Login</button>`;
         }
-        return '';
     }
 
-    function renderProducts(data) {
-        const grid = document.getElementById('productsGrid');
-        grid.innerHTML = '';
-        data.forEach((prod, index) => {
-            const title = getVal(prod, ["Product Name", "Name", "Title"]) || 'Premium Supplement';
-            const brand = getVal(prod, ["Brand"]) || 'GrowUp';
-            const weight = getVal(prod, ["Weight / Size", "Weight", "Size"]);
-            const flavour = getVal(prod, ["Flavour", "Flavor"]);
-            const sp = parseFloat(getVal(prod, ["Selling Price", "Price", "SP"])) || 0;
-            let mrp = parseFloat(getVal(prod, ["MRP"])) || 0;
+    function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+    function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
+    function openAccountModal() { 
+        document.getElementById('accountModal').style.display = 'flex'; 
+        if (currentUser) {
+            document.getElementById('accUserName').innerText = currentUser.name;
+            document.getElementById('accUserPhone').innerText = '+91 ' + currentUser.phone;
+            document.getElementById('userAvatar').innerText = currentUser.name.charAt(0).toUpperCase();
+            fetchOrderHistory();
+        }
+    }
+    function closeAccountModal() { document.getElementById('accountModal').style.display = 'none'; }
 
-            if(!mrp || mrp <= sp) mrp = Math.round(sp * 1.25);
-            const offPct = Math.round(((mrp - sp) / mrp) * 100);
-            const img = cleanDriveUrl(getVal(prod, ["Image 1", "Image1", "Image"]));
+    function handleUserLogin(e) {
+        e.preventDefault();
+        const btn = document.getElementById('loginSubmitBtn');
+        btn.innerText = "Processing...";
+        btn.disabled = true;
 
-            const card = document.createElement('div');
-            card.className = 'prod-card';
-            card.innerHTML = `
-                <div class="badge-discount">-${offPct}% OFF</div>
-                <div class="prod-media"><img src="${img}" onerror="this.src='logo.png';"></div>
-                <div class="prod-details">
-                    <span class="prod-brand">${brand}</span>
-                    <h3 class="prod-title">${title}</h3>
-                    <span class="prod-weight">${weight} ${flavour ? '• ' + flavour : ''}</span>
-                    <div class="prod-pricing">
-                        <span class="price-sale">₹${sp}</span>
-                        <span class="price-mrp">₹${mrp}</span>
-                    </div>
-                    <div class="card-actions-grid">
-                        <button class="action-btn secondary" onclick="addToCart(${index})">🛒 +Cart</button>
-                        <button class="action-btn" onclick="addToCart(${index}); openCheckoutModal();">Buy Now</button>
-                    </div>
-                </div>
-            `;
-            grid.appendChild(card);
+        const name = document.getElementById('userLoginName').value;
+        const phone = document.getElementById('userLoginPhone').value;
+        const email = document.getElementById('userLoginEmail').value;
+
+        const formData = new FormData();
+        formData.append('action', 'registerUser');
+        formData.append('name', name);
+        formData.append('phone', phone);
+        formData.append('email', email);
+
+        fetch(sheetAPI, { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                btn.innerText = "LOGIN / REGISTER";
+                btn.disabled = false;
+                if(data.user) {
+                    currentUser = data.user;
+                    localStorage.setItem('gu_user', JSON.stringify(currentUser));
+                    syncUserAccountBtn();
+                    closeLoginModal();
+                    alert(`Welcome ${currentUser.name}! Account logged in.`);
+                    if(userCart.length > 0) openCheckoutModal();
+                }
+            }).catch(() => {
+                btn.innerText = "LOGIN / REGISTER";
+                btn.disabled = false;
+                alert("Login Error. Check connection.");
+            });
+    }
+
+    function handleUserLogout() {
+        currentUser = null;
+        localStorage.removeItem('gu_user');
+        syncUserAccountBtn();
+        closeAccountModal();
+    }
+
+    function fetchOrderHistory() {
+        if(!currentUser) return;
+        const container = document.getElementById('orderHistoryContainer');
+        fetch(`${sheetAPI}?action=getOrders&phone=${currentUser.phone}`)
+            .then(res => res.json())
+            .then(orders => {
+                container.innerHTML = '';
+                if(!orders || orders.length === 0) {
+                    container.innerHTML = `<p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">No past orders found.</p>`;
+                    return;
+                }
+                orders.forEach(ord => {
+                    const div = document.createElement('div');
+                    div.style.cssText = "background: var(--bg-primary); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 11px;";
+                    div.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; font-weight:800; margin-bottom:4px;">
+                            <span>ID: ${ord['Order ID'] || 'GU-ORD'}</span>
+                            <span style="color:var(--accent-color);">${ord['Delivery Status'] || 'Placed'}</span>
+                        </div>
+                        <div style="color:var(--text-muted); margin-bottom:4px;">${ord['Items Ordered']}</div>
+                        <div style="display:flex; justify-content:space-between; font-weight:700;">
+                            <span>Total: ₹${ord['Total Amount']}</span>
+                            <span style="font-size:9px; opacity:0.7;">${ord['Order Date']}</span>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            }).catch(() => {
+                container.innerHTML = `<p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">Failed to load history.</p>`;
+            });
+    }
+
+    function openProductModalByIndex(index) {
+        const prod = globalStoreData[index];
+        if(!prod) return;
+
+        const pTitle = getVal(prod, ["Product Name", "Name", "Title"]) || 'Premium Supplement';
+        const brandName = getVal(prod, ["Brand"]) || 'GrowUp';
+        const weightVal = getVal(prod, ["Weight / Size", "Weight", "Size"]);
+        const flavVal = getVal(prod, ["Flavour", "Flavor"]);
+        const mrp = getVal(prod, ["MRP"]);
+        const sp = getVal(prod, ["Selling Price", "Price", "SP"]);
+
+        document.getElementById('modalTitle').innerText = `${pTitle} (${weightVal} ${flavVal})`;
+        document.getElementById('modalPrice').innerText = '₹' + sp;
+        document.getElementById('modalMRP').innerText = mrp ? '₹' + mrp : '';
+
+        const img1 = cleanDriveUrl(getVal(prod, ["Image 1", "Image1", "Image"]));
+        const img2 = cleanDriveUrl(getVal(prod, ["Image 2", "Image2"]));
+        const img3 = cleanDriveUrl(getVal(prod, ["Image 3", "Image3"]));
+
+        const mainImg = document.getElementById('modalMainImg');
+        mainImg.src = img1;
+
+        const thumbContainer = document.getElementById('modalThumbnails');
+        thumbContainer.innerHTML = '';
+
+        const images = [img1, img2, img3].filter(i => i && i.trim() !== '');
+        images.forEach((imgUrl, i) => {
+            const thumb = document.createElement('img');
+            thumb.src = imgUrl;
+            thumb.className = `modal-thumb ${i === 0 ? 'active' : ''}`;
+            thumb.onclick = function() {
+                mainImg.src = imgUrl;
+                document.querySelectorAll('.modal-thumb').forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
+            };
+            thumbContainer.appendChild(thumb);
         });
+
+        document.getElementById('modalAddToCartBtn').onclick = function() {
+            addToCartByIndex(index);
+            closeProductModal();
+        };
+
+        document.getElementById('productQuickModal').style.display = 'flex';
     }
 
-    function addToCart(index) {
-        const prod = globalData[index];
-        const title = getVal(prod, ["Product Name", "Name", "Title"]);
-        const sp = parseFloat(getVal(prod, ["Selling Price", "Price", "SP"])) || 0;
-        const img = cleanDriveUrl(getVal(prod, ["Image 1", "Image1", "Image"]));
+    function closeProductModal() {
+        document.getElementById('productQuickModal').style.display = 'none';
+    }
 
-        const existing = userCart.find(i => i.name === title);
-        if(existing) existing.qty += 1;
-        else userCart.push({ name: title, price: sp, img: img, qty: 1 });
+    function openFullZoomImage(imgSrc) {
+        if(!imgSrc) return;
+        document.getElementById('zoomLightboxImg').src = imgSrc;
+        document.getElementById('zoomLightbox').style.display = 'flex';
+    }
 
-        localStorage.setItem('gu_cart', JSON.stringify(userCart));
-        updateCartBadge();
+    function closeFullZoomImage() {
+        document.getElementById('zoomLightbox').style.display = 'none';
+    }
+
+    function autoFetchCityState(pin) {
+        if(pin.trim().length === 6) {
+            fetch(`https://api.postalpincode.in/pincode/${pin}`)
+                .then(res => res.json())
+                .then(data => {
+                    if(data && data[0] && data[0].Status === "Success") {
+                        const po = data[0].PostOffice[0];
+                        document.getElementById('coCity').value = po.District || 'Udaipur';
+                        document.getElementById('coState').value = po.State || 'Rajasthan';
+                    }
+                }).catch(() => {});
+        }
+    }
+
+    function selectAddrType(type, btn) {
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('coAddrType').value = type;
+    }
+
+    function selectPaymentMode(mode) {
+        document.getElementById('coPayMode').value = mode;
+        const upiBox = document.getElementById('payOptUPI');
+        const codBox = document.getElementById('payOptCOD');
+        const qrBox = document.getElementById('qrDisplayBox');
+
+        if(mode === 'UPI') {
+            upiBox.classList.add('active');
+            codBox.classList.remove('active');
+            qrBox.style.display = 'block';
+        } else {
+            codBox.classList.add('active');
+            upiBox.classList.remove('active');
+            qrBox.style.display = 'none';
+        }
+    }
+
+    function openCheckoutModal() {
+        if (userCart.length === 0) {
+            alert("Your cart is empty!");
+            return;
+        }
+
+        if (!currentUser) {
+            alert("🔒 Please login first so your order history stays saved!");
+            toggleDrawer('cartDrawer');
+            openLoginModal();
+            return;
+        }
+
         toggleDrawer('cartDrawer');
+        document.getElementById('checkoutModal').style.display = 'flex';
+        
+        document.getElementById('coName').value = currentUser.name || '';
+        document.getElementById('coPhone').value = currentUser.phone || '';
+
+        const grandTotal = userCart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+        document.getElementById('qrAmountDisplay').innerText = `₹${grandTotal}`;
+        
+        const upiUrl = `upi://pay?pa=${merchantUPI}&pn=Grow%20Up%20Fitness&am=${grandTotal}&cu=INR`;
+        document.getElementById('dynamicQRImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
+        
+        selectPaymentMode('UPI');
     }
 
-    function updateCartBadge() {
-        document.getElementById('cartBadge').innerText = userCart.reduce((sum, i) => sum + i.qty, 0);
+    function closeCheckoutModal() { document.getElementById('checkoutModal').style.display = 'none'; }
+
+    function handleCheckoutSubmit(e) {
+        e.preventDefault();
+        if(!currentUser) {
+            alert("Please login first!");
+            closeCheckoutModal();
+            openLoginModal();
+            return;
+        }
+
+        const btn = document.getElementById('coSubmitBtn');
+        btn.innerText = "Placing Order...";
+        btn.disabled = true;
+
+        const name = document.getElementById('coName').value;
+        const phone = currentUser.phone || document.getElementById('coPhone').value;
+        const house = document.getElementById('coHouse').value;
+        const street = document.getElementById('coStreet').value;
+        const landmark = document.getElementById('coLandmark').value;
+        const pincode = document.getElementById('coPincode').value;
+        const city = document.getElementById('coCity').value;
+        const state = document.getElementById('coState').value;
+        const addrType = document.getElementById('coAddrType').value;
+        const payMode = document.getElementById('coPayMode').value;
+
+        const orderId = 'GU-ORD-' + Math.floor(100000 + Math.random() * 900000);
+        const grandTotal = userCart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+        const itemsStr = userCart.map(i => `${i.fullTitle || i.name} (x${i.qty})`).join(', ');
+
+        const formData = new FormData();
+        formData.append('action', 'placeOrder');
+        formData.append('orderId', orderId);
+        formData.append('name', name);
+        formData.append('phone', phone);
+        formData.append('house', house);
+        formData.append('street', street);
+        formData.append('landmark', landmark);
+        formData.append('pincode', pincode);
+        formData.append('city', city);
+        formData.append('state', state);
+        formData.append('addrType', addrType);
+        formData.append('payMode', payMode);
+        formData.append('items', itemsStr);
+        formData.append('total', grandTotal);
+
+        fetch(sheetAPI, { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                btn.innerText = "🛒 CONFIRM & PLACE ORDER";
+                btn.disabled = false;
+                closeCheckoutModal();
+
+                const waItemsStr = userCart.map(i => `• ${i.fullTitle || i.name} (x${i.qty}) - ₹${i.price * i.qty}`).join('\n');
+                const fullAddrStr = `${house}, ${street}, ${landmark ? 'Landmark: ' + landmark + ', ' : ''}${city}, ${state} - ${pincode}`;
+                const msg = encodeURIComponent(`⚡ *NEW ORDER PLACED* ⚡\n\n🆔 *Order ID:* ${orderId}\n👤 *Customer:* ${name}\n📞 *Phone:* ${phone}\n💳 *Payment Mode:* ${payMode === 'UPI' ? 'Paid via UPI QR' : 'Cash On Delivery (COD)'}\n📍 *Address:* ${fullAddrStr}\n\n*Items Ordered:*\n${waItemsStr}\n\n💰 *Total Amount:* ₹${grandTotal}`);
+                
+                userCart = [];
+                localStorage.setItem('gu_cart', JSON.stringify(userCart));
+                updateBadges();
+
+                window.open(`https://wa.me/919571214461?text=${msg}`, '_blank');
+            })
+            .catch(() => {
+                btn.innerText = "🛒 CONFIRM & PLACE ORDER";
+                btn.disabled = false;
+                closeCheckoutModal();
+                
+                const waItemsStr = userCart.map(i => `• ${i.fullTitle || i.name} (x${i.qty}) - ₹${i.price * i.qty}`).join('\n');
+                const fullAddrStr = `${house}, ${street}, ${landmark ? 'Landmark: ' + landmark + ', ' : ''}${city}, ${state} - ${pincode}`;
+                const msg = encodeURIComponent(`⚡ *NEW ORDER PLACED* ⚡\n\n🆔 *Order ID:* ${orderId}\n👤 *Customer:* ${name}\n📞 *Phone:* ${phone}\n💳 *Payment Mode:* ${payMode === 'UPI' ? 'Paid via UPI QR' : 'Cash On Delivery (COD)'}\n📍 *Address:* ${fullAddrStr}\n\n*Items Ordered:*\n${waItemsStr}\n\n💰 *Total Amount:* ₹${grandTotal}`);
+                
+                userCart = [];
+                localStorage.setItem('gu_cart', JSON.stringify(userCart));
+                updateBadges();
+
+                window.open(`https://wa.me/919571214461?text=${msg}`, '_blank');
+            });
     }
 
     function toggleDrawer(id) {
-        document.getElementById(id).classList.toggle('active');
-        if(id === 'cartDrawer') renderCart();
+        const el = document.getElementById(id);
+        el.classList.toggle('active');
+        if(id === 'cartDrawer') renderCartDrawer();
+        if(id === 'wishlistDrawer') renderWishlistDrawer();
     }
 
-    function renderCart() {
+    function addToCartByIndex(index) {
+        const prod = globalStoreData[index];
+        if(!prod) return;
+
+        const pTitle = getVal(prod, ["Product Name", "Name", "Title"]) || 'Premium Supplement';
+        const brandName = getVal(prod, ["Brand"]) || 'GrowUp';
+        const weightVal = getVal(prod, ["Weight / Size", "Weight", "Size"]);
+        const flavVal = getVal(prod, ["Flavour", "Flavor"]);
+        const sp = parseFloat(getVal(prod, ["Selling Price", "Price", "SP"])) || 0;
+        const img1 = cleanDriveUrl(getVal(prod, ["Image 1", "Image1", "Image"]));
+
+        const fullTitle = `${pTitle} (${weightVal}${flavVal ? ' - ' + flavVal : ''})`;
+
+        const existing = userCart.find(i => i.id === index || i.fullTitle === fullTitle);
+        if(existing) {
+            existing.qty += 1;
+        } else {
+            userCart.push({ id: index, name: pTitle, fullTitle: fullTitle, brand: brandName, price: sp, img: img1, qty: 1 });
+        }
+        localStorage.setItem('gu_cart', JSON.stringify(userCart));
+        updateBadges();
+        toggleDrawer('cartDrawer');
+    }
+
+    function updateBadges() {
+        document.getElementById('cartBadge').innerText = userCart.reduce((sum, i) => sum + i.qty, 0);
+        document.getElementById('wishlistBadge').innerText = userWishlist.length;
+    }
+
+    function updateCartQty(idx, delta) {
+        userCart[idx].qty += delta;
+        if(userCart[idx].qty <= 0) userCart.splice(idx, 1);
+        localStorage.setItem('gu_cart', JSON.stringify(userCart));
+        updateBadges();
+        renderCartDrawer();
+    }
+
+    function renderCartDrawer() {
         const container = document.getElementById('cartDrawerItems');
         container.innerHTML = '';
         let total = 0;
+
         if(userCart.length === 0) {
             container.innerHTML = `<p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">Your cart is empty.</p>`;
             document.getElementById('cartGrandTotal').innerText = '₹0';
             return;
         }
+
         userCart.forEach((item, idx) => {
             total += item.price * item.qty;
             const div = document.createElement('div');
             div.className = 'cart-item-row';
             div.innerHTML = `
                 <img src="${item.img}">
-                <div style="flex-grow:1;">
-                    <div style="font-size:11px; font-weight:700;">${item.name}</div>
-                    <div style="font-size:10px; color:#10b981; font-weight:800;">₹${item.price}</div>
+                <div style="flex-grow: 1;">
+                    <div style="font-size: 11px; font-weight: 700;">${item.fullTitle || item.name}</div>
+                    <div style="font-size: 10px; color: #059669; font-weight: 800;">₹${item.price}</div>
                     <div class="qty-control">
-                        <button class="qty-btn" onclick="changeQty(${idx}, -1)">-</button>
-                        <span>${item.qty}</span>
-                        <button class="qty-btn" onclick="changeQty(${idx}, 1)">+</button>
+                        <button class="qty-btn" onclick="updateCartQty(${idx}, -1)">-</button>
+                        <span style="font-size: 11px; font-weight: 800;">${item.qty}</span>
+                        <button class="qty-btn" onclick="updateCartQty(${idx}, 1)">+</button>
                     </div>
                 </div>
             `;
             container.appendChild(div);
         });
+
         document.getElementById('cartGrandTotal').innerText = `₹${total}`;
     }
 
-    function changeQty(idx, delta) {
-        userCart[idx].qty += delta;
-        if(userCart[idx].qty <= 0) userCart.splice(idx, 1);
-        localStorage.setItem('gu_cart', JSON.stringify(userCart));
-        updateCartBadge();
-        renderCart();
-    }
+    function renderWishlistDrawer() {
+        const container = document.getElementById('wishlistDrawerItems');
+        container.innerHTML = '';
 
-    function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
-    function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
-    function openCheckoutModal() {
-        if(userCart.length === 0) { alert("Cart is empty!"); return; }
-        if(!currentUser) { toggleDrawer('cartDrawer'); openLoginModal(); return; }
-        toggleDrawer('cartDrawer');
-        document.getElementById('checkoutModal').style.display = 'flex';
-        document.getElementById('coName').value = currentUser.name || '';
-        document.getElementById('coPhone').value = currentUser.phone || '';
-        const total = userCart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-        document.getElementById('qrAmount').innerText = '₹' + total;
-        document.getElementById('dynamicQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`upi://pay?pa=${merchantUPI}&pn=GrowUp&am=${total}&cu=INR`)}`;
-        selectPaymentMode('UPI');
-    }
-    function closeCheckoutModal() { document.getElementById('checkoutModal').style.display = 'none'; }
+        if(userWishlist.length === 0) {
+            container.innerHTML = `<p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">No items saved in wishlist.</p>`;
+            return;
+        }
 
-    function selectPaymentMode(mode) {
-        document.getElementById('coPayMode').value = mode;
-        document.getElementById('payOptUPI').classList.toggle('active', mode === 'UPI');
-        document.getElementById('payOptCOD').classList.toggle('active', mode === 'COD');
-        document.getElementById('qrDisplayBox').style.display = mode === 'UPI' ? 'block' : 'none';
-    }
-
-    function handleUserLogin(e) {
-        e.preventDefault();
-        currentUser = { name: document.getElementById('userLoginName').value, phone: document.getElementById('userLoginPhone').value };
-        localStorage.setItem('gu_user', JSON.stringify(currentUser));
-        closeLoginModal();
-        document.getElementById('userAccountBtnSlot').innerHTML = `<button class="header-login-btn">👤 ${currentUser.name.split(' ')[0]}</button>`;
-        openCheckoutModal();
-    }
-
-    function handleCheckoutSubmit(e) {
-        e.preventDefault();
-        const name = document.getElementById('coName').value;
-        const phone = currentUser.phone;
-        const address = `${document.getElementById('coHouse').value}, ${document.getElementById('coStreet').value}, ${document.getElementById('coCity').value} - ${document.getElementById('coPincode').value}`;
-        const total = userCart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-        const items = userCart.map(i => `${i.name} (x${i.qty})`).join(', ');
-
-        const formData = new FormData();
-        formData.append('action', 'placeOrder');
-        formData.append('orderId', 'GU-' + Math.floor(100000 + Math.random() * 900000));
-        formData.append('name', name);
-        formData.append('phone', phone);
-        formData.append('house', document.getElementById('coHouse').value);
-        formData.append('street', document.getElementById('coStreet').value);
-        formData.append('pincode', document.getElementById('coPincode').value);
-        formData.append('city', document.getElementById('coCity').value);
-        formData.append('state', document.getElementById('coState').value);
-        formData.append('payMode', document.getElementById('coPayMode').value);
-        formData.append('items', items);
-        formData.append('total', total);
-
-        fetch(sheetAPI, { method: 'POST', body: formData }).finally(() => {
-            const msg = encodeURIComponent(`⚡ *NEW ORDER* ⚡\n👤 ${name}\n📞 ${phone}\n📍 ${address}\n🛍️ ${items}\n💰 Total: ₹${total}`);
-            userCart = [];
-            localStorage.setItem('gu_cart', JSON.stringify(userCart));
-            updateCartBadge();
-            window.open(`https://wa.me/919571214461?text=${msg}`, '_blank');
+        userWishlist.forEach((item) => {
+            const div = document.createElement('div');
+            div.className = 'cart-item-row';
+            div.innerHTML = `
+                <img src="${item.img}">
+                <div style="flex-grow: 1;">
+                    <div style="font-size: 11px; font-weight: 700;">${item.name}</div>
+                    <div style="font-size: 10px; color: #059669; font-weight: 800;">₹${item.price}</div>
+                </div>
+                <button class="action-btn" onclick="addToCartByIndex(${item.id})">Add Cart</button>
+            `;
+            container.appendChild(div);
         });
     }
 
-    function handleSearch(val) {
-        const filtered = globalData.filter(p => getVal(p, ["Product Name", "Name", "Title"]).toLowerCase().includes(val.toLowerCase()));
-        renderProducts(filtered);
+    function getVal(obj, possibleKeys) {
+        if (!obj) return '';
+        for (let key of Object.keys(obj)) {
+            for (let target of possibleKeys) {
+                if (key.trim().toLowerCase() === target.trim().toLowerCase()) {
+                    return obj[key] !== undefined ? obj[key].toString() : '';
+                }
+            }
+        }
+        return '';
+    }
+
+    function syncRenderEngine() {
+        const container = document.getElementById('shopifyGridContainer');
+        container.innerHTML = '';
+
+        if(!globalStoreData || globalStoreData.length === 0) {
+            container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 30px; font-weight: 700;">Syncing Products Data...</div>`;
+            return;
+        }
+
+        let filtered = globalStoreData.map((p, index) => ({ ...p, _originalIndex: index }))
+        .filter(p => p && getVal(p, ["Brand"]).toUpperCase() !== 'BACKGROUND');
+
+        filtered.forEach((prod) => {
+            const index = prod._originalIndex;
+            const pTitle = getVal(prod, ["Product Name", "Name", "Title"]) || 'Premium Supplement';
+            const brandName = getVal(prod, ["Brand"]) || 'GrowUp';
+            const weightVal = getVal(prod, ["Weight / Size", "Weight", "Size"]);
+            const flavVal = getVal(prod, ["Flavour", "Flavor"]);
+            const sp = parseFloat(getVal(prod, ["Selling Price", "Price", "SP"])) || 0;
+            const img1 = cleanDriveUrl(getVal(prod, ["Image 1", "Image1", "Image"]));
+
+            const card = document.createElement('div');
+            card.className = 'prod-card';
+            card.innerHTML = `
+                <div class="prod-media" onclick="openProductModalByIndex(${index})">
+                    <img src="${img1}" onerror="this.src='logo.png';">
+                </div>
+                <div class="prod-details">
+                    <span class="prod-brand">${brandName}</span>
+                    <h3 class="prod-title" onclick="openProductModalByIndex(${index})">${pTitle}</h3>
+                    <span class="prod-weight">${weightVal} ${flavVal ? '• ' + flavVal : ''}</span>
+                    <div class="prod-pricing"><span class="price-sale">₹${sp}</span></div>
+                    <div class="card-actions-grid">
+                        <button class="action-btn secondary" onclick="addToCartByIndex(${index})">🛒 +Cart</button>
+                        <button class="action-btn" onclick="addToCartByIndex(${index})">Order</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
     }
 
     fetch(sheetAPI)
         .then(res => res.json())
         .then(data => {
             document.getElementById('loading').style.display = 'none';
-            globalData = Array.isArray(data) ? data : [];
-            renderProducts(globalData);
-            updateCartBadge();
-            if(currentUser) document.getElementById('userAccountBtnSlot').innerHTML = `<button class="header-login-btn">👤 ${currentUser.name.split(' ')[0]}</button>`;
+            globalStoreData = Array.isArray(data) ? data : [];
+            syncRenderEngine();
+            syncUserAccountBtn();
+            updateBadges();
         });
 
     function toggleTheme() {
-        const html = document.documentElement;
-        const btn = document.getElementById('themeBtn');
-        if(html.getAttribute('data-theme') === 'light') { html.removeAttribute('data-theme'); btn.innerText = '☀️ Light'; }
-        else { html.setAttribute('data-theme', 'light'); btn.innerText = '🌙 Dark'; }
+        const htmlEl = document.documentElement;
+        if(htmlEl.getAttribute('data-theme') === 'dark') htmlEl.removeAttribute('data-theme');
+        else htmlEl.setAttribute('data-theme', 'dark');
+        syncRenderEngine();
     }
 </script>
 </body>
