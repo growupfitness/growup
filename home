@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Grow Up Fitness - Official Store</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; transition: background 0.3s, color 0.3s; }
+        :root { --bg-primary: #f8fafc; --bg-card: #ffffff; --text-main: #0f172a; --text-muted: #64748b; --border-color: rgba(15, 23, 42, 0.08); --accent-color: #0072ff; --bg-header: rgba(255, 255, 255, 0.98); --logo-filter: invert(1); }
+        [data-theme="dark"] { --bg-primary: #090d16; --bg-card: #131a26; --text-main: #f1f5f9; --text-muted: #94a3b8; --border-color: rgba(255, 255, 255, 0.08); --accent-color: #00f2fe; --bg-header: rgba(13, 20, 33, 0.98); --logo-filter: invert(0); }
+        body { background: var(--bg-primary); color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
+
+        header { position: fixed; top: 0; left: 0; width: 100%; z-index: 100; background: var(--bg-header); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border-color); padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+        .header-left { display: flex; align-items: center; gap: 15px; flex: 1; }
+        .logo-area img#mainLogo { max-height: 32px; filter: var(--logo-filter) !important; }
+        .search-box { position: relative; max-width: 280px; width: 100%; }
+        .search-box input { width: 100%; padding: 8px 12px 8px 34px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 20px; font-size: 11px; font-weight: 600; color: var(--text-main); outline: none; }
+        .header-controls { display: flex; align-items: center; gap: 10px; }
+        .theme-toggle-btn, .header-login-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; }
+        .header-icon-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; position: relative; }
+        .icon-badge { position: absolute; top: -4px; right: -4px; background: #ff0844; color: #ffffff; font-size: 8px; font-weight: 800; width: 15px; height: 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        .hero-video-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 65vh; z-index: 1; background: #000; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .hero-video-wrapper video { width: 100%; height: 100%; object-fit: cover; }
+        .video-caption { position: absolute; bottom: 15%; left: 5%; color: #fff; z-index: 5; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+        .video-caption h1 { font-size: 28px; font-weight: 800; text-transform: uppercase; }
+
+        .main-scroll-content { position: relative; z-index: 10; margin-top: 58vh; background: var(--bg-primary); border-radius: 24px 24px 0 0; padding-top: 30px; min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+
+        .section-title { font-size: 14px; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; position: relative; padding-left: 10px; color: var(--text-main); }
+        .section-title::before { content: ''; position: absolute; left: 0; top: 15%; width: 4px; height: 70%; background: var(--accent-color); border-radius: 4px; }
+
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .prod-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+        .prod-media { width: 100%; height: 180px; background: rgba(15, 23, 42, 0.02); display: flex; align-items: center; justify-content: center; padding: 10px; }
+        .prod-media img { max-width: 90%; max-height: 90%; object-fit: contain; }
+        .prod-details { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
+        .prod-brand { font-size: 8px; font-weight: 800; color: var(--accent-color); text-transform: uppercase; }
+        .prod-title { font-size: 12px; font-weight: 700; color: var(--text-main); margin: 4px 0; min-height: 32px; }
+        .prod-pricing { font-size: 15px; font-weight: 800; color: #059669; margin-top: auto; margin-bottom: 10px; }
+
+        .action-btn { padding: 10px; background: linear-gradient(135deg, #0072ff, #00f2fe); color: white; border: none; font-size: 10px; font-weight: 800; border-radius: 6px; cursor: pointer; text-transform: uppercase; width: 100%; }
+
+        footer { background: #000; color: #fff; padding: 30px 15px; margin-top: 40px; text-align: center; font-size: 10px; }
+        #loading { text-align: center; font-size: 12px; color: var(--accent-color); margin: 30px 0; font-weight: 700; }
+
+        @media (max-width: 768px) {
+            .search-box { max-width: 130px; }
+            .hero-video-wrapper { height: 280px; } 
+            .main-scroll-content { margin-top: 240px; } 
+            .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .prod-media { height: 140px; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <div class="logo-area" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                <img src="growup-logoo.png" id="mainLogo" alt="Grow Up Fitness" onerror="this.src='logo.png';">
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search product..." oninput="handleSearch(this.value)">
+            </div>
+        </div>
+
+        <div class="header-controls">
+            <button class="theme-toggle-btn" onclick="toggleTheme()">🌙 Dark</button>
+            <div class="header-icon-btn">🛒 <span class="icon-badge" id="cartBadge">0</span></div>
+        </div>
+    </header>
+
+    <div class="hero-video-wrapper">
+        <video autoplay loop muted playsinline>
+            <source src="Top-Banner.mp4" type="video/mp4">
+        </video>
+        <div class="video-caption"><h1>Stronger Everyday</h1></div>
+    </div>
+
+    <div class="main-scroll-content">
+        <div class="container">
+            <h2 class="section-title">All Products</h2>
+            <div id="loading">Syncing Live Products...</div>
+            <div class="products-grid" id="productsGrid"></div>
+        </div>
+
+        <footer>
+            <p>© 2025-2026 Grow Up Fitness Supplements Store.</p>
+        </footer>
+    </div>
+
+<script>
+    const sheetAPI = 'https://script.google.com/macros/s/AKfycbxZ5ddxj3D0uZFWXzDsifEeHwf9XVIJ7cEp_bXW7Ug0B2V1LyLxoplV5IE7g-05jDpRJw/exec';
+    let globalData = [];
+
+    function cleanDriveUrl(url) {
+        if (!url) return '';
+        url = url.toString().trim();
+        if (url.includes('drive.google.com/uc?')) return url;
+        var id = '';
+        if (url.includes('id=')) id = url.split('id=')[1].split('&')[0];
+        else if (url.includes('/d/')) id = url.split('/d/')[1].split('/')[0];
+        return id ? 'https://drive.google.com/uc?export=view&id=' + id : url;
+    }
+
+    function getVal(obj, possibleKeys) {
+        if (!obj) return '';
+        for (let key of Object.keys(obj)) {
+            for (let target of possibleKeys) {
+                if (key.trim().toLowerCase() === target.trim().toLowerCase()) return obj[key] ? obj[key].toString() : '';
+            }
+        }
+        return '';
+    }
+
+    function renderProducts(data) {
+        const grid = document.getElementById('productsGrid');
+        grid.innerHTML = '';
+        data.forEach(prod => {
+            const title = getVal(prod, ["Product Name", "Name", "Title"]) || 'Supplement';
+            const brand = getVal(prod, ["Brand"]) || 'GrowUp';
+            const price = getVal(prod, ["Selling Price", "Price", "SP"]) || '0';
+            const img = cleanDriveUrl(getVal(prod, ["Image 1", "Image1", "Image"]));
+
+            const card = document.createElement('div');
+            card.className = 'prod-card';
+            card.innerHTML = `
+                <div class="prod-media"><img src="${img}" onerror="this.src='logo.png';"></div>
+                <div class="prod-details">
+                    <span class="prod-brand">${brand}</span>
+                    <h3 class="prod-title">${title}</h3>
+                    <div class="prod-pricing">₹${price}</div>
+                    <button class="action-btn">🛒 Order Now</button>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function handleSearch(val) {
+        const filtered = globalData.filter(p => {
+            const name = getVal(p, ["Product Name", "Name", "Title"]).toLowerCase();
+            return name.includes(val.toLowerCase());
+        });
+        renderProducts(filtered);
+    }
+
+    fetch(sheetAPI)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('loading').style.display = 'none';
+            globalData = Array.isArray(data) ? data : [];
+            renderProducts(globalData);
+        });
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        if(html.getAttribute('data-theme') === 'dark') html.removeAttribute('data-theme');
+        else html.setAttribute('data-theme', 'dark');
+    }
+</script>
+</body>
+</html>
