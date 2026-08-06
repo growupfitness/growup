@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Grow Up Fitness - Elite Premium Store & Inquiry</title>
-    <!-- Leaflet OpenStreetMap CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', sans-serif; transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
@@ -39,7 +38,6 @@
             letter-spacing: 0.3px;
         }
 
-        /* 🛍️ HEADER STYLING */
         header {
             position: fixed;
             top: 0; left: 0; width: 100%;
@@ -89,15 +87,9 @@
             cursor: pointer; display: flex; align-items: center; justify-content: space-between;
         }
 
-        .top-search-tag {
-            font-size: 9px; padding: 2px 6px; border-radius: 4px;
-            background: rgba(0, 114, 255, 0.1); color: var(--accent-color);
-            font-weight: 700; text-transform: uppercase;
-        }
-
         .header-controls { display: flex; align-items: center; gap: 10px; }
 
-        .inquiry-nav-btn, .theme-toggle-btn {
+        .theme-toggle-btn {
             background: var(--bg-card); border: 1px solid var(--border-color);
             color: var(--text-main); padding: 6px 14px; border-radius: 20px;
             font-size: 11px; font-weight: 700; cursor: pointer; text-decoration: none; white-space: nowrap;
@@ -186,7 +178,6 @@
             overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.02); cursor: pointer;
         }
 
-        /* 🏷️ DISCOUNT BADGE */
         .badge-discount {
             position: absolute; top: 8px; left: 8px; background: #ff0844; color: white;
             font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: 4px; z-index: 5; text-transform: uppercase;
@@ -218,7 +209,6 @@
 
         .action-btn.secondary { background: var(--bg-primary); color: var(--text-main); border: 1px solid var(--border-color); }
 
-        /* 📋 PRODUCT QUICK VIEW POPUP MODAL STYLING */
         .product-modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px); z-index: 9999;
@@ -246,7 +236,6 @@
         .modal-mrp { text-decoration: line-through; color: var(--text-muted); font-size: 14px; margin-left: 8px; }
         .modal-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 15px; }
 
-        /* 🔍 FULL SCREEN IMAGE ZOOM LIGHTBOX STYLING */
         .zoom-lightbox-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(8px); z-index: 10000;
@@ -255,7 +244,6 @@
         .zoom-lightbox-img { max-width: 95%; max-height: 95vh; object-fit: contain; border-radius: 8px; cursor: zoom-out; }
         .zoom-lightbox-close { position: absolute; top: 20px; right: 25px; color: #ffffff; font-size: 32px; font-weight: 800; cursor: pointer; z-index: 10001; }
 
-        /* 🚚 FREE SHIPPING BAR IN CART */
         .shipping-progress-wrap {
             background: var(--bg-primary); border-bottom: 1px solid var(--border-color);
             padding: 12px 15px; text-align: center;
@@ -263,7 +251,6 @@
         .progress-bar-bg { width: 100%; height: 6px; background: rgba(0,0,0,0.1); border-radius: 10px; margin-top: 6px; overflow: hidden; }
         .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #0072ff, #00f2fe); width: 0%; transition: width 0.3s ease; }
 
-        /* 💳 PAYMENT SELECTION STYLING */
         .payment-method-row { display: flex; gap: 10px; margin-top: 5px; }
         .pay-option-card {
             flex: 1; padding: 12px 10px; border: 1px solid var(--border-color); border-radius: 8px;
@@ -279,7 +266,6 @@
         }
         .qr-display-box img { width: 160px; height: 160px; margin: 8px auto; display: block; border-radius: 8px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-        /* 📋 E-COMMERCE PROFESSIONAL CHECKOUT MODAL STYLING */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1000;
@@ -350,7 +336,6 @@
 </head>
 <body>
 
-    <!-- 🛍️ HEADER -->
     <header>
         <div class="header-left">
             <div class="logo-area" onclick="scrollToTopHome()" title="Go to Home / Top">
@@ -402,7 +387,6 @@
                 </div>
             </div>
 
-            <!-- 🍓 SHOP BY FLAVOURS -->
             <h2 class="section-title">Shop By Flavours</h2>
             <div class="flavours-scroll-row" id="flavourContainer">
                 <div class="flav-scroll-box active-filter" onclick="filterByFlavour('All', this)">
@@ -559,7 +543,6 @@
                         <input type="hidden" id="coAddrType" value="Home">
                     </div>
 
-                    <!-- 💳 PAYMENT MODE SELECTOR -->
                     <div class="form-input-group full">
                         <label>Select Payment Method *</label>
                         <div class="payment-method-row">
@@ -575,7 +558,6 @@
                         <input type="hidden" id="coPayMode" value="UPI">
                     </div>
 
-                    <!-- 📱 DYNAMIC UPI QR CONTAINER -->
                     <div class="form-input-group full">
                         <div id="qrDisplayBox" class="qr-display-box">
                             <div style="font-size: 11px; font-weight: 800; color: var(--accent-color);">Scan QR to Pay Exact Amount: <span id="qrAmountDisplay" style="color:#059669;">₹0</span></div>
@@ -620,7 +602,6 @@
             <button class="close-modal-btn" style="position: static;" onclick="toggleDrawer('cartDrawer')">✕</button>
         </div>
 
-        <!-- 🚚 FREE SHIPPING DYNAMIC PROGRESS BAR -->
         <div class="shipping-progress-wrap">
             <div style="font-size: 10px; font-weight: 700; color: var(--text-main);" id="freeShippingText">Add items to get Free Delivery!</div>
             <div class="progress-bar-bg"><div class="progress-bar-fill" id="freeShippingFill"></div></div>
@@ -771,7 +752,6 @@
             });
     }
 
-    /* 🔍 QUICK VIEW POPUP MODAL */
     function openProductModalByIndex(index) {
         const prod = globalStoreData[index];
         if(!prod) return;
@@ -822,7 +802,6 @@
         document.getElementById('productQuickModal').style.display = 'none';
     }
 
-    /* 🔍 FULL SCREEN ZOOM LIGHTBOX FUNCTIONS */
     function openFullZoomImage(imgSrc) {
         if(!imgSrc) return;
         document.getElementById('zoomLightboxImg').src = imgSrc;
@@ -1057,7 +1036,6 @@
         updateFreeShippingBar(total);
     }
 
-    /* 🚚 DYNAMIC FREE SHIPPING BAR */
     function updateFreeShippingBar(total) {
         const freeLimit = 1999;
         const textEl = document.getElementById('freeShippingText');
@@ -1146,7 +1124,6 @@
             const sp = parseFloat(getVal(prod, ["Selling Price", "Price", "SP"])) || 0;
             let mrp = parseFloat(getVal(prod, ["MRP"])) || 0;
 
-            // Discount Calculation
             if(!mrp || mrp <= sp) mrp = Math.round(sp * 1.25);
             const offPct = Math.round(((mrp - sp) / mrp) * 100);
             const discountBadge = `<div class="badge-discount">-${offPct}% OFF</div>`;
