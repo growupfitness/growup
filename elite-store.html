@@ -172,6 +172,11 @@
             overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.02); cursor: pointer;
         }
 
+        .badge-discount {
+            position: absolute; top: 10px; left: 10px; background: #ff0844; color: white;
+            font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 20px; z-index: 5; text-transform: uppercase;
+        }
+
         .prod-media {
             width: 100%; height: 180px; background: rgba(15, 23, 42, 0.02);
             display: flex; align-items: center; justify-content: center; padding: 10px; position: relative;
@@ -185,6 +190,7 @@
 
         .prod-pricing { display: flex; align-items: baseline; gap: 6px; margin-top: auto; margin-bottom: 10px; }
         .price-sale { font-size: 15px; font-weight: 800; color: #059669; }
+        .price-mrp { font-size: 11px; color: var(--text-muted); text-decoration: line-through; font-weight: 600; }
 
         .card-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 
@@ -1038,12 +1044,18 @@
             const brandName = getVal(prod, ["Brand"]) || 'GrowUp';
             const weightVal = getVal(prod, ["Weight / Size", "Weight", "Size"]);
             const flavVal = getVal(prod, ["Flavour", "Flavor"]);
+            
             const sp = parseFloat(getVal(prod, ["Selling Price", "Price", "SP"])) || 0;
+            let mrp = parseFloat(getVal(prod, ["MRP"])) || 0;
+            if(!mrp || mrp <= sp) mrp = Math.round(sp * 1.25);
+            const offPct = Math.round(((mrp - sp) / mrp) * 100);
+
             const img1 = cleanDriveUrl(getVal(prod, ["Image 1", "Image1", "Image"]));
 
             const card = document.createElement('div');
             card.className = 'prod-card';
             card.innerHTML = `
+                <div class="badge-discount">-${offPct}% OFF</div>
                 <div class="prod-media" onclick="openProductModalByIndex(${index})">
                     <img src="${img1}" onerror="this.src='logo.png';">
                 </div>
@@ -1051,7 +1063,10 @@
                     <span class="prod-brand">${brandName}</span>
                     <h3 class="prod-title" onclick="openProductModalByIndex(${index})">${pTitle}</h3>
                     <span class="prod-weight">${weightVal} ${flavVal ? '• ' + flavVal : ''}</span>
-                    <div class="prod-pricing"><span class="price-sale">₹${sp}</span></div>
+                    <div class="prod-pricing">
+                        <span class="price-sale">₹${sp}</span>
+                        <span class="price-mrp">₹${mrp}</span>
+                    </div>
                     <div class="card-actions-grid">
                         <button class="action-btn secondary" onclick="addToCartByIndex(${index})">🛒 +Cart</button>
                         <button class="action-btn" onclick="addToCartByIndex(${index})">Order</button>
