@@ -186,30 +186,11 @@
             overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.02); cursor: pointer;
         }
 
-        .badge-discount {
-            position: absolute; top: 8px; left: 8px; background: #ff0844; color: white;
-            font-size: 8px; font-weight: 800; padding: 2px 5px; border-radius: 3px; z-index: 5;
-        }
-
-        .wishlist-btn-card {
-            position: absolute; top: 8px; right: 8px; background: var(--bg-card); border: 1px solid var(--border-color);
-            width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; font-size: 12px;
-        }
-
         .prod-media {
             width: 100%; height: 180px; background: rgba(15, 23, 42, 0.02);
             display: flex; align-items: center; justify-content: center; padding: 10px; position: relative;
         }
         .prod-media img { max-width: 90%; max-height: 90%; object-fit: contain; }
-
-        .image-dots-bar { display: flex; justify-content: center; gap: 6px; padding: 4px 0; background: rgba(0,0,0,0.02); }
-
-        .img-dot-thumb {
-            width: 18px; height: 18px; border-radius: 4px; border: 1px solid var(--border-color);
-            object-fit: cover; cursor: pointer; opacity: 0.6; transition: all 0.2s ease;
-        }
-
-        .img-dot-thumb.active { opacity: 1; border-color: var(--accent-color); transform: scale(1.1); }
 
         .prod-details { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
         .prod-brand { font-size: 8px; font-weight: 800; color: var(--accent-color); text-transform: uppercase; margin-bottom: 2px; }
@@ -218,7 +199,6 @@
 
         .prod-pricing { display: flex; align-items: baseline; gap: 6px; margin-top: auto; margin-bottom: 10px; }
         .price-sale { font-size: 15px; font-weight: 800; color: #059669; }
-        .price-mrp { font-size: 11px; color: var(--text-muted); text-decoration: line-through; }
 
         .card-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 
@@ -265,8 +245,24 @@
             background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(8px); z-index: 10000;
             justify-content: center; align-items: center; overflow: auto; padding: 20px;
         }
-        .zoom-lightbox-img { max-width: 95%; max-height: 95vh; object-fit: contain; border-radius: 8px; transition: transform 0.2s ease; cursor: zoom-out; }
-        .zoom-lightbox-close { position: absolute; top: 20px; right: 25px; color: #ffffff; font-size: 32px; font-weight: 800; cursor: pointer; z-index: 10001; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+        .zoom-lightbox-img { max-width: 95%; max-height: 95vh; object-fit: contain; border-radius: 8px; cursor: zoom-out; }
+        .zoom-lightbox-close { position: absolute; top: 20px; right: 25px; color: #ffffff; font-size: 32px; font-weight: 800; cursor: pointer; z-index: 10001; }
+
+        /* 💳 PAYMENT SELECTION STYLING */
+        .payment-method-row { display: flex; gap: 10px; margin-top: 5px; }
+        .pay-option-card {
+            flex: 1; padding: 12px 10px; border: 1px solid var(--border-color); border-radius: 8px;
+            background: var(--bg-primary); text-align: center; cursor: pointer; transition: all 0.2s ease;
+        }
+        .pay-option-card.active { border-color: var(--accent-color); background: rgba(0, 114, 255, 0.08); }
+        .pay-option-title { font-size: 11px; font-weight: 800; color: var(--text-main); }
+        .pay-option-desc { font-size: 8px; color: var(--text-muted); margin-top: 2px; }
+
+        .qr-display-box {
+            display: none; text-align: center; background: rgba(0,0,0,0.03); border: 1px dashed var(--accent-color);
+            padding: 15px; border-radius: 12px; margin-top: 10px;
+        }
+        .qr-display-box img { width: 160px; height: 160px; margin: 8px auto; display: block; border-radius: 8px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
         /* 📋 E-COMMERCE PROFESSIONAL CHECKOUT MODAL STYLING */
         .modal-overlay {
@@ -464,12 +460,12 @@
         </div>
     </div>
 
-    <!-- 🚚 2. PROFESSIONAL E-COMMERCE CHECKOUT MODAL (SPLIT ADDRESS) -->
+    <!-- 🚚 2. PROFESSIONAL E-COMMERCE CHECKOUT MODAL (WITH DYNAMIC UPI QR & COD) -->
     <div class="modal-overlay" id="checkoutModal">
         <div class="modal-card">
             <button class="close-modal-btn" onclick="closeCheckoutModal()">✕</button>
-            <h2 style="font-size: 16px; font-weight: 800; margin-bottom: 2px;">Shipping Address</h2>
-            <p style="font-size: 10px; color: var(--text-muted); margin-bottom: 12px;">Please provide accurate address for hassle-free courier delivery.</p>
+            <h2 style="font-size: 16px; font-weight: 800; margin-bottom: 2px;">Shipping & Payment</h2>
+            <p style="font-size: 10px; color: var(--text-muted); margin-bottom: 12px;">Provide accurate address & choose your preferred payment option.</p>
             
             <form id="checkoutForm" onsubmit="handleCheckoutSubmit(event)">
                 <div class="form-grid-2col">
@@ -521,6 +517,31 @@
                             <button type="button" class="type-btn" onclick="selectAddrType('Other', this)">📍 Other</button>
                         </div>
                         <input type="hidden" id="coAddrType" value="Home">
+                    </div>
+
+                    <!-- 💳 PAYMENT MODE SELECTOR -->
+                    <div class="form-input-group full">
+                        <label>Select Payment Method *</label>
+                        <div class="payment-method-row">
+                            <div class="pay-option-card active" id="payOptUPI" onclick="selectPaymentMode('UPI')">
+                                <div class="pay-option-title">⚡ Pay Online (UPI)</div>
+                                <div class="pay-option-desc">GPay / PhonePe / Paytm</div>
+                            </div>
+                            <div class="pay-option-card" id="payOptCOD" onclick="selectPaymentMode('COD')">
+                                <div class="pay-option-title">🚚 Cash on Delivery</div>
+                                <div class="pay-option-desc">Pay when delivered</div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="coPayMode" value="UPI">
+                    </div>
+
+                    <!-- 📱 DYNAMIC UPI QR CONTAINER -->
+                    <div class="form-input-group full">
+                        <div id="qrDisplayBox" class="qr-display-box">
+                            <div style="font-size: 11px; font-weight: 800; color: var(--accent-color);">Scan QR to Pay Exact Amount: <span id="qrAmountDisplay" style="color:#059669;">₹0</span></div>
+                            <img id="dynamicQRImg" src="" alt="UPI Dynamic QR">
+                            <div style="font-size: 9px; color: var(--text-muted); font-weight: 600;">UPI VPA: Salvinitinudr-2@oksbi</div>
+                        </div>
                     </div>
 
                     <button type="submit" id="coSubmitBtn" class="action-btn full" style="padding: 12px; font-size: 11px; margin-top: 10px;">
@@ -583,6 +604,7 @@
 
 <script>
     const sheetAPI = 'https://script.google.com/macros/s/AKfycbxZ5ddxj3D0uZFWXzDsifEeHwf9XVIJ7cEp_bXW7Ug0B2V1LyLxoplV5IE7g-05jDpRJw/exec';
+    const merchantUPI = 'Salvinitinudr-2@oksbi';
     
     let globalStoreData = [];
     let currentFilterCategory = 'All';
@@ -783,6 +805,23 @@
         document.getElementById('coAddrType').value = type;
     }
 
+    function selectPaymentMode(mode) {
+        document.getElementById('coPayMode').value = mode;
+        const upiBox = document.getElementById('payOptUPI');
+        const codBox = document.getElementById('payOptCOD');
+        const qrBox = document.getElementById('qrDisplayBox');
+
+        if(mode === 'UPI') {
+            upiBox.classList.add('active');
+            codBox.classList.remove('active');
+            qrBox.style.display = 'block';
+        } else {
+            codBox.classList.add('active');
+            upiBox.classList.remove('active');
+            qrBox.style.display = 'none';
+        }
+    }
+
     function openCheckoutModal() {
         if (userCart.length === 0) {
             alert("Your cart is empty!");
@@ -801,6 +840,15 @@
         
         document.getElementById('coName').value = currentUser.name || '';
         document.getElementById('coPhone').value = currentUser.phone || '';
+
+        // Generate Dynamic UPI QR Code for exact cart amount
+        const grandTotal = userCart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+        document.getElementById('qrAmountDisplay').innerText = `₹${grandTotal}`;
+        
+        const upiUrl = `upi://pay?pa=${merchantUPI}&pn=Grow%20Up%20Fitness&am=${grandTotal}&cu=INR`;
+        document.getElementById('dynamicQRImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
+        
+        selectPaymentMode('UPI');
     }
 
     function closeCheckoutModal() { document.getElementById('checkoutModal').style.display = 'none'; }
@@ -827,6 +875,7 @@
         const city = document.getElementById('coCity').value;
         const state = document.getElementById('coState').value;
         const addrType = document.getElementById('coAddrType').value;
+        const payMode = document.getElementById('coPayMode').value;
 
         const orderId = 'GU-ORD-' + Math.floor(100000 + Math.random() * 900000);
         const grandTotal = userCart.reduce((sum, i) => sum + (i.price * i.qty), 0);
@@ -844,6 +893,7 @@
         formData.append('city', city);
         formData.append('state', state);
         formData.append('addrType', addrType);
+        formData.append('payMode', payMode);
         formData.append('items', itemsStr);
         formData.append('total', grandTotal);
 
@@ -856,7 +906,7 @@
 
                 const waItemsStr = userCart.map(i => `• ${i.fullTitle || i.name} (x${i.qty}) - ₹${i.price * i.qty}`).join('\n');
                 const fullAddrStr = `${house}, ${street}, ${landmark ? 'Landmark: ' + landmark + ', ' : ''}${city}, ${state} - ${pincode}`;
-                const msg = encodeURIComponent(`⚡ *NEW ORDER PLACED* ⚡\n\n🆔 *Order ID:* ${orderId}\n👤 *Customer:* ${name}\n📞 *Phone:* ${phone}\n📍 *Address:* ${fullAddrStr}\n\n*Items Ordered:*\n${waItemsStr}\n\n💰 *Total Amount:* ₹${grandTotal}`);
+                const msg = encodeURIComponent(`⚡ *NEW ORDER PLACED* ⚡\n\n🆔 *Order ID:* ${orderId}\n👤 *Customer:* ${name}\n📞 *Phone:* ${phone}\n💳 *Payment Mode:* ${payMode === 'UPI' ? 'Paid via UPI QR' : 'Cash On Delivery (COD)'}\n📍 *Address:* ${fullAddrStr}\n\n*Items Ordered:*\n${waItemsStr}\n\n💰 *Total Amount:* ₹${grandTotal}`);
                 
                 userCart = [];
                 localStorage.setItem('gu_cart', JSON.stringify(userCart));
@@ -871,7 +921,7 @@
                 
                 const waItemsStr = userCart.map(i => `• ${i.fullTitle || i.name} (x${i.qty}) - ₹${i.price * i.qty}`).join('\n');
                 const fullAddrStr = `${house}, ${street}, ${landmark ? 'Landmark: ' + landmark + ', ' : ''}${city}, ${state} - ${pincode}`;
-                const msg = encodeURIComponent(`⚡ *NEW ORDER PLACED* ⚡\n\n🆔 *Order ID:* ${orderId}\n👤 *Customer:* ${name}\n📞 *Phone:* ${phone}\n📍 *Address:* ${fullAddrStr}\n\n*Items Ordered:*\n${waItemsStr}\n\n💰 *Total Amount:* ₹${grandTotal}`);
+                const msg = encodeURIComponent(`⚡ *NEW ORDER PLACED* ⚡\n\n🆔 *Order ID:* ${orderId}\n👤 *Customer:* ${name}\n📞 *Phone:* ${phone}\n💳 *Payment Mode:* ${payMode === 'UPI' ? 'Paid via UPI QR' : 'Cash On Delivery (COD)'}\n📍 *Address:* ${fullAddrStr}\n\n*Items Ordered:*\n${waItemsStr}\n\n💰 *Total Amount:* ₹${grandTotal}`);
                 
                 userCart = [];
                 localStorage.setItem('gu_cart', JSON.stringify(userCart));
