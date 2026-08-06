@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Grow Up Fitness - Elite Premium Store & Inquiry</title>
+    <!-- Leaflet OpenStreetMap CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', sans-serif; transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
@@ -38,6 +39,7 @@
             letter-spacing: 0.3px;
         }
 
+        /* 🛍️ HEADER STYLING */
         header {
             position: fixed;
             top: 0; left: 0; width: 100%;
@@ -87,9 +89,15 @@
             cursor: pointer; display: flex; align-items: center; justify-content: space-between;
         }
 
+        .top-search-tag {
+            font-size: 9px; padding: 2px 6px; border-radius: 4px;
+            background: rgba(0, 114, 255, 0.1); color: var(--accent-color);
+            font-weight: 700; text-transform: uppercase;
+        }
+
         .header-controls { display: flex; align-items: center; gap: 10px; }
 
-        .theme-toggle-btn {
+        .inquiry-nav-btn, .theme-toggle-btn {
             background: var(--bg-card); border: 1px solid var(--border-color);
             color: var(--text-main); padding: 6px 14px; border-radius: 20px;
             font-size: 11px; font-weight: 700; cursor: pointer; text-decoration: none; white-space: nowrap;
@@ -178,11 +186,6 @@
             overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.02); cursor: pointer;
         }
 
-        .badge-discount {
-            position: absolute; top: 8px; left: 8px; background: #ff0844; color: white;
-            font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: 4px; z-index: 5; text-transform: uppercase;
-        }
-
         .prod-media {
             width: 100%; height: 180px; background: rgba(15, 23, 42, 0.02);
             display: flex; align-items: center; justify-content: center; padding: 10px; position: relative;
@@ -196,7 +199,6 @@
 
         .prod-pricing { display: flex; align-items: baseline; gap: 6px; margin-top: auto; margin-bottom: 10px; }
         .price-sale { font-size: 15px; font-weight: 800; color: #059669; }
-        .price-mrp { font-size: 11px; color: var(--text-muted); text-decoration: line-through; }
 
         .card-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 
@@ -243,13 +245,6 @@
         }
         .zoom-lightbox-img { max-width: 95%; max-height: 95vh; object-fit: contain; border-radius: 8px; cursor: zoom-out; }
         .zoom-lightbox-close { position: absolute; top: 20px; right: 25px; color: #ffffff; font-size: 32px; font-weight: 800; cursor: pointer; z-index: 10001; }
-
-        .shipping-progress-wrap {
-            background: var(--bg-primary); border-bottom: 1px solid var(--border-color);
-            padding: 12px 15px; text-align: center;
-        }
-        .progress-bar-bg { width: 100%; height: 6px; background: rgba(0,0,0,0.1); border-radius: 10px; margin-top: 6px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #0072ff, #00f2fe); width: 0%; transition: width 0.3s ease; }
 
         .payment-method-row { display: flex; gap: 10px; margin-top: 5px; }
         .pay-option-card {
@@ -384,30 +379,6 @@
                 <div class="cat-card active-filter" onclick="filterBySpec('Category', 'All', this)">
                     <div class="cat-circle">📦</div>
                     <p>All Products</p>
-                </div>
-            </div>
-
-            <h2 class="section-title">Shop By Flavours</h2>
-            <div class="flavours-scroll-row" id="flavourContainer">
-                <div class="flav-scroll-box active-filter" onclick="filterByFlavour('All', this)">
-                    <div class="flav-box-square">🌟</div>
-                    <p>All Flavours</p>
-                </div>
-                <div class="flav-scroll-box" onclick="filterByFlavour('Chocolate', this)">
-                    <div class="flav-box-square">🍫</div>
-                    <p>Swiss Chocolate</p>
-                </div>
-                <div class="flav-scroll-box" onclick="filterByFlavour('Kulfi', this)">
-                    <div class="flav-box-square">🍦</div>
-                    <p>Malai Kulfi</p>
-                </div>
-                <div class="flav-scroll-box" onclick="filterByFlavour('Coffee', this)">
-                    <div class="flav-box-square">☕</div>
-                    <p>Swiss Coffee</p>
-                </div>
-                <div class="flav-scroll-box" onclick="filterByFlavour('Orange', this)">
-                    <div class="flav-box-square">🍊</div>
-                    <p>Tangy Orange</p>
                 </div>
             </div>
 
@@ -601,12 +572,6 @@
             <h3 style="font-size: 14px; font-weight: 800;">Your Cart</h3>
             <button class="close-modal-btn" style="position: static;" onclick="toggleDrawer('cartDrawer')">✕</button>
         </div>
-
-        <div class="shipping-progress-wrap">
-            <div style="font-size: 10px; font-weight: 700; color: var(--text-main);" id="freeShippingText">Add items to get Free Delivery!</div>
-            <div class="progress-bar-bg"><div class="progress-bar-fill" id="freeShippingFill"></div></div>
-        </div>
-
         <div class="drawer-body" id="cartDrawerItems">
             <p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">Your cart is empty.</p>
         </div>
@@ -637,7 +602,6 @@
     let globalStoreData = [];
     let currentFilterCategory = 'All';
     let currentFilterBrand = 'All';
-    let currentFilterFlavour = 'All';
 
     let userCart = JSON.parse(localStorage.getItem('gu_cart') || '[]');
     let userWishlist = JSON.parse(localStorage.getItem('gu_wishlist') || '[]');
@@ -1009,7 +973,6 @@
         if(userCart.length === 0) {
             container.innerHTML = `<p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">Your cart is empty.</p>`;
             document.getElementById('cartGrandTotal').innerText = '₹0';
-            updateFreeShippingBar(0);
             return;
         }
 
@@ -1033,23 +996,6 @@
         });
 
         document.getElementById('cartGrandTotal').innerText = `₹${total}`;
-        updateFreeShippingBar(total);
-    }
-
-    function updateFreeShippingBar(total) {
-        const freeLimit = 1999;
-        const textEl = document.getElementById('freeShippingText');
-        const fillEl = document.getElementById('freeShippingFill');
-
-        if(total >= freeLimit) {
-            textEl.innerHTML = `<span style="color:#059669; font-weight:800;">🎉 Congratulations! You unlocked FREE Delivery!</span>`;
-            fillEl.style.width = '100%';
-        } else {
-            const diff = freeLimit - total;
-            const pct = Math.min(100, Math.round((total / freeLimit) * 100));
-            textEl.innerHTML = `Add <span style="color:var(--accent-color); font-weight:800;">₹${diff}</span> more to unlock <b>Free Shipping</b>!`;
-            fillEl.style.width = pct + '%';
-        }
     }
 
     function renderWishlistDrawer() {
@@ -1076,13 +1022,6 @@
         });
     }
 
-    function filterByFlavour(val, el) {
-        currentFilterFlavour = val;
-        document.querySelectorAll('.flav-scroll-box').forEach(b => b.classList.remove('active-filter'));
-        if(el) el.classList.add('active-filter');
-        syncRenderEngine();
-    }
-
     function getVal(obj, possibleKeys) {
         if (!obj) return '';
         for (let key of Object.keys(obj)) {
@@ -1105,15 +1044,7 @@
         }
 
         let filtered = globalStoreData.map((p, index) => ({ ...p, _originalIndex: index }))
-        .filter(p => {
-            if(!p || getVal(p, ["Brand"]).toUpperCase() === 'BACKGROUND') return false;
-            
-            if(currentFilterFlavour !== 'All') {
-                const fVal = getVal(p, ["Flavour", "Flavor", "Title", "Name"]);
-                return fVal.toLowerCase().includes(currentFilterFlavour.toLowerCase());
-            }
-            return true;
-        });
+        .filter(p => p && getVal(p, ["Brand"]).toUpperCase() !== 'BACKGROUND');
 
         filtered.forEach((prod) => {
             const index = prod._originalIndex;
@@ -1122,18 +1053,11 @@
             const weightVal = getVal(prod, ["Weight / Size", "Weight", "Size"]);
             const flavVal = getVal(prod, ["Flavour", "Flavor"]);
             const sp = parseFloat(getVal(prod, ["Selling Price", "Price", "SP"])) || 0;
-            let mrp = parseFloat(getVal(prod, ["MRP"])) || 0;
-
-            if(!mrp || mrp <= sp) mrp = Math.round(sp * 1.25);
-            const offPct = Math.round(((mrp - sp) / mrp) * 100);
-            const discountBadge = `<div class="badge-discount">-${offPct}% OFF</div>`;
-
             const img1 = cleanDriveUrl(getVal(prod, ["Image 1", "Image1", "Image"]));
 
             const card = document.createElement('div');
             card.className = 'prod-card';
             card.innerHTML = `
-                ${discountBadge}
                 <div class="prod-media" onclick="openProductModalByIndex(${index})">
                     <img src="${img1}" onerror="this.src='logo.png';">
                 </div>
@@ -1141,10 +1065,7 @@
                     <span class="prod-brand">${brandName}</span>
                     <h3 class="prod-title" onclick="openProductModalByIndex(${index})">${pTitle}</h3>
                     <span class="prod-weight">${weightVal} ${flavVal ? '• ' + flavVal : ''}</span>
-                    <div class="prod-pricing">
-                        <span class="price-sale">₹${sp}</span>
-                        <span class="price-mrp">₹${mrp}</span>
-                    </div>
+                    <div class="prod-pricing"><span class="price-sale">₹${sp}</span></div>
                     <div class="card-actions-grid">
                         <button class="action-btn secondary" onclick="addToCartByIndex(${index})">🛒 +Cart</button>
                         <button class="action-btn" onclick="addToCartByIndex(${index})">Order</button>
@@ -1174,4 +1095,3 @@
 </script>
 </body>
 </html>
-
