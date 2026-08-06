@@ -186,6 +186,12 @@
             overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.02); cursor: pointer;
         }
 
+        /* 🏷️ DISCOUNT BADGE */
+        .badge-discount {
+            position: absolute; top: 8px; left: 8px; background: #ff0844; color: white;
+            font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: 4px; z-index: 5; text-transform: uppercase;
+        }
+
         .prod-media {
             width: 100%; height: 180px; background: rgba(15, 23, 42, 0.02);
             display: flex; align-items: center; justify-content: center; padding: 10px; position: relative;
@@ -199,6 +205,7 @@
 
         .prod-pricing { display: flex; align-items: baseline; gap: 6px; margin-top: auto; margin-bottom: 10px; }
         .price-sale { font-size: 15px; font-weight: 800; color: #059669; }
+        .price-mrp { font-size: 11px; color: var(--text-muted); text-decoration: line-through; }
 
         .card-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 
@@ -247,6 +254,14 @@
         }
         .zoom-lightbox-img { max-width: 95%; max-height: 95vh; object-fit: contain; border-radius: 8px; cursor: zoom-out; }
         .zoom-lightbox-close { position: absolute; top: 20px; right: 25px; color: #ffffff; font-size: 32px; font-weight: 800; cursor: pointer; z-index: 10001; }
+
+        /* 🚚 FREE SHIPPING BAR IN CART */
+        .shipping-progress-wrap {
+            background: var(--bg-primary); border-bottom: 1px solid var(--border-color);
+            padding: 12px 15px; text-align: center;
+        }
+        .progress-bar-bg { width: 100%; height: 6px; background: rgba(0,0,0,0.1); border-radius: 10px; margin-top: 6px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #0072ff, #00f2fe); width: 0%; transition: width 0.3s ease; }
 
         /* 💳 PAYMENT SELECTION STYLING */
         .payment-method-row { display: flex; gap: 10px; margin-top: 5px; }
@@ -387,6 +402,26 @@
                 </div>
             </div>
 
+            <h2 class="section-title">Shop By Flavours</h2>
+            <div class="flavours-scroll-row" id="flavourContainer">
+                <div class="flav-scroll-box active-filter" onclick="filterBySpec('Flavour', 'All', this)">
+                    <div class="flav-box-square">🍫</div>
+                    <p>Swiss Chocolate</p>
+                </div>
+                <div class="flav-scroll-box" onclick="filterBySpec('Flavour', 'Kulfi', this)">
+                    <div class="flav-box-square">🍦</div>
+                    <p>Malai Kulfi</p>
+                </div>
+                <div class="flav-scroll-box" onclick="filterBySpec('Flavour', 'Coffee', this)">
+                    <div class="flav-box-square">☕</div>
+                    <p>Swiss Coffee</p>
+                </div>
+                <div class="flav-scroll-box" onclick="filterBySpec('Flavour', 'Orange', this)">
+                    <div class="flav-box-square">🍊</div>
+                    <p>Tangy Orange</p>
+                </div>
+            </div>
+
             <h2 class="section-title" id="productsTarget">Shop By Brand</h2>
             <div class="brands-scroll-row" id="brandContainer">
                 <div class="brand-scroll-box active-filter" onclick="filterBySpec('Brand', 'All', this)">
@@ -460,7 +495,7 @@
         </div>
     </div>
 
-    <!-- 🚚 2. PROFESSIONAL E-COMMERCE CHECKOUT MODAL (WITH DYNAMIC UPI QR & COD) -->
+    <!-- 🚚 2. PROFESSIONAL CHECKOUT MODAL (WITH DYNAMIC UPI QR & COD) -->
     <div class="modal-overlay" id="checkoutModal">
         <div class="modal-card">
             <button class="close-modal-btn" onclick="closeCheckoutModal()">✕</button>
@@ -579,6 +614,13 @@
             <h3 style="font-size: 14px; font-weight: 800;">Your Cart</h3>
             <button class="close-modal-btn" style="position: static;" onclick="toggleDrawer('cartDrawer')">✕</button>
         </div>
+
+        <!-- 🚚 FREE SHIPPING DYNAMIC PROGRESS BAR -->
+        <div class="shipping-progress-wrap">
+            <div style="font-size: 10px; font-weight: 700; color: var(--text-main);" id="freeShippingText">Add items to get Free Delivery!</div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="freeShippingFill"></div></div>
+        </div>
+
         <div class="drawer-body" id="cartDrawerItems">
             <p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">Your cart is empty.</p>
         </div>
@@ -841,7 +883,6 @@
         document.getElementById('coName').value = currentUser.name || '';
         document.getElementById('coPhone').value = currentUser.phone || '';
 
-        // Generate Dynamic UPI QR Code for exact cart amount
         const grandTotal = userCart.reduce((sum, i) => sum + (i.price * i.qty), 0);
         document.getElementById('qrAmountDisplay').innerText = `₹${grandTotal}`;
         
@@ -983,6 +1024,7 @@
         if(userCart.length === 0) {
             container.innerHTML = `<p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">Your cart is empty.</p>`;
             document.getElementById('cartGrandTotal').innerText = '₹0';
+            updateFreeShippingBar(0);
             return;
         }
 
@@ -1006,6 +1048,23 @@
         });
 
         document.getElementById('cartGrandTotal').innerText = `₹${total}`;
+        updateFreeShippingBar(total);
+    }
+
+    function updateFreeShippingBar(total) {
+        const freeLimit = 1999;
+        const textEl = document.getElementById('freeShippingText');
+        const fillEl = document.getElementById('freeShippingFill');
+
+        if(total >= freeLimit) {
+            textEl.innerHTML = `<span style="color:#059669; font-weight:800;">🎉 Congratulations! You unlocked FREE Delivery!</span>`;
+            fillEl.style.width = '100%';
+        } else {
+            const diff = freeLimit - total;
+            const pct = Math.min(100, Math.round((total / freeLimit) * 100));
+            textEl.innerHTML = `Add <span style="color:var(--accent-color); font-weight:800;">₹${diff}</span> more to unlock <b>Free Shipping</b>!`;
+            fillEl.style.width = pct + '%';
+        }
     }
 
     function renderWishlistDrawer() {
@@ -1062,12 +1121,20 @@
             const brandName = getVal(prod, ["Brand"]) || 'GrowUp';
             const weightVal = getVal(prod, ["Weight / Size", "Weight", "Size"]);
             const flavVal = getVal(prod, ["Flavour", "Flavor"]);
+            const mrp = parseFloat(getVal(prod, ["MRP"])) || 0;
             const sp = parseFloat(getVal(prod, ["Selling Price", "Price", "SP"])) || 0;
             const img1 = cleanDriveUrl(getVal(prod, ["Image 1", "Image1", "Image"]));
+
+            let discountBadge = '';
+            if(mrp > sp && mrp > 0) {
+                const offPct = Math.round(((mrp - sp) / mrp) * 100);
+                discountBadge = `<div class="badge-discount">-${offPct}% OFF</div>`;
+            }
 
             const card = document.createElement('div');
             card.className = 'prod-card';
             card.innerHTML = `
+                ${discountBadge}
                 <div class="prod-media" onclick="openProductModalByIndex(${index})">
                     <img src="${img1}" onerror="this.src='logo.png';">
                 </div>
@@ -1075,7 +1142,10 @@
                     <span class="prod-brand">${brandName}</span>
                     <h3 class="prod-title" onclick="openProductModalByIndex(${index})">${pTitle}</h3>
                     <span class="prod-weight">${weightVal} ${flavVal ? '• ' + flavVal : ''}</span>
-                    <div class="prod-pricing"><span class="price-sale">₹${sp}</span></div>
+                    <div class="prod-pricing">
+                        <span class="price-sale">₹${sp}</span>
+                        ${mrp ? `<span class="price-mrp">₹${mrp}</span>` : ''}
+                    </div>
                     <div class="card-actions-grid">
                         <button class="action-btn secondary" onclick="addToCartByIndex(${index})">🛒 +Cart</button>
                         <button class="action-btn" onclick="addToCartByIndex(${index})">Order</button>
