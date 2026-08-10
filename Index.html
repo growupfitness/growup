@@ -1,0 +1,43 @@
+// Apni Apps Script deploy URL yaha daalo
+const API_URL = "https://script.google.com/macros/s/XXXXX/exec";
+
+async function loadProducts() {
+  const response = await fetch(API_URL);
+  const products = await response.json();
+
+  const grid = document.querySelector(".prod-grid");
+  grid.innerHTML = ""; // purana hata do
+
+  products.forEach(p => {
+    if (p["Stock Status"] !== "Yes") return; // sirf jo stock me hai wo dikhao
+
+    const mainImage = p["Image 1"];
+    const mrp = Number(p["MRP"]);
+    const sellingPrice = Number(p["Selling Price"]);
+    const hasDiscount = mrp > sellingPrice;
+
+    // Agar discount hai to MRP crossed-out dikhayenge, warna sirf ek price
+    const priceHTML = hasDiscount
+      ? `<span style="text-decoration:line-through;color:var(--steel);font-size:12px;margin-right:6px;">₹${mrp}</span><span class="price">₹${sellingPrice}</span>`
+      : `<span class="price">₹${sellingPrice}</span>`;
+
+    grid.innerHTML += `
+      <div class="prod-card">
+        <div class="prod-img">
+          <img src="${mainImage}" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="prod-body">
+          <span class="cat-label">${p["Brand"]} · ${p["Category"]}</span>
+          <h4>${p["Product Name"]} ${p["Flavour"] ? "- " + p["Flavour"] : ""}</h4>
+          <p style="color:var(--steel);font-size:12px;margin-bottom:8px;">${p["Weight/Size"] || ""}</p>
+          <div class="prod-price">
+            <span>${priceHTML}</span>
+            <button>Add</button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+}
+
+loadProducts();
