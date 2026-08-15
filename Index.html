@@ -54,6 +54,40 @@
     padding:10px 20px;font-weight:700;font-size:13px;
     border-radius:var(--radius);letter-spacing:0.5px;
   }
+  .login-btn{
+    border:1px solid rgba(243,241,233,0.3);padding:10px 18px;
+    font-weight:700;font-size:13px;border-radius:var(--radius);
+    cursor:pointer;background:none;color:var(--chalk);font-family:'Inter';
+  }
+  .login-btn:hover{border-color:var(--ember);color:var(--ember);}
+  .auth-area{display:flex;align-items:center;gap:14px;}
+  .user-chip{font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px;}
+  .user-chip .logout-link{color:var(--steel);font-weight:500;cursor:pointer;font-size:12px;text-decoration:underline;}
+
+  /* WELCOME TOAST */
+  .welcome-toast{
+    position:fixed;top:90px;right:24px;z-index:300;
+    background:var(--iron-light);border:1px solid var(--ember);
+    padding:16px 20px;border-radius:var(--radius);
+    max-width:280px;transform:translateX(120%);transition:transform .35s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+  }
+  .welcome-toast.show{transform:translateX(0);}
+  .welcome-toast .title{font-family:'Bebas Neue';font-size:20px;color:var(--ember);letter-spacing:1px;}
+  .welcome-toast p{font-size:13px;color:var(--steel);margin-top:4px;}
+
+  /* LOGIN MODAL */
+  .login-box{max-width:380px;padding:36px 32px;display:block;}
+  .login-box h2{font-size:26px;margin-bottom:6px;text-transform:none;font-family:'Inter';}
+  .login-box p.sub-text{color:var(--steel);font-size:13px;margin-bottom:24px;}
+  .login-box input{
+    width:100%;padding:13px 14px;margin-bottom:14px;
+    background:var(--iron);border:1px solid rgba(243,241,233,0.15);
+    border-radius:var(--radius);color:var(--chalk);font-size:14px;font-family:'Inter';
+  }
+  .login-box input:focus{outline:none;border-color:var(--ember);}
+  .login-box button.btn-primary{width:100%;border:none;font-family:'Inter';font-size:14px;cursor:pointer;}
+  .login-error{color:var(--ember);font-size:12px;margin:-8px 0 12px;display:none;}
   .menu-toggle{display:none;font-size:24px;background:none;border:none;color:var(--chalk);cursor:pointer;}
 
   .hero{
@@ -268,6 +302,9 @@
       <a href="#contact">Contact</a>
     </div>
     <a href="#products" class="nav-cta">Shop Now</a>
+    <div class="auth-area" id="authArea">
+      <button class="login-btn" onclick="openLoginModal()">Login</button>
+    </div>
   </nav>
 </header>
 
@@ -353,6 +390,23 @@
   </div>
 </div>
 
+<div class="welcome-toast" id="welcomeToast">
+  <div class="title" id="toastTitle">Welcome!</div>
+  <p id="toastMsg"></p>
+</div>
+
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-box login-box" style="display:block;">
+    <button class="modal-close" onclick="closeLoginModal()">✕</button>
+    <h2>Login</h2>
+    <p class="sub-text">Apna mobile number daalo — cart, wishlist aur order history sab yahi se milegi.</p>
+    <input type="tel" id="loginMobile" placeholder="Mobile Number" maxlength="10">
+    <input type="text" id="loginName" placeholder="Naam (sirf pehli baar zaroori)">
+    <p class="login-error" id="loginError">Sahi 10-digit mobile number daalo.</p>
+    <button class="btn-primary" onclick="submitLogin()">Continue</button>
+  </div>
+</div>
+
 <div class="lightbox" id="imageLightbox">
   <button class="modal-close" onclick="closeLightbox(event)">✕</button>
   <button class="arrow left" onclick="lightboxPrev(event)">‹</button>
@@ -410,7 +464,7 @@
 
 <script>
   // Google Apps Script se live Products data laane wali script
-  const API_URL = "https://script.google.com/macros/s/AKfycbxcEJ0LrgCMTjgurI9Z9yw-BQIjgbvDMc6rfnT24FHuS5l673sO0UQsFaNaMob7K2Q/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbyL0AFliTsmlN-f85n0VN7cOXPC2geT7oGCWNlzA0zM4LiBKJnkJs_Qy4O03XUvCzV4/exec";
 
   let allProducts = [];      // saare in-stock products yaha store honge
   let modalImages = [];      // abhi modal me jo product khula hai uski images
@@ -577,7 +631,86 @@
     if (e.target.id === "imageLightbox") closeLightbox(e);
   });
 
+  // ===== USER LOGIN SYSTEM =====
+  let currentUser = null;
+
+  function openLoginModal() {
+    document.getElementById("loginModal").classList.add("open");
+  }
+  function closeLoginModal() {
+    document.getElementById("loginModal").classList.remove("open");
+    document.getElementById("loginError").style.display = "none";
+  }
+
+  async function submitLogin() {
+    const mobile = document.getElementById("loginMobile").value.trim();
+    const name = document.getElementById("loginName").value.trim();
+    const errorEl = document.getElementById("loginError");
+
+    if (!/^[0-9]{10}$/.test(mobile)) {
+      errorEl.style.display = "block";
+      return;
+    }
+    errorEl.style.display = "none";
+
+    try {
+      const res = await fetch(`${API_URL}?action=login&mobile=${mobile}&name=${encodeURIComponent(name)}`);
+      const user = await res.json();
+      handleLoginSuccess(user);
+      closeLoginModal();
+    } catch (err) {
+      console.error(err);
+      alert("Login me dikkat aayi, dobara try karo.");
+    }
+  }
+
+  function handleLoginSuccess(user) {
+    currentUser = user;
+    localStorage.setItem("gufMobile", user["Mobile"]);
+
+    // Header update — Login button ki jagah naam aur Logout dikhao
+    document.getElementById("authArea").innerHTML = `
+      <div class="user-chip">
+        Hi, ${user["Name"] || "there"}
+        <span class="logout-link" onclick="logout()">Logout</span>
+      </div>
+    `;
+
+    // Welcome toast dikhao
+    const toast = document.getElementById("welcomeToast");
+    document.getElementById("toastTitle").innerText = user["isNewUser"] ? "Welcome!" : "Welcome back!";
+    document.getElementById("toastMsg").innerText = user["isNewUser"]
+      ? `Great to have you, ${user["Name"] || "friend"}. Let's find your stack.`
+      : `Good to see you again, ${user["Name"] || "friend"}!`;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 4000);
+  }
+
+  function logout() {
+    currentUser = null;
+    localStorage.removeItem("gufMobile");
+    document.getElementById("authArea").innerHTML = `<button class="login-btn" onclick="openLoginModal()">Login</button>`;
+  }
+
+  // Page load pe check karo — pehle se login tha to chup-chaap wapas login kar do
+  async function checkExistingLogin() {
+    const savedMobile = localStorage.getItem("gufMobile");
+    if (!savedMobile) return;
+    try {
+      const res = await fetch(`${API_URL}?action=login&mobile=${savedMobile}&name=`);
+      const user = await res.json();
+      handleLoginSuccess(user);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  document.getElementById("loginModal").addEventListener("click", (e) => {
+    if (e.target.id === "loginModal") closeLoginModal();
+  });
+
   loadProducts();
+  checkExistingLogin();
 </script>
 
 </body>
