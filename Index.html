@@ -19,6 +19,11 @@
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
+  ::-webkit-scrollbar{width:10px;}
+  ::-webkit-scrollbar-track{background:var(--iron);}
+  ::-webkit-scrollbar-thumb{background:var(--ember-dim);border-radius:5px;}
+  ::-webkit-scrollbar-thumb:hover{background:var(--ember);}
+  ::selection{background:var(--ember);color:var(--iron);}
   body{
     background:var(--iron);
     color:var(--chalk);
@@ -322,6 +327,48 @@
     .footer-grid{grid-template-columns:1fr;}
     .section-head h2{font-size:32px;}
   }
+
+  /* SCROLL REVEAL */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in-view{opacity:1;transform:translateY(0);}
+  .reveal-stagger.in-view .cat-card,
+  .reveal-stagger.in-view .prod-card,
+  .reveal-stagger.in-view .why > div,
+  .reveal-stagger.in-view .testimonial-card{opacity:1;transform:translateY(0);}
+  .reveal-stagger .cat-card,
+  .reveal-stagger .prod-card,
+  .reveal-stagger .why > div,
+  .reveal-stagger .testimonial-card{opacity:0;transform:translateY(24px);transition:opacity .6s ease, transform .6s ease;}
+  .reveal-stagger.in-view .cat-card:nth-child(1),.reveal-stagger.in-view .prod-card:nth-child(1),.reveal-stagger.in-view .why>div:nth-child(1),.reveal-stagger.in-view .testimonial-card:nth-child(1){transition-delay:.05s;}
+  .reveal-stagger.in-view .cat-card:nth-child(2),.reveal-stagger.in-view .prod-card:nth-child(2),.reveal-stagger.in-view .why>div:nth-child(2),.reveal-stagger.in-view .testimonial-card:nth-child(2){transition-delay:.15s;}
+  .reveal-stagger.in-view .cat-card:nth-child(3),.reveal-stagger.in-view .prod-card:nth-child(3),.reveal-stagger.in-view .why>div:nth-child(3),.reveal-stagger.in-view .testimonial-card:nth-child(3){transition-delay:.25s;}
+  .reveal-stagger.in-view .prod-card:nth-child(4),.reveal-stagger.in-view .why>div:nth-child(4){transition-delay:.35s;}
+
+  /* PREMIUM MICRO-INTERACTIONS */
+  .btn-primary{position:relative;overflow:hidden;}
+  .btn-primary::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.25);transform:translateX(-100%);transition:transform .5s ease;}
+  .btn-primary:hover::after{transform:translateX(0);}
+  .btn-primary:active{transform:scale(0.97);}
+  .btn-ghost:hover{background:rgba(243,241,233,0.06);border-color:var(--chalk);}
+  .prod-card{transition:border-color .25s ease, transform .25s ease, box-shadow .25s ease;}
+  .prod-card:hover{box-shadow:0 16px 40px rgba(0,0,0,0.4);}
+  .prod-card:hover .prod-img img{transform:scale(1.06);}
+  .prod-img img{transition:transform .4s ease;}
+  .cat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ember);transform:scaleX(0);transform-origin:left;transition:transform .3s ease;}
+  .cat-card:hover::before{transform:scaleX(1);}
+
+  /* TESTIMONIALS */
+  .testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .testimonial-card{background:var(--iron-light);border:1px solid rgba(243,241,233,0.06);border-radius:var(--radius);padding:28px;}
+  .testimonial-card .stars{color:var(--ember);font-size:14px;margin-bottom:14px;letter-spacing:2px;}
+  .testimonial-card p{color:var(--chalk);opacity:0.85;font-size:14px;line-height:1.6;margin-bottom:20px;}
+  .testimonial-author{display:flex;align-items:center;gap:12px;}
+  .testimonial-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--ember),var(--plate-blue));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:15px;flex-shrink:0;}
+  .testimonial-author .name{font-size:13px;font-weight:700;}
+  .testimonial-author .tag{font-size:11px;color:var(--steel);}
+  @media(max-width:860px){
+    .testimonial-grid{grid-template-columns:1fr;}
+  }
 </style>
 </head>
 <body>
@@ -377,7 +424,7 @@
   </div>
 </div>
 
-<section class="section" id="categories">
+<section class="section reveal" id="categories">
   <div class="section-head">
     <div>
       <span class="tag">01 — RANGE</span>
@@ -385,7 +432,7 @@
     </div>
     <p>Whatever you're training for, there's a stack built for it.</p>
   </div>
-  <div class="cat-grid">
+  <div class="cat-grid reveal-stagger">
     <div class="cat-card">
       <div class="cat-plate">MUS</div>
       <h3>Muscle Gain</h3>
@@ -404,7 +451,7 @@
   </div>
 </section>
 
-<section class="section" id="products">
+<section class="section reveal" id="products">
   <div class="section-head">
     <div>
       <span class="tag">02 — BEST SELLERS</span>
@@ -412,7 +459,7 @@
     </div>
     <p>Live from our store sheet — updates automatically.</p>
   </div>
-  <div class="prod-grid">
+  <div class="prod-grid reveal-stagger" id="prodGrid">
     <p class="prod-empty">Loading products…</p>
   </div>
 </section>
@@ -470,14 +517,14 @@
   <button class="arrow right" onclick="lightboxNext(event)">›</button>
 </div>
 
-<section class="section" id="why">
+<section class="section reveal" id="why">
   <div class="section-head">
     <div>
       <span class="tag">03 — WHY GROW UP FITNESS</span>
       <h2>Built On Trust</h2>
     </div>
   </div>
-  <div class="why">
+  <div class="why reveal-stagger">
     <div><div class="num">100%</div><h4>Lab Tested</h4><p>Every batch verified for purity.</p></div>
     <div><div class="num">24H</div><h4>Fast Dispatch</h4><p>Orders shipped within a day.</p></div>
     <div><div class="num">5000+</div><h4>Happy Lifters</h4><p>Trusted across the community.</p></div>
@@ -485,7 +532,42 @@
   </div>
 </section>
 
-<section class="section">
+<section class="section reveal">
+  <div class="section-head">
+    <div>
+      <span class="tag">04 — TESTIMONIALS</span>
+      <h2>From The Community</h2>
+    </div>
+  </div>
+  <div class="testimonial-grid reveal-stagger">
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p>"Been ordering whey from here for 6 months. Never once got anything close to expiry — that alone keeps me coming back."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">R</div>
+        <div><div class="name">Rohit K.</div><div class="tag">Verified Buyer</div></div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p>"Fast dispatch and the pre-workout actually hits like the label promises. My gym partner switched after trying mine."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">S</div>
+        <div><div class="name">Sana P.</div><div class="tag">Verified Buyer</div></div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p>"COD option made it an easy first order. Now I just message on WhatsApp and my usual stack shows up in a day."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">A</div>
+        <div><div class="name">Amit D.</div><div class="tag">Verified Buyer</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section reveal">
   <div class="cta-band">
     <h2>Ready to Level Up?</h2>
     <p>Message us on WhatsApp for personalised stack recommendations.</p>
@@ -967,6 +1049,17 @@
   document.getElementById("wishlistDrawer").addEventListener("click", (e) => {
     if (e.target.id === "wishlistDrawer") closeDrawer("wishlistDrawer");
   });
+
+  // ===== SCROLL REVEAL =====
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in-view");
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll(".reveal, .reveal-stagger").forEach(el => revealObserver.observe(el));
 
   loadProducts();
   checkExistingLogin();
