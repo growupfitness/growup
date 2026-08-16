@@ -398,12 +398,12 @@
 <div class="modal-overlay" id="loginModal">
   <div class="modal-box login-box" style="display:block;">
     <button class="modal-close" onclick="closeLoginModal()">✕</button>
-    <h2>Login</h2>
-    <p class="sub-text">Apna mobile number daalo — cart, wishlist aur order history sab yahi se milegi.</p>
+    <h2>Sign In</h2>
+    <p class="sub-text">Enter your mobile number to access your cart, wishlist and order history.</p>
     <input type="tel" id="loginMobile" placeholder="Mobile Number" maxlength="10">
-    <input type="text" id="loginName" placeholder="Naam (sirf pehli baar zaroori)">
-    <p class="login-error" id="loginError">Sahi 10-digit mobile number daalo.</p>
-    <button class="btn-primary" onclick="submitLogin()">Continue</button>
+    <input type="text" id="loginName" placeholder="Full Name">
+    <p class="login-error" id="loginError"></p>
+    <button class="btn-primary" id="loginSubmitBtn" onclick="submitLogin()">Continue</button>
   </div>
 </div>
 
@@ -646,42 +646,64 @@
     const mobile = document.getElementById("loginMobile").value.trim();
     const name = document.getElementById("loginName").value.trim();
     const errorEl = document.getElementById("loginError");
+    const btn = document.getElementById("loginSubmitBtn");
+
+    errorEl.style.display = "none";
 
     if (!/^[0-9]{10}$/.test(mobile)) {
+      errorEl.innerText = "Please enter a valid 10-digit mobile number.";
       errorEl.style.display = "block";
       return;
     }
-    errorEl.style.display = "none";
+    if (name === "") {
+      errorEl.innerText = "Please enter your name.";
+      errorEl.style.display = "block";
+      return;
+    }
+
+    btn.innerText = "Please wait…";
+    btn.disabled = true;
 
     try {
       const res = await fetch(`${API_URL}?action=login&mobile=${mobile}&name=${encodeURIComponent(name)}`);
       const user = await res.json();
+
+      if (!user.success) {
+        errorEl.innerText = user.error || "Something went wrong. Please try again.";
+        errorEl.style.display = "block";
+        btn.innerText = "Continue";
+        btn.disabled = false;
+        return;
+      }
+
       handleLoginSuccess(user);
       closeLoginModal();
     } catch (err) {
+      errorEl.innerText = "Could not connect. Please check your internet and try again.";
+      errorEl.style.display = "block";
       console.error(err);
-      alert("Login me dikkat aayi, dobara try karo.");
     }
+    btn.innerText = "Continue";
+    btn.disabled = false;
   }
 
   function handleLoginSuccess(user) {
     currentUser = user;
-    localStorage.setItem("gufMobile", user["Mobile"]);
+    localStorage.setItem("gufMobile", user["Mobile Number"]);
+    localStorage.setItem("gufName", user["User Name"]);
 
-    // Header update — Login button ki jagah naam aur Logout dikhao
     document.getElementById("authArea").innerHTML = `
       <div class="user-chip">
-        Hi, ${user["Name"] || "there"}
+        Hi, ${user["User Name"] || "there"}
         <span class="logout-link" onclick="logout()">Logout</span>
       </div>
     `;
 
-    // Welcome toast dikhao
     const toast = document.getElementById("welcomeToast");
     document.getElementById("toastTitle").innerText = user["isNewUser"] ? "Welcome!" : "Welcome back!";
     document.getElementById("toastMsg").innerText = user["isNewUser"]
-      ? `Great to have you, ${user["Name"] || "friend"}. Let's find your stack.`
-      : `Good to see you again, ${user["Name"] || "friend"}!`;
+      ? `Great to have you, ${user["User Name"] || "friend"}. Let's find your stack.`
+      : `Good to see you again, ${user["User Name"] || "friend"}!`;
     toast.classList.add("show");
     setTimeout(() => toast.classList.remove("show"), 4000);
   }
@@ -689,17 +711,19 @@
   function logout() {
     currentUser = null;
     localStorage.removeItem("gufMobile");
+    localStorage.removeItem("gufName");
     document.getElementById("authArea").innerHTML = `<button class="login-btn" onclick="openLoginModal()">Login</button>`;
   }
 
   // Page load pe check karo — pehle se login tha to chup-chaap wapas login kar do
   async function checkExistingLogin() {
     const savedMobile = localStorage.getItem("gufMobile");
-    if (!savedMobile) return;
+    const savedName = localStorage.getItem("gufName");
+    if (!savedMobile || !savedName) return;
     try {
-      const res = await fetch(`${API_URL}?action=login&mobile=${savedMobile}&name=`);
+      const res = await fetch(`${API_URL}?action=login&mobile=${savedMobile}&name=${encodeURIComponent(savedName)}`);
       const user = await res.json();
-      handleLoginSuccess(user);
+      if (user.success) handleLoginSuccess(user);
     } catch (err) {
       console.error(err);
     }
