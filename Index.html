@@ -88,6 +88,40 @@
   .login-box input:focus{outline:none;border-color:var(--ember);}
   .login-box button.btn-primary{width:100%;border:none;font-family:'Inter';font-size:14px;cursor:pointer;}
   .login-error{color:var(--ember);font-size:12px;margin:-8px 0 12px;display:none;}
+
+  /* CART / WISHLIST ICONS */
+  .icon-btn{
+    position:relative;background:none;border:1px solid rgba(243,241,233,0.25);
+    color:var(--chalk);width:38px;height:38px;border-radius:50%;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;
+  }
+  .icon-btn:hover{border-color:var(--ember);color:var(--ember);}
+  .icon-btn.wishlisted{color:var(--ember);border-color:var(--ember);}
+  .badge{
+    position:absolute;top:-6px;right:-6px;background:var(--ember);color:var(--iron);
+    font-size:10px;font-weight:800;width:18px;height:18px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .card-heart{
+    position:absolute;top:8px;right:8px;z-index:2;background:rgba(0,0,0,0.5);
+    border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;
+  }
+  .card-heart.wishlisted{color:var(--ember);}
+
+  /* DRAWER (Cart / Wishlist panel) */
+  .drawer-box{max-width:420px;width:100%;padding:28px 24px;display:block;text-align:left;}
+  .drawer-box h2{font-size:24px;margin-bottom:20px;text-transform:none;font-family:'Inter';}
+  .drawer-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid rgba(243,241,233,0.08);align-items:center;}
+  .drawer-item img{width:56px;height:56px;object-fit:contain;background:var(--iron);border-radius:var(--radius);padding:4px;}
+  .drawer-item .info{flex:1;}
+  .drawer-item .info h5{font-size:14px;font-weight:600;margin-bottom:4px;}
+  .drawer-item .info .price{font-size:13px;color:var(--steel);}
+  .qty-controls{display:flex;align-items:center;gap:10px;}
+  .qty-controls button{background:var(--iron);border:1px solid rgba(243,241,233,0.2);color:var(--chalk);width:24px;height:24px;border-radius:4px;cursor:pointer;}
+  .drawer-remove{color:var(--steel);font-size:12px;text-decoration:underline;cursor:pointer;margin-left:10px;}
+  .drawer-empty{color:var(--steel);font-size:14px;text-align:center;padding:30px 0;}
+  .drawer-footer{margin-top:20px;padding-top:16px;border-top:1px solid rgba(243,241,233,0.1);}
+  .drawer-total{display:flex;justify-content:space-between;font-size:18px;font-weight:800;margin-bottom:16px;}
   .menu-toggle{display:none;font-size:24px;background:none;border:none;color:var(--chalk);cursor:pointer;}
 
   .hero{
@@ -302,6 +336,12 @@
       <a href="#contact">Contact</a>
     </div>
     <a href="#products" class="nav-cta">Shop Now</a>
+    <button class="icon-btn" onclick="openWishlistDrawer()" title="Wishlist">
+      ♡<span class="badge" id="wishlistBadge" style="display:none;">0</span>
+    </button>
+    <button class="icon-btn" onclick="openCartDrawer()" title="Cart">
+      🛒<span class="badge" id="cartBadge" style="display:none;">0</span>
+    </button>
     <div class="auth-area" id="authArea">
       <button class="login-btn" onclick="openLoginModal()">Login</button>
     </div>
@@ -399,11 +439,27 @@
   <div class="modal-box login-box" style="display:block;">
     <button class="modal-close" onclick="closeLoginModal()">✕</button>
     <h2>Sign In</h2>
-    <p class="sub-text">Enter your mobile number to access your cart, wishlist and order history.</p>
+    <p class="sub-text">First time? Enter any mobile number and your name to create an account.<br>Returning customer? Use the <strong>same name</strong> you signed up with — it's required to verify it's you.</p>
     <input type="tel" id="loginMobile" placeholder="Mobile Number" maxlength="10">
     <input type="text" id="loginName" placeholder="Full Name">
     <p class="login-error" id="loginError"></p>
     <button class="btn-primary" id="loginSubmitBtn" onclick="submitLogin()">Continue</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="cartDrawer">
+  <div class="modal-box drawer-box">
+    <button class="modal-close" onclick="closeDrawer('cartDrawer')">✕</button>
+    <h2>Your Cart</h2>
+    <div id="cartItemsWrap"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="wishlistDrawer">
+  <div class="modal-box drawer-box">
+    <button class="modal-close" onclick="closeDrawer('wishlistDrawer')">✕</button>
+    <h2>Your Wishlist</h2>
+    <div id="wishlistItemsWrap"></div>
   </div>
 </div>
 
@@ -469,6 +525,8 @@
   let allProducts = [];      // saare in-stock products yaha store honge
   let modalImages = [];      // abhi modal me jo product khula hai uski images
   let modalIndex = 0;        // modal me abhi konsi image dikh rahi hai
+  let cart = [];              // [{id, qty}]
+  let wishlist = [];          // [id, id, ...]
 
   // Product ki 3 images ko ek clean array me badalta hai (khali wali images hata deta hai)
   function getImages(p) {
@@ -503,7 +561,11 @@
 
         const card = document.createElement("div");
         card.className = "prod-card";
+        card.style.position = "relative";
+        const pid = p["Product ID"];
+        const isWishlisted = wishlist.includes(pid);
         card.innerHTML = `
+          <button class="card-heart ${isWishlisted ? 'wishlisted' : ''}" onclick="event.stopPropagation(); toggleWishlist('${pid}')">${isWishlisted ? '♥' : '♡'}</button>
           <div class="prod-img" data-slide="0" data-total="${images.length}">
             <div class="slide-track">${slidesHTML}</div>
             ${images.length > 1 ? `
@@ -518,7 +580,7 @@
             <p style="color:var(--steel);font-size:12px;margin-bottom:8px;">${p["Weight / Size"] || ""}</p>
             <div class="prod-price">
               <span>${priceHTML}</span>
-              <button onclick="event.stopPropagation()">Add</button>
+              <button onclick="event.stopPropagation(); addToCart('${pid}')">Add</button>
             </div>
           </div>
         `;
@@ -572,7 +634,8 @@
       </div>
       ${hasDiscount ? `<div class="save-tag">${savePct}% OFF — you save ₹${mrp - sellingPrice}</div>` : "<div style='margin-bottom:24px;'></div>"}
       <div class="modal-actions">
-        <a href="#" class="btn-primary" onclick="return false;">Add to Cart</a>
+        <a href="#" class="btn-primary" onclick="addToCart('${p["Product ID"]}'); return false;">Add to Cart</a>
+        <a href="#" class="btn-ghost" onclick="toggleWishlist('${p["Product ID"]}'); return false;">${wishlist.includes(p["Product ID"]) ? '♥ Wishlisted' : '♡ Add to Wishlist'}</a>
         <a href="https://wa.me/91XXXXXXXXXX?text=Hi, I'm interested in ${encodeURIComponent(p["Product Name"] || "")}" target="_blank" class="btn-ghost">Order on WhatsApp</a>
       </div>
     `;
@@ -692,6 +755,12 @@
     localStorage.setItem("gufMobile", user["Mobile Number"]);
     localStorage.setItem("gufName", user["User Name"]);
 
+    try { cart = JSON.parse(user["Cart Items"] || "[]"); } catch (e) { cart = []; }
+    try { wishlist = JSON.parse(user["Wishlist"] || "[]"); } catch (e) { wishlist = []; }
+    renderCartBadge();
+    renderWishlistBadge();
+    if (allProducts.length) loadProducts(); // hearts ko refresh karne ke liye re-render
+
     document.getElementById("authArea").innerHTML = `
       <div class="user-chip">
         Hi, ${user["User Name"] || "there"}
@@ -710,9 +779,13 @@
 
   function logout() {
     currentUser = null;
+    cart = [];
+    wishlist = [];
     localStorage.removeItem("gufMobile");
     localStorage.removeItem("gufName");
     document.getElementById("authArea").innerHTML = `<button class="login-btn" onclick="openLoginModal()">Login</button>`;
+    renderCartBadge();
+    renderWishlistBadge();
   }
 
   // Page load pe check karo — pehle se login tha to chup-chaap wapas login kar do
@@ -731,6 +804,168 @@
 
   document.getElementById("loginModal").addEventListener("click", (e) => {
     if (e.target.id === "loginModal") closeLoginModal();
+  });
+
+  // ===== CART & WISHLIST =====
+
+  function addToCart(productId) {
+    if (!currentUser) { openLoginModal(); return; }
+    const existing = cart.find(item => item.id === productId);
+    if (existing) existing.qty += 1;
+    else cart.push({ id: productId, qty: 1 });
+    syncCart();
+    renderCartBadge();
+  }
+
+  function changeQty(productId, delta) {
+    const item = cart.find(i => i.id === productId);
+    if (!item) return;
+    item.qty += delta;
+    if (item.qty <= 0) cart = cart.filter(i => i.id !== productId);
+    syncCart();
+    renderCartBadge();
+    renderCartDrawer();
+  }
+
+  function removeFromCart(productId) {
+    cart = cart.filter(i => i.id !== productId);
+    syncCart();
+    renderCartBadge();
+    renderCartDrawer();
+  }
+
+  function toggleWishlist(productId) {
+    if (!currentUser) { openLoginModal(); return; }
+    if (wishlist.includes(productId)) wishlist = wishlist.filter(id => id !== productId);
+    else wishlist.push(productId);
+    syncWishlist();
+    renderWishlistBadge();
+    loadProducts(); // heart icons refresh karne ke liye
+  }
+
+  function removeFromWishlist(productId) {
+    wishlist = wishlist.filter(id => id !== productId);
+    syncWishlist();
+    renderWishlistBadge();
+    renderWishlistDrawer();
+    loadProducts();
+  }
+
+  async function syncCart() {
+    if (!currentUser) return;
+    try {
+      await fetch(`${API_URL}?action=updateCart&mobile=${currentUser["Mobile Number"]}&data=${encodeURIComponent(JSON.stringify(cart))}`);
+    } catch (err) { console.error(err); }
+  }
+
+  async function syncWishlist() {
+    if (!currentUser) return;
+    try {
+      await fetch(`${API_URL}?action=updateWishlist&mobile=${currentUser["Mobile Number"]}&data=${encodeURIComponent(JSON.stringify(wishlist))}`);
+    } catch (err) { console.error(err); }
+  }
+
+  function renderCartBadge() {
+    const badge = document.getElementById("cartBadge");
+    const count = cart.reduce((sum, i) => sum + i.qty, 0);
+    badge.innerText = count;
+    badge.style.display = count > 0 ? "flex" : "none";
+  }
+
+  function renderWishlistBadge() {
+    const badge = document.getElementById("wishlistBadge");
+    badge.innerText = wishlist.length;
+    badge.style.display = wishlist.length > 0 ? "flex" : "none";
+  }
+
+  function openCartDrawer() {
+    if (!currentUser) { openLoginModal(); return; }
+    renderCartDrawer();
+    document.getElementById("cartDrawer").classList.add("open");
+  }
+  function openWishlistDrawer() {
+    if (!currentUser) { openLoginModal(); return; }
+    renderWishlistDrawer();
+    document.getElementById("wishlistDrawer").classList.add("open");
+  }
+  function closeDrawer(id) {
+    document.getElementById(id).classList.remove("open");
+  }
+
+  function renderCartDrawer() {
+    const wrap = document.getElementById("cartItemsWrap");
+    if (cart.length === 0) {
+      wrap.innerHTML = `<p class="drawer-empty">Your cart is empty.</p>`;
+      return;
+    }
+    let total = 0;
+    let itemsHTML = cart.map(item => {
+      const p = allProducts.find(pr => pr["Product ID"] === item.id);
+      if (!p) return "";
+      const price = Number(p["Selling Price"]);
+      total += price * item.qty;
+      return `
+        <div class="drawer-item">
+          <img src="${p["Image 1"] || ""}">
+          <div class="info">
+            <h5>${p["Product Name"]}</h5>
+            <div class="price">₹${price} × ${item.qty}</div>
+          </div>
+          <div class="qty-controls">
+            <button onclick="changeQty('${item.id}', -1)">−</button>
+            <span>${item.qty}</span>
+            <button onclick="changeQty('${item.id}', 1)">+</button>
+          </div>
+          <span class="drawer-remove" onclick="removeFromCart('${item.id}')">Remove</span>
+        </div>
+      `;
+    }).join("");
+
+    const waMessage = encodeURIComponent(
+      "Hi, I'd like to order:\n" +
+      cart.map(item => {
+        const p = allProducts.find(pr => pr["Product ID"] === item.id);
+        return p ? `- ${p["Product Name"]} x${item.qty}` : "";
+      }).join("\n") +
+      `\n\nTotal: ₹${total}`
+    );
+
+    wrap.innerHTML = itemsHTML + `
+      <div class="drawer-footer">
+        <div class="drawer-total"><span>Total</span><span>₹${total}</span></div>
+        <a href="https://wa.me/91XXXXXXXXXX?text=${waMessage}" target="_blank" class="btn-primary" style="display:block;text-align:center;">Checkout on WhatsApp</a>
+      </div>
+    `;
+  }
+
+  function renderWishlistDrawer() {
+    const wrap = document.getElementById("wishlistItemsWrap");
+    if (wishlist.length === 0) {
+      wrap.innerHTML = `<p class="drawer-empty">Your wishlist is empty.</p>`;
+      return;
+    }
+    wrap.innerHTML = wishlist.map(id => {
+      const p = allProducts.find(pr => pr["Product ID"] === id);
+      if (!p) return "";
+      return `
+        <div class="drawer-item">
+          <img src="${p["Image 1"] || ""}">
+          <div class="info">
+            <h5>${p["Product Name"]}</h5>
+            <div class="price">₹${p["Selling Price"]}</div>
+          </div>
+          <button class="btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="addToCart('${id}')">Add to Cart</button>
+          <span class="drawer-remove" onclick="removeFromWishlist('${id}')">Remove</span>
+        </div>
+      `;
+    }).join("");
+  }
+
+  document.getElementById("cartDrawer").addEventListener("click", (e) => {
+    if (e.target.id === "cartDrawer") closeDrawer("cartDrawer");
+  });
+  document.getElementById("wishlistDrawer").addEventListener("click", (e) => {
+    if (e.target.id === "wishlistDrawer") closeDrawer("wishlistDrawer");
   });
 
   loadProducts();
