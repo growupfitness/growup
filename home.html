@@ -15,15 +15,26 @@
     --ember:#00A0E3;
     --ember-dim:#075D82;
     --plate-blue:#2B2A29;
+    --border-color: rgba(243,241,233,0.08);
     --radius:2px;
   }
-  *{margin:0;padding:0;box-sizing:border-box;}
+
+  [data-theme="light"] {
+    --iron:#f8fafc;
+    --iron-light:#ffffff;
+    --steel:#64748b;
+    --chalk:#0f172a;
+    --ember:#0072ff;
+    --ember-dim:#0056b3;
+    --plate-blue:#e2e8f0;
+    --border-color: rgba(15, 23, 42, 0.08);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box; transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;}
   html{scroll-behavior:smooth;}
   ::-webkit-scrollbar{width:10px;}
   ::-webkit-scrollbar-track{background:var(--iron);}
   ::-webkit-scrollbar-thumb{background:var(--ember-dim);border-radius:5px;}
-  ::-webkit-scrollbar-thumb:hover{background:var(--ember);}
-  ::selection{background:var(--ember);color:var(--iron);}
   body{
     background:var(--iron);
     color:var(--chalk);
@@ -42,7 +53,7 @@
   .top-bar{
     background:var(--iron-light);color:var(--steel);font-size:12px;
     text-align:center;padding:7px 12px;letter-spacing:0.5px;
-    border-bottom:1px solid rgba(243,241,233,0.06);
+    border-bottom:1px solid var(--border-color);
   }
   .top-bar strong{color:var(--chalk);}
   .top-bar a{color:var(--ember);font-weight:700;}
@@ -50,9 +61,9 @@
 
   header{
     position:sticky;top:0;z-index:50;
-    background:rgba(20,20,20,0.92);
+    background:var(--iron);
     backdrop-filter:blur(6px);
-    border-bottom:1px solid rgba(243,241,233,0.08);
+    border-bottom:1px solid var(--border-color);
   }
   nav{
     display:flex;align-items:center;justify-content:space-between;
@@ -63,8 +74,8 @@
 
   .search-box{position:relative;max-width:240px;width:100%;}
   .search-box input{
-    width:100%;padding:8px 12px 8px 32px;background:var(--iron);
-    border:1px solid rgba(243,241,233,0.15);border-radius:20px;font-size:12px;
+    width:100%;padding:8px 12px 8px 32px;background:var(--iron-light);
+    border:1px solid var(--border-color);border-radius:20px;font-size:12px;
     color:var(--chalk);outline:none;font-family:'Inter';
   }
   .search-box input:focus{border-color:var(--ember);}
@@ -75,7 +86,7 @@
   .nav-links a:hover{opacity:1;color:var(--ember);}
   
   .login-btn{
-    border:1px solid rgba(243,241,233,0.3);padding:8px 16px;
+    border:1px solid var(--border-color);padding:8px 16px;
     font-weight:700;font-size:13px;border-radius:var(--radius);
     cursor:pointer;background:none;color:var(--chalk);font-family:'Inter';
   }
@@ -102,18 +113,17 @@
   .login-box p.sub-text{color:var(--steel);font-size:13px;margin-bottom:24px;}
   .login-box input{
     width:100%;padding:13px 14px;margin-bottom:14px;
-    background:var(--iron);border:1px solid rgba(243,241,233,0.15);
+    background:var(--iron);border:1px solid var(--border-color);
     border-radius:var(--radius);color:var(--chalk);font-size:14px;font-family:'Inter';
   }
   .login-box input:focus{outline:none;border-color:var(--ember);}
-  .login-box button.btn-primary{width:100%;border:none;font-family:'Inter';font-size:14px;cursor:pointer;}
   .login-error{color:var(--ember);font-size:12px;margin:-8px 0 12px;display:none;}
 
-  /* CART / WISHLIST ICONS */
+  /* ICONS */
   .icon-btn{
-    position:relative;background:none;border:1px solid rgba(243,241,233,0.25);
+    position:relative;background:none;border:1px solid var(--border-color);
     color:var(--chalk);width:38px;height:38px;border-radius:50%;
-    cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;
   }
   .icon-btn:hover{border-color:var(--ember);color:var(--ember);}
   .badge{
@@ -133,18 +143,18 @@
   }
 
   /* DRAWER */
-  .drawer-box{max-width:420px;width:100%;padding:28px 24px;display:block;text-align:left;}
+  .drawer-box{max-width:420px;width:100%;padding:28px 24px;display:block;text-align:left; background:var(--iron-light);}
   .drawer-box h2{font-size:24px;margin-bottom:20px;text-transform:none;font-family:'Inter';}
-  .drawer-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid rgba(243,241,233,0.08);align-items:center;}
+  .drawer-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-color);align-items:center;}
   .drawer-item img{width:56px;height:56px;object-fit:contain;background:var(--iron);border-radius:var(--radius);padding:4px;}
   .drawer-item .info{flex:1;}
   .drawer-item .info h5{font-size:14px;font-weight:600;margin-bottom:4px;}
   .drawer-item .info .price{font-size:13px;color:var(--steel);}
   .qty-controls{display:flex;align-items:center;gap:10px;}
-  .qty-controls button{background:var(--iron);border:1px solid rgba(243,241,233,0.2);color:var(--chalk);width:24px;height:24px;border-radius:4px;cursor:pointer;}
+  .qty-controls button{background:var(--iron);border:1px solid var(--border-color);color:var(--chalk);width:24px;height:24px;border-radius:4px;cursor:pointer;}
   .drawer-remove{color:var(--steel);font-size:12px;text-decoration:underline;cursor:pointer;margin-left:10px;}
   .drawer-empty{color:var(--steel);font-size:14px;text-align:center;padding:30px 0;}
-  .drawer-footer{margin-top:20px;padding-top:16px;border-top:1px solid rgba(243,241,233,0.1);}
+  .drawer-footer{margin-top:20px;padding-top:16px;border-top:1px solid var(--border-color);}
   .drawer-total{display:flex;justify-content:space-between;font-size:18px;font-weight:800;margin-bottom:16px;}
 
   /* HERO VIDEO BANNER */
@@ -172,7 +182,7 @@
 
   .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
   .cat-card{
-    background:var(--iron-light);border:1px solid rgba(243,241,233,0.06);
+    background:var(--iron-light);border:1px solid var(--border-color);
     border-radius:var(--radius);padding:32px 24px;position:relative;
     overflow:hidden;transition:border-color .2s,transform .2s;
   }
@@ -185,11 +195,12 @@
   .cat-card p{color:var(--steel);font-size:14px;line-height:1.5;}
 
   .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
-  .prod-card{background:var(--iron-light);border:1px solid rgba(243,241,233,0.06);border-radius:var(--radius);overflow:hidden;cursor:pointer;position:relative;transition:border-color .2s,transform .2s;}
-  .prod-card:hover{border-color:var(--ember);transform:translateY(-3px);}
+  .prod-card{background:var(--iron-light);border:1px solid var(--border-color);border-radius:var(--radius);overflow:hidden;cursor:pointer;position:relative;transition:border-color .25s ease, transform .25s ease, box-shadow .25s ease;}
+  .prod-card:hover{border-color:var(--ember);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,0.4);}
   .prod-img{height:200px;position:relative;background:var(--iron);overflow:hidden;}
   .prod-img .slide-track{display:flex;height:100%;transition:transform .3s ease;}
-  .prod-img .slide-track img{width:100%;height:200px;object-fit:contain;background:var(--iron);flex-shrink:0;padding:10px;}
+  .prod-img .slide-track img{width:100%;height:200px;object-fit:contain;background:var(--iron);flex-shrink:0;padding:10px;transition:transform .4s ease;}
+  .prod-card:hover .prod-img img{transform:scale(1.06);}
   .prod-img .dots{position:absolute;bottom:8px;left:0;right:0;display:flex;justify-content:center;gap:5px;}
   .prod-img .dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.4);}
   .prod-img .dots span.active{background:var(--ember);}
@@ -226,9 +237,13 @@
   .modal-info .save-tag{color:#10b981;font-size:13px;font-weight:700;margin-bottom:24px;}
   .modal-actions{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;}
 
-  .btn-primary{background:var(--ember);color:var(--iron);padding:14px 24px;font-weight:800;font-size:13px;border-radius:var(--radius);border:none;cursor:pointer;}
-  .btn-primary:hover{opacity:0.9;}
+  .btn-primary{background:var(--ember);color:var(--iron);padding:14px 24px;font-weight:800;font-size:13px;border-radius:var(--radius);border:none;cursor:pointer;position:relative;overflow:hidden;}
+  .btn-primary::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.25);transform:translateX(-100%);transition:transform .5s ease;}
+  .btn-primary:hover::after{transform:translateX(0);}
+  .btn-primary:active{transform:scale(0.97);}
+
   .btn-ghost{border:1px solid rgba(243,241,233,0.3);color:var(--chalk);padding:14px 24px;font-weight:700;font-size:13px;border-radius:var(--radius);background:none;cursor:pointer;}
+  .btn-ghost:hover{background:rgba(243,241,233,0.06);border-color:var(--chalk);}
 
   .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:200;align-items:center;justify-content:center;}
   .lightbox.open{display:flex;}
@@ -243,13 +258,27 @@
   .cta-band h2{font-size:42px;margin-bottom:16px;}
   .cta-band p{color:var(--chalk);opacity:0.8;margin-bottom:28px;}
 
-  footer{border-top:1px solid rgba(243,241,233,0.08);padding:50px 24px 30px;}
+  footer{border-top:1px solid var(--border-color);padding:50px 24px 30px;}
   .footer-grid{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;}
   footer h5{font-size:13px;letter-spacing:1px;margin-bottom:16px;color:var(--steel);}
   footer a{display:block;color:var(--chalk);opacity:0.8;font-size:14px;margin-bottom:10px;}
-  .footer-bottom{max-width:1140px;margin:40px auto 0;padding-top:20px;border-top:1px solid rgba(243,241,233,0.06);color:var(--steel);font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .footer-bottom{max-width:1140px;margin:40px auto 0;padding-top:20px;border-top:1px solid var(--border-color);color:var(--steel);font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
 
   .wa-float{position:fixed;bottom:24px;right:24px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 20px rgba(0,0,0,0.4);z-index:60;}
+
+  /* SCROLL REVEAL ANIMATIONS */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in-view{opacity:1;transform:translateY(0);}
+  .reveal-stagger.in-view .cat-card,
+  .reveal-stagger.in-view .prod-card,
+  .reveal-stagger.in-view .why > div{opacity:1;transform:translateY(0);}
+  .reveal-stagger .cat-card,
+  .reveal-stagger .prod-card,
+  .reveal-stagger .why > div{opacity:0;transform:translateY(24px);transition:opacity .6s ease, transform .6s ease;}
+  .reveal-stagger.in-view .cat-card:nth-child(1),.reveal-stagger.in-view .prod-card:nth-child(1),.reveal-stagger.in-view .why>div:nth-child(1){transition-delay:.05s;}
+  .reveal-stagger.in-view .cat-card:nth-child(2),.reveal-stagger.in-view .prod-card:nth-child(2),.reveal-stagger.in-view .why>div:nth-child(2){transition-delay:.15s;}
+  .reveal-stagger.in-view .cat-card:nth-child(3),.reveal-stagger.in-view .prod-card:nth-child(3),.reveal-stagger.in-view .why>div:nth-child(3){transition-delay:.25s;}
+  .reveal-stagger.in-view .prod-card:nth-child(4),.reveal-stagger.in-view .why>div:nth-child(4){transition-delay:.35s;}
 
   @media(max-width:860px){
     .hero-video-content h1{font-size:46px;}
@@ -281,6 +310,7 @@
       <a href="#contact">Contact</a>
     </div>
     <div style="display:flex;gap:10px;align-items:center;">
+      <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle Theme">🌙</button>
       <button class="icon-btn" onclick="openWishlistDrawer()" title="Wishlist">♡<span class="badge" id="wishlistBadge" style="display:none;">0</span></button>
       <button class="icon-btn" onclick="openCartDrawer()" title="Cart">🛒<span class="badge" id="cartBadge" style="display:none;">0</span></button>
       <div class="auth-area" id="authArea">
@@ -304,7 +334,7 @@
   </div>
 </section>
 
-<section class="section" id="categories">
+<section class="section reveal" id="categories">
   <div class="section-head">
     <div>
       <span class="tag">01 — RANGE</span>
@@ -312,14 +342,14 @@
     </div>
     <p>Whatever you're training for, there's a stack built for it.</p>
   </div>
-  <div class="cat-grid">
+  <div class="cat-grid reveal-stagger">
     <div class="cat-card"><div class="cat-plate">MUS</div><h3>Muscle Gain</h3><p>Whey isolate, mass gainers and creatine for serious size and strength.</p></div>
     <div class="cat-card"><div class="cat-plate">PWR</div><h3>Pre-Workout</h3><p>Clean energy and focus blends that hit without the crash.</p></div>
     <div class="cat-card"><div class="cat-plate">REC</div><h3>Recovery</h3><p>BCAAs, electrolytes and joint support to get you back in faster.</p></div>
   </div>
 </section>
 
-<section class="section" id="products">
+<section class="section reveal" id="products">
   <div class="section-head">
     <div>
       <span class="tag">02 — BEST SELLERS</span>
@@ -327,7 +357,7 @@
     </div>
     <p>Live from our store sheet — updates automatically.</p>
   </div>
-  <div class="prod-grid" id="prodGrid">
+  <div class="prod-grid reveal-stagger" id="prodGrid">
     <p class="prod-empty">Loading products…</p>
   </div>
 </section>
@@ -359,7 +389,7 @@
     <input type="tel" id="loginMobile" placeholder="Mobile Number" maxlength="10">
     <input type="text" id="loginName" placeholder="Full Name">
     <p class="login-error" id="loginError"></p>
-    <button class="btn-primary" id="loginSubmitBtn" onclick="submitLogin()">Continue</button>
+    <button class="btn-primary" id="loginSubmitBtn" onclick="submitLogin()" style="width:100%;">Continue</button>
   </div>
 </div>
 
@@ -384,11 +414,11 @@
   <img id="lightboxImg" src="">
 </div>
 
-<section class="section" id="why">
+<section class="section reveal" id="why">
   <div class="section-head">
     <div><span class="tag">03 — WHY GROW UP FITNESS</span><h2>Built On Trust</h2></div>
   </div>
-  <div class="why">
+  <div class="why reveal-stagger">
     <div><div class="num">100%</div><h4>Lab Tested</h4><p>Every batch verified for purity.</p></div>
     <div><div class="num">24H</div><h4>Fast Dispatch</h4><p>Orders shipped within a day.</p></div>
     <div><div class="num">5000+</div><h4>Happy Lifters</h4><p>Trusted across the community.</p></div>
@@ -396,7 +426,7 @@
   </div>
 </section>
 
-<section class="section">
+<section class="section reveal">
   <div class="cta-band">
     <h2>Ready to Level Up?</h2>
     <p>Message us on WhatsApp for personalised stack recommendations.</p>
@@ -433,6 +463,18 @@
 
   function getImages(p) {
     return [p["Image 1"], p["Image 2"], p["Image 3"]].filter(img => img && img.trim() !== "");
+  }
+
+  function toggleTheme() {
+    const html = document.documentElement;
+    const btn = document.getElementById("themeBtn");
+    if (html.getAttribute("data-theme") === "light") {
+      html.removeAttribute("data-theme");
+      btn.innerText = "🌙";
+    } else {
+      html.setAttribute("data-theme", "light");
+      btn.innerText = "☀️";
+    }
   }
 
   async function loadProducts() {
@@ -748,6 +790,18 @@
       `;
     }).join("");
   }
+
+  // Scroll Reveal Observer Setup
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in-view");
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll(".reveal, .reveal-stagger").forEach(el => revealObserver.observe(el));
 
   document.getElementById("cartDrawer").addEventListener("click", (e) => {
     if (e.target.id === "cartDrawer") closeDrawer("cartDrawer");
