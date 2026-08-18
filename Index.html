@@ -8,13 +8,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --iron:#151512;
-    --iron-light:#201F1A;
-    --steel:#8B897F;
-    --chalk:#F3F1E9;
-    --ember:#FF4B2B;
-    --ember-dim:#7A2417;
-    --plate-blue:#3A5A6B;
+    --iron:#141414;
+    --iron-light:#1E1E1E;
+    --steel:#8B8B88;
+    --chalk:#F5F5F3;
+    --ember:#00A0E3;
+    --ember-dim:#075D82;
+    --plate-blue:#2B2A29;
     --radius:2px;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -38,6 +38,15 @@
   }
   a{text-decoration:none;color:inherit;}
   .wrap{max-width:1140px;margin:0 auto;padding:0 24px;}
+
+  .top-bar{
+    background:var(--iron-light);color:var(--steel);font-size:12px;
+    text-align:center;padding:7px 12px;letter-spacing:0.5px;
+    border-bottom:1px solid rgba(243,241,233,0.06);
+  }
+  .top-bar strong{color:var(--chalk);}
+  .top-bar a{color:var(--ember);font-weight:700;}
+  .nav-logo-img{height:40px;width:auto;display:block;}
 
   header{
     position:sticky;top:0;z-index:50;
@@ -373,9 +382,13 @@
 </head>
 <body>
 
+<div class="top-bar">
+  <strong>100% Genuine &amp; Authentic Products</strong> &nbsp;·&nbsp; Call/WhatsApp: <a href="tel:9571214461">95712 14461</a>
+</div>
+
 <header>
   <nav>
-    <div class="logo">GROW<span>UP</span> FITNESS</div>
+    <a href="#"><img src="images/logo.png" alt="Grow-Up Fitness" class="nav-logo-img"></a>
     <div class="nav-links">
       <a href="#categories">Categories</a>
       <a href="#products">Best Sellers</a>
@@ -571,15 +584,15 @@
   <div class="cta-band">
     <h2>Ready to Level Up?</h2>
     <p>Message us on WhatsApp for personalised stack recommendations.</p>
-    <a href="https://wa.me/91XXXXXXXXXX" class="btn-primary">Chat on WhatsApp</a>
+    <a href="https://wa.me/919571214461" class="btn-primary">Chat on WhatsApp</a>
   </div>
 </section>
 
 <footer id="contact">
   <div class="footer-grid">
     <div>
-      <div class="logo">GROW<span>UP</span> FITNESS</div>
-      <p style="color:var(--steel);font-size:14px;margin-top:14px;max-width:280px;">Premium supplements for people who train hard and expect results.</p>
+      <img src="images/logo.png" alt="Grow-Up Fitness" style="height:44px;width:auto;">
+      <p style="color:var(--steel);font-size:14px;margin-top:14px;max-width:280px;">100% genuine and authentic supplements for people who train hard and expect results.</p>
     </div>
     <div>
       <h5>SHOP</h5>
@@ -588,8 +601,9 @@
     </div>
     <div>
       <h5>CONTACT</h5>
+      <a href="tel:9571214461">📞 95712 14461</a>
       <a href="mailto:growupfitness14@gmail.com">growupfitness14@gmail.com</a>
-      <a href="https://wa.me/91XXXXXXXXXX">WhatsApp Us</a>
+      <a href="https://wa.me/919571214461">WhatsApp Us</a>
     </div>
   </div>
   <div class="footer-bottom">
@@ -598,7 +612,7 @@
   </div>
 </footer>
 
-<a href="https://wa.me/91XXXXXXXXXX" class="wa-float">💬</a>
+<a href="https://wa.me/919571214461" class="wa-float">💬</a>
 
 <script>
   // Google Apps Script se live Products data laane wali script
@@ -718,7 +732,7 @@
       <div class="modal-actions">
         <a href="#" class="btn-primary" onclick="addToCart('${p["Product ID"]}'); return false;">Add to Cart</a>
         <a href="#" class="btn-ghost" onclick="toggleWishlist('${p["Product ID"]}'); return false;">${wishlist.includes(p["Product ID"]) ? '♥ Wishlisted' : '♡ Add to Wishlist'}</a>
-        <a href="https://wa.me/91XXXXXXXXXX?text=Hi, I'm interested in ${encodeURIComponent(p["Product Name"] || "")}" target="_blank" class="btn-ghost">Order on WhatsApp</a>
+        <a href="https://wa.me/919571214461?text=Hi, I'm interested in ${encodeURIComponent(p["Product Name"] || "")}" target="_blank" class="btn-ghost">Order on WhatsApp</a>
       </div>
     `;
 
@@ -1015,7 +1029,7 @@
     wrap.innerHTML = itemsHTML + `
       <div class="drawer-footer">
         <div class="drawer-total"><span>Total</span><span>₹${total}</span></div>
-        <a href="https://wa.me/91XXXXXXXXXX?text=${waMessage}" target="_blank" class="btn-primary" style="display:block;text-align:center;">Checkout on WhatsApp</a>
+        <a href="https://wa.me/919571214461?text=${waMessage}" target="_blank" class="btn-primary" style="display:block;text-align:center;">Checkout on WhatsApp</a>
       </div>
     `;
   }
