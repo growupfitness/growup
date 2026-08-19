@@ -184,7 +184,7 @@
   .cat-card{
     background:var(--iron-light);border:1px solid var(--border-color);
     border-radius:var(--radius);padding:32px 24px;position:relative;
-    overflow:hidden;transition:border-color .2s,transform .2s;
+    overflow:hidden;transition:border-color .2s,transform .2s; cursor:pointer;
   }
   .cat-card:hover{border-color:var(--ember);transform:translateY(-4px);}
   .cat-plate{
@@ -304,7 +304,7 @@
       <input type="text" id="searchInput" placeholder="Search supplement..." oninput="handleSearch(this.value)">
     </div>
     <div class="nav-links">
-      <a href="#categories">Categories</a>
+      <a href="#categories">Explore</a>
       <a href="#products">Best Sellers</a>
       <a href="#why">Why Us</a>
       <a href="#contact">Contact</a>
@@ -334,18 +334,34 @@
   </div>
 </section>
 
+<!-- 01 — PERSONALIZED SHOPPING SECTION -->
 <section class="section reveal" id="categories">
   <div class="section-head">
     <div>
-      <span class="tag">01 — RANGE</span>
-      <h2>Shop by Goal</h2>
+      <span class="tag">01 — PERSONALIZED</span>
+      <h2>Shop Your Way</h2>
     </div>
-    <p>Whatever you're training for, there's a stack built for it.</p>
+    <p>Quick access to your favorite brands, re-orders, and flavours.</p>
   </div>
   <div class="cat-grid reveal-stagger">
-    <div class="cat-card"><div class="cat-plate">MUS</div><h3>Muscle Gain</h3><p>Whey isolate, mass gainers and creatine for serious size and strength.</p></div>
-    <div class="cat-card"><div class="cat-plate">PWR</div><h3>Pre-Workout</h3><p>Clean energy and focus blends that hit without the crash.</p></div>
-    <div class="cat-card"><div class="cat-plate">REC</div><h3>Recovery</h3><p>BCAAs, electrolytes and joint support to get you back in faster.</p></div>
+    <!-- 1. Shop by Brand -->
+    <div class="cat-card" onclick="openBrandModal()">
+      <div class="cat-plate">BRD</div>
+      <h3>Shop by Brand</h3>
+      <p>Filter products by top-tier fitness and nutritional brands.</p>
+    </div>
+    <!-- 2. Shop Last Purchase -->
+    <div class="cat-card" id="lpCard" style="border-color:var(--ember);" onclick="openLoginModal()">
+      <div class="cat-plate">RE-BUY</div>
+      <h3 id="lpTitle">Last Purchase</h3>
+      <p id="lpDesc">Login with your mobile number to view your previous order and re-order instantly.</p>
+    </div>
+    <!-- 3. Shop by Flavour -->
+    <div class="cat-card" onclick="document.getElementById('searchInput').focus();">
+      <div class="cat-plate">FLV</div>
+      <h3>Shop by Flavour</h3>
+      <p>Find your favorite taste like Swiss Chocolate, Strawberry, etc.</p>
+    </div>
   </div>
 </section>
 
@@ -373,6 +389,17 @@
       <div class="dots" id="modalDots"></div>
     </div>
     <div class="modal-info" id="modalInfo"></div>
+  </div>
+</div>
+
+<!-- BRAND MODAL -->
+<div class="modal-overlay" id="brandModal">
+  <div class="modal-box" style="display:block; max-width:600px; padding:30px;">
+    <button class="modal-close" onclick="closeBrandModal()">✕</button>
+    <h2 style="font-size:28px; margin-bottom:20px; font-family:'Inter';">Select Brand</h2>
+    <div id="brandGrid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+      <p style="color:var(--steel);">Loading brands...</p>
+    </div>
   </div>
 </div>
 
@@ -440,7 +467,7 @@
       <div class="logo">GROW<span>UP</span> FITNESS</div>
       <p style="color:var(--steel);font-size:14px;margin-top:14px;max-width:280px;">100% genuine and authentic supplements for people who train hard and expect results.</p>
     </div>
-    <div><h5>SHOP</h5><a href="#categories">Categories</a><a href="#products">Best Sellers</a></div>
+    <div><h5>SHOP</h5><a href="#categories">Explore</a><a href="#products">Best Sellers</a></div>
     <div><h5>CONTACT</h5><a href="tel:9571214461">📞 95712 14461</a><a href="https://wa.me/919571214461" target="_blank">WhatsApp Us</a></div>
   </div>
   <div class="footer-bottom">
@@ -460,6 +487,7 @@
   let modalIndex = 0;
   let cart = [];
   let wishlist = [];
+  let allBrands = [];
 
   function getImages(p) {
     return [p["Image 1"], p["Image 2"], p["Image 3"]].filter(img => img && img.trim() !== "");
@@ -481,14 +509,57 @@
     const grid = document.getElementById("prodGrid");
     try {
       const response = await fetch(API_URL);
-      const products = await response.json();
-      allProducts = products.filter(p => p["Stock Status"] === "In Stock");
+      const data = await response.json();
+      allProducts = data.filter(p => p["Stock Status"] === "In Stock");
       displayProducts = allProducts;
       renderProductsGrid();
+      
+      const savedMobile = localStorage.getItem("gufMobile");
+      const savedName = localStorage.getItem("gufName");
+      if (savedMobile && savedName) {
+        checkExistingLogin();
+      }
     } catch (err) {
       grid.innerHTML = `<p class="prod-empty">Products load nahi ho paye. Connection check karein.</p>`;
       console.error(err);
     }
+  }
+
+  async function loadBrands() {
+    try {
+      const res = await fetch(API_URL + "?action=getBrands");
+      allBrands = await res.json();
+      const brandGrid = document.getElementById("brandGrid");
+      
+      if(allBrands.length === 0) {
+        brandGrid.innerHTML = `<p style="color:var(--steel);">No brands found in sheet.</p>`;
+        return;
+      }
+
+      brandGrid.innerHTML = allBrands.map(b => `
+        <div class="cat-card" onclick="filterByBrand('${b["Brand Name"]}')" style="padding:16px; text-align:center;">
+          ${b["Logo URL"] ? `<img src="${b["Logo URL"]}" style="width:48px; height:48px; object-fit:contain; border-radius:50%; margin-bottom:8px; background:var(--iron); padding:4px;" onerror="this.style.display='none'">` : ''}
+          <h3 style="font-size:18px;">${b["Brand Name"]}</h3>
+        </div>
+      `).join("");
+    } catch(e) {
+      document.getElementById("brandGrid").innerHTML = `<p style="color:var(--steel);">Brands load nahi ho payi.</p>`;
+    }
+  }
+
+  function openBrandModal() {
+    document.getElementById("brandModal").classList.add("open");
+    loadBrands();
+  }
+  function closeBrandModal() {
+    document.getElementById("brandModal").classList.remove("open");
+  }
+
+  function filterByBrand(brandName) {
+    displayProducts = allProducts.filter(p => (p["Brand"] || "").trim().toLowerCase() === brandName.trim().toLowerCase());
+    renderProductsGrid();
+    closeBrandModal();
+    document.getElementById("products").scrollIntoView();
   }
 
   function renderProductsGrid() {
@@ -550,7 +621,8 @@
       const name = (p["Product Name"] || "").toLowerCase();
       const brand = (p["Brand"] || "").toLowerCase();
       const cat = (p["Category"] || "").toLowerCase();
-      return name.includes(query) || brand.includes(query) || cat.includes(query);
+      const flavour = (p["Flavour"] || "").toLowerCase();
+      return name.includes(query) || brand.includes(query) || cat.includes(query) || flavour.includes(query);
     });
     renderProductsGrid();
   }
@@ -616,6 +688,9 @@
   document.getElementById("productModal").addEventListener("click", (e) => {
     if (e.target.id === "productModal") closeModal();
   });
+  document.getElementById("brandModal").addEventListener("click", (e) => {
+    if (e.target.id === "brandModal") closeBrandModal();
+  });
 
   function openLightbox() {
     document.getElementById("lightboxImg").src = modalImages[modalIndex];
@@ -659,6 +734,20 @@
     renderWishlistBadge();
     renderProductsGrid();
 
+    const lpCard = document.getElementById("lpCard");
+    if (user["LastPurchased"]) {
+      const lastProd = allProducts.find(p => (p["Product ID"] || "").trim() === String(user["LastPurchased"]).trim());
+      if (lastProd) {
+        document.getElementById("lpTitle").innerText = "Re-order";
+        document.getElementById("lpDesc").innerText = `Quick re-order: ${lastProd["Product Name"]} (${lastProd["Flavour"] || ""})`;
+        lpCard.onclick = () => openModal(allProducts.indexOf(lastProd));
+      }
+    } else {
+      document.getElementById("lpTitle").innerText = "Last Purchase";
+      document.getElementById("lpDesc").innerText = "No previous orders found yet.";
+      lpCard.onclick = null;
+    }
+
     document.getElementById("authArea").innerHTML = `
       <div class="user-chip">Hi, ${user["User Name"].split(' ')[0]} <span class="logout-link" onclick="logout()">Logout</span></div>
     `;
@@ -673,6 +762,9 @@
     currentUser = null; cart = []; wishlist = [];
     localStorage.removeItem("gufMobile"); localStorage.removeItem("gufName");
     document.getElementById("authArea").innerHTML = `<button class="login-btn" onclick="openLoginModal()">Login</button>`;
+    document.getElementById("lpTitle").innerText = "Last Purchase";
+    document.getElementById("lpDesc").innerText = "Login with your mobile number to view your previous order and re-order instantly.";
+    document.getElementById("lpCard").onclick = openLoginModal;
     renderCartBadge(); renderWishlistBadge(); renderProductsGrid();
   }
 
@@ -814,7 +906,6 @@
   });
 
   loadProducts();
-  checkExistingLogin();
 </script>
 </body>
 </html>
