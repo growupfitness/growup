@@ -225,8 +225,8 @@
   
   .prod-body{padding:18px;}
   .prod-body .cat-label{font-size:11px;color:var(--ember);letter-spacing:1px;font-weight:700;}
-  .prod-body h4{font-size:17px;margin:6px 0 10px;font-family:'Inter';font-weight:700;text-transform:none;}
-  .prod-price{display:flex;justify-content:space-between;align-items:center;}
+  .prod-body h4{font-size:17px;margin:6px 0 6px;font-family:'Inter';font-weight:700;text-transform:none;}
+  .prod-price{display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
   .prod-price .price{font-weight:800;font-size:16px;color:var(--chalk);}
   .prod-price button{background:none;border:1px solid var(--ember);color:var(--ember);padding:6px 14px;font-size:12px;font-weight:700;border-radius:var(--radius);cursor:pointer;}
   .prod-price button:hover{background:var(--ember);color:var(--iron);}
@@ -237,12 +237,18 @@
   .modal-overlay.open{display:flex;}
   .modal-box{background:var(--iron-light);max-width:900px;width:100%;max-height:90vh;overflow-y:auto;border-radius:var(--radius);position:relative;display:grid;grid-template-columns:1fr 1fr;}
   .modal-close{position:absolute;top:14px;right:14px;background:rgba(0,0,0,0.5);color:#fff;border:none;width:34px;height:34px;border-radius:50%;font-size:18px;cursor:pointer;z-index:3;}
-  .modal-gallery{position:relative;background:var(--iron);overflow:hidden;}
-  .modal-gallery .slide-track{display:flex;transition:transform .3s ease;}
+  
+  /* Modal Gallery Fixed Arrows */
+  .modal-gallery{position:relative;background:var(--iron);overflow:hidden;display:flex;align-items:center;justify-content:center;}
+  .modal-gallery .slide-track{display:flex;transition:transform .3s ease;width:100%;height:100%;}
   .modal-gallery .slide-track img{width:100%;flex-shrink:0;object-fit:contain;background:var(--iron-light);height:420px;padding:16px;cursor:zoom-in;}
+  .modal-gallery .arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.5);color:#fff;border:none;width:34px;height:34px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3;}
+  .modal-gallery .arrow.left{left:10px;}
+  .modal-gallery .arrow.right{right:10px;}
   .modal-gallery .dots{position:absolute;bottom:14px;left:0;right:0;display:flex;justify-content:center;gap:8px;}
   .modal-gallery .dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.35);cursor:pointer;}
   .modal-gallery .dots span.active{background:var(--ember);}
+
   .modal-info{padding:36px 32px;}
   .modal-info .cat-label{color:var(--ember);font-weight:700;font-size:13px;letter-spacing:1px;}
   .modal-info h2{font-size:32px;margin:10px 0 6px;text-transform:none;font-family:'Inter';}
@@ -251,6 +257,13 @@
   .modal-info .modal-mrp{text-decoration:line-through;color:var(--steel);font-size:16px;margin-right:10px;}
   .modal-info .save-tag{color:#10b981;font-size:13px;font-weight:700;margin-bottom:24px;}
   .modal-actions{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;}
+
+  /* Flavour Selector Buttons */
+  .variant-selector{margin:16px 0;}
+  .variant-selector label{display:block;font-size:12px;font-weight:600;color:var(--steel);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;}
+  .variant-chips{display:flex;gap:8px;flex-wrap:wrap;}
+  .variant-chip{background:var(--iron);border:1px solid var(--border-color);color:var(--chalk);padding:8px 14px;font-size:13px;border-radius:var(--radius);cursor:pointer;font-weight:500;}
+  .variant-chip.active{border-color:var(--ember);color:var(--ember);background:rgba(0,160,227,0.08);}
 
   .btn-primary{background:var(--ember);color:var(--iron);padding:14px 24px;font-weight:800;font-size:13px;border-radius:var(--radius);border:none;cursor:pointer;position:relative;overflow:hidden;}
   .btn-primary::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.25);transform:translateX(-100%);transition:transform .5s ease;}
@@ -349,7 +362,7 @@
   </div>
 </section>
 
-<!-- 01 — PERSONALIZED SHOPPING SECTION -->
+<!-- PERSONALIZED SHOPPING SECTION -->
 <section class="section reveal" id="categories">
   <div class="section-head">
     <div>
@@ -359,19 +372,16 @@
     <p>Quick access to your favorite brands, re-orders, and flavours.</p>
   </div>
   <div class="cat-grid reveal-stagger">
-    <!-- 1. Shop by Brand -->
     <div class="cat-card" onclick="openBrandModal()">
       <div class="cat-plate">BRD</div>
       <h3>Shop by Brand</h3>
       <p>Filter products by top-tier fitness and nutritional brands.</p>
     </div>
-    <!-- 2. Shop Last Purchase -->
     <div class="cat-card" id="lpCard" style="border-color:var(--ember);" onclick="openLoginModal()">
       <div class="cat-plate">RE-BUY</div>
       <h3 id="lpTitle">Last Purchase</h3>
       <p id="lpDesc">Login with your mobile number to view your previous order and re-order instantly.</p>
     </div>
-    <!-- 3. Shop by Flavour -->
     <div class="cat-card" onclick="document.getElementById('searchInput').focus();">
       <div class="cat-plate">FLV</div>
       <h3>Shop by Flavour</h3>
@@ -503,6 +513,7 @@
   let cart = [];
   let wishlist = [];
   let allBrands = [];
+  let currentSelectedVariant = null;
 
   function getImages(p) {
     return [p["Image 1"], p["Image 2"], p["Image 3"]].filter(img => img && img.trim() !== "");
@@ -526,6 +537,8 @@
       const response = await fetch(API_URL);
       const data = await response.json();
       allProducts = data.filter(p => p["Stock Status"] === "In Stock");
+      
+      // Har row (1kg, 2kg alag-alag weight ke sath) home grid par dikhegi
       displayProducts = allProducts;
       renderProductsGrid();
       
@@ -617,11 +630,11 @@
         </div>
         <div class="prod-body">
           <span class="cat-label">${p["Brand"] || ""} · ${p["Category"] || ""}</span>
-          <h4>${p["Product Name"] || ""} ${p["Flavour"] ? "- " + p["Flavour"] : ""}</h4>
-          <p style="color:var(--steel);font-size:12px;margin-bottom:8px;">${p["Weight / Size"] || ""}</p>
+          <h4>${p["Product Name"] || ""}</h4>
+          <p style="color:var(--chalk);font-size:14px;font-weight:600;margin-bottom:8px;">${p["Weight / Size"] || ""}</p>
           <div class="prod-price">
             <span>${priceHTML}</span>
-            <button onclick="event.stopPropagation(); addToCart('${pid}')">Add Cart</button>
+            <button onclick="event.stopPropagation(); openModal(${index})">View Options</button>
           </div>
         </div>
       `;
@@ -656,8 +669,24 @@
   }
 
   function openModal(index) {
-    const p = allProducts[index];
-    modalImages = getImages(p);
+    const baseProduct = allProducts[index];
+    const productName = baseProduct["Product Name"];
+    const weightSize = baseProduct["Weight / Size"];
+    
+    // Sirf usi product name aur usi weight/size wale flavours popup me aayenge
+    const variants = allProducts.filter(p => p["Product Name"] === productName && p["Weight / Size"] === weightSize);
+    currentSelectedVariant = baseProduct;
+
+    modalImages = getImages(currentSelectedVariant);
+    modalIndex = 0;
+
+    updateModalContent(variants, currentSelectedVariant);
+    document.getElementById("productModal").classList.add("open");
+  }
+
+  function updateModalContent(variants, selectedVar) {
+    currentSelectedVariant = selectedVar;
+    modalImages = getImages(selectedVar);
     modalIndex = 0;
 
     const track = document.getElementById("modalSlideTrack");
@@ -667,28 +696,47 @@
     const dotsWrap = document.getElementById("modalDots");
     dotsWrap.innerHTML = modalImages.map((img, i) => `<span class="${i === 0 ? 'active' : ''}" onclick="modalGoTo(${i})"></span>`).join("");
 
-    const mrp = Number(p["MRP"]) || 0;
-    const sellingPrice = Number(p["Selling Price"]) || 0;
+    const mrp = Number(selectedVar["MRP"]) || 0;
+    const sellingPrice = Number(selectedVar["Selling Price"]) || 0;
     const hasDiscount = mrp > sellingPrice;
     const savePct = hasDiscount ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0;
-    const pid = p["Product ID"] || p["Product Name"];
+    const pid = selectedVar["Product ID"] || selectedVar["Product Name"];
+
+    const variantsHTML = variants.map(v => {
+      const label = `${v["Flavour"] ? v["Flavour"] : ""}`;
+      const isSelected = v["Product ID"] === selectedVar["Product ID"];
+      return `<button class="variant-chip ${isSelected ? 'active' : ''}" onclick='selectVariant("${v["Product ID"]}")'>${label}</button>`;
+    }).join("");
 
     document.getElementById("modalInfo").innerHTML = `
-      <span class="cat-label">${p["Brand"] || ""} · ${p["Category"] || ""}</span>
-      <h2>${p["Product Name"] || ""}</h2>
-      <p class="sub">${p["Flavour"] ? p["Flavour"] + " · " : ""}${p["Weight / Size"] || ""}</p>
-      <div class="modal-price">
+      <span class="cat-label">${selectedVar["Brand"] || ""} · ${selectedVar["Category"] || ""}</span>
+      <h2>${selectedVar["Product Name"]}</h2>
+      <p class="sub">${selectedVar["Weight / Size"] || ""}</p>
+      
+      <div class="variant-selector">
+        <label>Select Flavour:</label>
+        <div class="variant-chips">${variantsHTML}</div>
+      </div>
+
+      <div class="modal-price" style="margin-top:16px;">
         ${hasDiscount ? `<span class="modal-mrp">₹${mrp}</span>` : ""}₹${sellingPrice}
       </div>
       ${hasDiscount ? `<div class="save-tag">${savePct}% OFF — you save ₹${mrp - sellingPrice}</div>` : "<div style='margin-bottom:24px;'></div>"}
       <div class="modal-actions">
         <button class="btn-primary" onclick="addToCart('${pid}'); closeModal();">Add to Cart</button>
         <button class="btn-ghost" onclick="toggleWishlist('${pid}')">${wishlist.includes(pid) ? '♥ Wishlisted' : '♡ Wishlist'}</button>
-        <a href="https://wa.me/919571214461?text=Hi,%20I'm%20interested%20in%20${encodeURIComponent(p["Product Name"] || "")}" target="_blank" class="btn-ghost" style="padding-top:14px; text-align:center;">Order on WhatsApp</a>
+        <a href="https://wa.me/919571214461?text=Hi,%20I'm%20interested%20in%20${encodeURIComponent(selectedVar["Product Name"] + " " + (selectedVar["Weight"] || "") + " " + (selectedVar["Flavour"] || ""))}" target="_blank" class="btn-ghost" style="padding-top:14px; text-align:center;">Order on WhatsApp</a>
       </div>
     `;
+  }
 
-    document.getElementById("productModal").classList.add("open");
+  function selectVariant(prodId) {
+    const found = allProducts.find(p => p["Product ID"] === prodId);
+    if (!found) return;
+    const productName = found["Product Name"];
+    const weightSize = found["Weight / Size"];
+    const variants = allProducts.filter(p => p["Product Name"] === productName && p["Weight / Size"] === weightSize);
+    updateModalContent(variants, found);
   }
 
   function closeModal() { document.getElementById("productModal").classList.remove("open"); }
@@ -716,7 +764,6 @@
     if (e.target.id === "imageLightbox") closeLightbox();
   });
 
-  // Auth, Cart & Wishlist
   let currentUser = null;
   function openLoginModal() { document.getElementById("loginModal").classList.add("open"); }
   function closeLoginModal() { document.getElementById("loginModal").classList.remove("open"); document.getElementById("loginError").style.display = "none"; }
@@ -755,7 +802,10 @@
       if (lastProd) {
         document.getElementById("lpTitle").innerText = "Re-order";
         document.getElementById("lpDesc").innerText = `Quick re-order: ${lastProd["Product Name"]} (${lastProd["Flavour"] || ""})`;
-        lpCard.onclick = () => openModal(allProducts.indexOf(lastProd));
+        lpCard.onclick = () => {
+          const index = allProducts.findIndex(p => p["Product ID"] === lastProd["Product ID"]);
+          openModal(index);
+        };
       }
     } else {
       document.getElementById("lpTitle").innerText = "Last Purchase";
@@ -852,7 +902,7 @@
         <div class="drawer-item">
           <img src="${p["Image 1"] || ""}">
           <div class="info">
-            <h5>${p["Product Name"]}</h5>
+            <h5>${p["Product Name"]} (${p["Weight / Size"] || ""}) - ${p["Flavour"] || ""}</h5>
             <div class="price">₹${price} × ${item.qty}</div>
           </div>
           <div class="qty-controls">
@@ -867,7 +917,7 @@
 
     const waMsg = encodeURIComponent("Hi, I'd like to order:\n" + cart.map(i => {
       const p = allProducts.find(pr => (pr["Product ID"] || pr["Product Name"]) === i.id);
-      return p ? `- ${p["Product Name"]} x${i.qty}` : "";
+      return p ? `- ${p["Product Name"]} (${p["Weight / Size"] || ""}) [${p["Flavour"] || ""}] x${i.qty}` : "";
     }).join("\n") + `\n\nTotal: ₹${total}`);
 
     wrap.innerHTML = itemsHTML + `
@@ -888,7 +938,7 @@
         <div class="drawer-item">
           <img src="${p["Image 1"] || ""}">
           <div class="info">
-            <h5>${p["Product Name"]}</h5>
+            <h5>${p["Product Name"]} (${p["Weight / Size"] || ""})</h5>
             <div class="price">₹${p["Selling Price"]}</div>
           </div>
           <button class="btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="addToCart('${id}')">Add Cart</button>
@@ -898,7 +948,6 @@
     }).join("");
   }
 
-  // Scroll Reveal Observer Setup
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
