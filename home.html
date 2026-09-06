@@ -258,9 +258,9 @@
   .modal-info .save-tag{color:#10b981;font-size:13px;font-weight:700;margin-bottom:24px;}
   .modal-actions{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;}
 
-  /* Flavour Selector Buttons */
-  .variant-selector{margin:16px 0;}
-  .variant-selector label{display:block;font-size:12px;font-weight:600;color:var(--steel);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;}
+  /* Variant & Flavour Selector Buttons */
+  .variant-selector{margin:14px 0;}
+  .variant-selector label{display:block;font-size:12px;font-weight:600;color:var(--steel);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
   .variant-chips{display:flex;gap:8px;flex-wrap:wrap;}
   .variant-chip{background:var(--iron);border:1px solid var(--border-color);color:var(--chalk);padding:8px 14px;font-size:13px;border-radius:var(--radius);cursor:pointer;font-weight:500;}
   .variant-chip.active{border-color:var(--ember);color:var(--ember);background:rgba(0,160,227,0.08);}
@@ -348,7 +348,6 @@
   </nav>
 </header>
 
-<!-- HERO VIDEO SECTION -->
 <section class="hero-video-section">
   <video autoplay loop muted playsinline>
     <source src="Top-Banner.mp4" type="video/mp4">
@@ -362,7 +361,6 @@
   </div>
 </section>
 
-<!-- PERSONALIZED SHOPPING SECTION -->
 <section class="section reveal" id="categories">
   <div class="section-head">
     <div>
@@ -403,7 +401,6 @@
   </div>
 </section>
 
-<!-- MODALS -->
 <div class="modal-overlay" id="productModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -417,7 +414,6 @@
   </div>
 </div>
 
-<!-- BRAND MODAL -->
 <div class="modal-overlay" id="brandModal">
   <div class="modal-box" style="display:block; max-width:650px; padding:32px;">
     <button class="modal-close" onclick="closeBrandModal()">✕</button>
@@ -538,7 +534,7 @@
       const data = await response.json();
       allProducts = data.filter(p => p["Stock Status"] === "In Stock");
       
-      // Har row (1kg, 2kg alag-alag weight ke sath) home grid par dikhegi
+      // Home grid par 1kg aur 2kg dono alag-alag cards ki tarah show honge
       displayProducts = allProducts;
       renderProductsGrid();
       
@@ -671,20 +667,19 @@
   function openModal(index) {
     const baseProduct = allProducts[index];
     const productName = baseProduct["Product Name"];
-    const weightSize = baseProduct["Weight / Size"];
     
-    // Sirf usi product name aur usi weight/size wale flavours popup me aayenge
-    const variants = allProducts.filter(p => p["Product Name"] === productName && p["Weight / Size"] === weightSize);
+    // Us product name ke saare variants (1kg, 2kg, 3kg aur unke flavours) nikalenge
+    const allVariants = allProducts.filter(p => p["Product Name"] === productName);
     currentSelectedVariant = baseProduct;
 
     modalImages = getImages(currentSelectedVariant);
     modalIndex = 0;
 
-    updateModalContent(variants, currentSelectedVariant);
+    updateModalContent(allVariants, currentSelectedVariant);
     document.getElementById("productModal").classList.add("open");
   }
 
-  function updateModalContent(variants, selectedVar) {
+  function updateModalContent(allVariants, selectedVar) {
     currentSelectedVariant = selectedVar;
     modalImages = getImages(selectedVar);
     modalIndex = 0;
@@ -702,21 +697,38 @@
     const savePct = hasDiscount ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0;
     const pid = selectedVar["Product ID"] || selectedVar["Product Name"];
 
-    const variantsHTML = variants.map(v => {
-      const label = `${v["Flavour"] ? v["Flavour"] : ""}`;
+    // 1. UNIQUE WEIGHTS (1kg, 2kg, 3kg etc.)
+    const uniqueWeights = [...new Set(allVariants.map(v => v["Weight / Size"]).filter(Boolean))];
+    const weightsHTML = uniqueWeights.map(w => {
+      const isSelected = selectedVar["Weight / Size"] === w;
+      return `<button class="variant-chip ${isSelected ? 'active' : ''}" onclick='selectWeight("${selectedVar["Product Name"]}", "${w}")'>${w}</button>`;
+    }).join("");
+
+    // 2. FLAVOURS available for the currently selected Weight
+    const currentWeightFlavours = allVariants.filter(v => v["Weight / Size"] === selectedVar["Weight / Size"]);
+    const flavoursHTML = currentWeightFlavours.map(v => {
       const isSelected = v["Product ID"] === selectedVar["Product ID"];
-      return `<button class="variant-chip ${isSelected ? 'active' : ''}" onclick='selectVariant("${v["Product ID"]}")'>${label}</button>`;
+      return `<button class="variant-chip ${isSelected ? 'active' : ''}" onclick='selectVariant("${v["Product ID"]}")'>${v["Flavour"]}</button>`;
     }).join("");
 
     document.getElementById("modalInfo").innerHTML = `
       <span class="cat-label">${selectedVar["Brand"] || ""} · ${selectedVar["Category"] || ""}</span>
       <h2>${selectedVar["Product Name"]}</h2>
-      <p class="sub">${selectedVar["Weight / Size"] || ""}</p>
+      <p class="sub">${selectedVar["Weight / Size"] || ""} · ${selectedVar["Flavour"] || ""}</p>
       
-      <div class="variant-selector">
-        <label>Select Flavour:</label>
-        <div class="variant-chips">${variantsHTML}</div>
-      </div>
+      ${uniqueWeights.length > 0 ? `
+        <div class="variant-selector">
+          <label>Select Size / Weight:</label>
+          <div class="variant-chips">${weightsHTML}</div>
+        </div>
+      ` : ""}
+
+      ${flavoursHTML ? `
+        <div class="variant-selector">
+          <label>Select Flavour:</label>
+          <div class="variant-chips">${flavoursHTML}</div>
+        </div>
+      ` : ""}
 
       <div class="modal-price" style="margin-top:16px;">
         ${hasDiscount ? `<span class="modal-mrp">₹${mrp}</span>` : ""}₹${sellingPrice}
@@ -725,18 +737,23 @@
       <div class="modal-actions">
         <button class="btn-primary" onclick="addToCart('${pid}'); closeModal();">Add to Cart</button>
         <button class="btn-ghost" onclick="toggleWishlist('${pid}')">${wishlist.includes(pid) ? '♥ Wishlisted' : '♡ Wishlist'}</button>
-        <a href="https://wa.me/919571214461?text=Hi,%20I'm%20interested%20in%20${encodeURIComponent(selectedVar["Product Name"] + " " + (selectedVar["Weight"] || "") + " " + (selectedVar["Flavour"] || ""))}" target="_blank" class="btn-ghost" style="padding-top:14px; text-align:center;">Order on WhatsApp</a>
+        <a href="https://wa.me/919571214461?text=Hi,%20I'm%20interested%20in%20${encodeURIComponent(selectedVar["Product Name"] + " " + (selectedVar["Weight / Size"] || "") + " - " + (selectedVar["Flavour"] || ""))}" target="_blank" class="btn-ghost" style="padding-top:14px; text-align:center;">Order on WhatsApp</a>
       </div>
     `;
+  }
+
+  function selectWeight(productName, weight) {
+    const allVariants = allProducts.filter(p => p["Product Name"] === productName);
+    // Us weight ka pehla available variant/flavour utha lo
+    const target = allVariants.find(p => p["Weight / Size"] === weight) || allVariants[0];
+    updateModalContent(allVariants, target);
   }
 
   function selectVariant(prodId) {
     const found = allProducts.find(p => p["Product ID"] === prodId);
     if (!found) return;
-    const productName = found["Product Name"];
-    const weightSize = found["Weight / Size"];
-    const variants = allProducts.filter(p => p["Product Name"] === productName && p["Weight / Size"] === weightSize);
-    updateModalContent(variants, found);
+    const allVariants = allProducts.filter(p => p["Product Name"] === found["Product Name"]);
+    updateModalContent(allVariants, found);
   }
 
   function closeModal() { document.getElementById("productModal").classList.remove("open"); }
@@ -916,7 +933,7 @@
     }).join("");
 
     const waMsg = encodeURIComponent("Hi, I'd like to order:\n" + cart.map(i => {
-      const p = allProducts.find(pr => (pr["Product ID"] || pr["Product Name"]) === i.id);
+      const p = allProducts.find(pr => (pr["Product ID"] || pr["Product Name"]) === item.id); // Fixed reference
       return p ? `- ${p["Product Name"]} (${p["Weight / Size"] || ""}) [${p["Flavour"] || ""}] x${i.qty}` : "";
     }).join("\n") + `\n\nTotal: ₹${total}`);
 
