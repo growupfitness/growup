@@ -538,7 +538,7 @@
       const data = await response.json();
       allProducts = data.filter(p => p["Stock Status"] === "In Stock");
       
-      // UNIQUE WEIGHTS PER PRODUCT: Home grid par har product + weight ka sirf 1 card dikhega (duplicates hatane ke liye)
+      // UNIQUE WEIGHTS PER PRODUCT: Home grid par har product + weight ka sirf 1 card dikhega
       const uniqueMap = new Map();
       allProducts.forEach(p => {
         const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
@@ -721,11 +721,11 @@
       return `<button type="button" class="variant-chip ${isSelected ? 'active' : ''}" onclick="window.handleWeightClick('${escapeQuotes(selectedVar["Product Name"])}', '${escapeQuotes(w)}')">${w}</button>`;
     }).join("");
 
-    // 2. FLAVOURS for currently selected weight
+    // 2. FLAVOURS for currently selected Weight (Matched properly)
     const currentWeightFlavours = allVariants.filter(v => (v["Weight / Size"] || "").trim() === (selectedVar["Weight / Size"] || "").trim());
     const flavoursHTML = currentWeightFlavours.map(v => {
-      const isSelected = (v["Product ID"] || "").trim() === (selectedVar["Product ID"] || "").trim();
-      return `<button type="button" class="variant-chip ${isSelected ? 'active' : ''}" onclick="window.handleFlavorClick('${escapeQuotes(v["Product ID"])}')">${v["Flavour"]}</button>`;
+      const isSelected = (v["Flavour"] || "").trim() === (selectedVar["Flavour"] || "").trim();
+      return `<button type="button" class="variant-chip ${isSelected ? 'active' : ''}" onclick="window.handleFlavorClick('${escapeQuotes(selectedVar["Product Name"])}', '${escapeQuotes(selectedVar["Weight / Size"])}', '${escapeQuotes(v["Flavour"])}')">${v["Flavour"]}</button>`;
     }).join("");
 
     document.getElementById("modalInfo").innerHTML = `
@@ -765,11 +765,13 @@
     updateModalContent(allVariants, target);
   };
 
-  window.handleFlavorClick = function(prodId) {
-    const found = allProducts.find(p => String(p["Product ID"]).trim() === String(prodId).trim());
-    if (!found) return;
-    const allVariants = allProducts.filter(p => p["Product Name"] === found["Product Name"]);
-    updateModalContent(allVariants, found);
+  window.handleFlavorClick = function(productName, weight, flavour) {
+    const allVariants = allProducts.filter(p => p["Product Name"] === productName);
+    const target = allVariants.find(p => 
+      (p["Weight / Size"] || "").trim() === weight.trim() && 
+      (p["Flavour"] || "").trim() === flavour.trim()
+    ) || allVariants[0];
+    updateModalContent(allVariants, target);
   };
 
   function escapeQuotes(str) {
