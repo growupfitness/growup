@@ -348,6 +348,7 @@
   </nav>
 </header>
 
+<!-- HERO VIDEO SECTION -->
 <section class="hero-video-section">
   <video autoplay loop muted playsinline>
     <source src="Top-Banner.mp4" type="video/mp4">
@@ -361,6 +362,7 @@
   </div>
 </section>
 
+<!-- PERSONALIZED SHOPPING SECTION -->
 <section class="section reveal" id="categories">
   <div class="section-head">
     <div>
@@ -401,6 +403,7 @@
   </div>
 </section>
 
+<!-- MODALS -->
 <div class="modal-overlay" id="productModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -414,6 +417,7 @@
   </div>
 </div>
 
+<!-- BRAND MODAL -->
 <div class="modal-overlay" id="brandModal">
   <div class="modal-box" style="display:block; max-width:650px; padding:32px;">
     <button class="modal-close" onclick="closeBrandModal()">✕</button>
@@ -534,8 +538,16 @@
       const data = await response.json();
       allProducts = data.filter(p => p["Stock Status"] === "In Stock");
       
-      // Home grid par 1kg aur 2kg dono alag-alag cards ki tarah show honge
-      displayProducts = allProducts;
+      // UNIQUE WEIGHTS PER PRODUCT: Home grid par har product + weight ka sirf 1 card dikhega (duplicates hatane ke liye)
+      const uniqueMap = new Map();
+      allProducts.forEach(p => {
+        const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
+        if (!uniqueMap.has(key)) {
+          uniqueMap.set(key, p);
+        }
+      });
+      displayProducts = Array.from(uniqueMap.values());
+
       renderProductsGrid();
       
       const savedMobile = localStorage.getItem("gufMobile");
@@ -595,7 +607,7 @@
 
     grid.innerHTML = "";
     displayProducts.forEach((p) => {
-      const index = allProducts.indexOf(p);
+      const index = allProducts.findIndex(item => item["Product Name"] === p["Product Name"] && item["Weight / Size"] === p["Weight / Size"]);
       const images = getImages(p);
       const mrp = Number(p["MRP"]) || 0;
       const sellingPrice = Number(p["Selling Price"]) || 0;
@@ -630,24 +642,29 @@
           <p style="color:var(--chalk);font-size:14px;font-weight:600;margin-bottom:8px;">${p["Weight / Size"] || ""}</p>
           <div class="prod-price">
             <span>${priceHTML}</span>
-            <button onclick="event.stopPropagation(); openModal(${index})">View Options</button>
+            <button onclick="event.stopPropagation(); openModal(${index >= 0 ? index : 0})">View Options</button>
           </div>
         </div>
       `;
-      card.addEventListener("click", () => openModal(index));
+      card.addEventListener("click", () => openModal(index >= 0 ? index : 0));
       grid.appendChild(card);
     });
   }
 
   function handleSearch(val) {
     const query = val.toLowerCase().trim();
-    displayProducts = allProducts.filter(p => {
+    const uniqueMap = new Map();
+    allProducts.filter(p => {
       const name = (p["Product Name"] || "").toLowerCase();
       const brand = (p["Brand"] || "").toLowerCase();
       const cat = (p["Category"] || "").toLowerCase();
       const flavour = (p["Flavour"] || "").toLowerCase();
       return name.includes(query) || brand.includes(query) || cat.includes(query) || flavour.includes(query);
+    }).forEach(p => {
+      const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
+      if (!uniqueMap.has(key)) uniqueMap.set(key, p);
     });
+    displayProducts = Array.from(uniqueMap.values());
     renderProductsGrid();
   }
 
@@ -666,6 +683,7 @@
 
   function openModal(index) {
     const baseProduct = allProducts[index];
+    if (!baseProduct) return;
     const productName = baseProduct["Product Name"];
     
     const allVariants = allProducts.filter(p => p["Product Name"] === productName);
@@ -700,14 +718,14 @@
     const uniqueWeights = [...new Set(allVariants.map(v => v["Weight / Size"]).filter(Boolean))];
     const weightsHTML = uniqueWeights.map(w => {
       const isSelected = (selectedVar["Weight / Size"] || "").trim() === w.trim();
-      return `<button type="button" class="variant-chip ${isSelected ? 'active' : ''}" onclick="selectWeight('${escapeQuotes(selectedVar["Product Name"])}', '${escapeQuotes(w)}')">${w}</button>`;
+      return `<button type="button" class="variant-chip ${isSelected ? 'active' : ''}" onclick="window.handleWeightClick('${escapeQuotes(selectedVar["Product Name"])}', '${escapeQuotes(w)}')">${w}</button>`;
     }).join("");
 
-    // 2. FLAUVOURS available for the currently selected Weight
+    // 2. FLAVOURS for currently selected weight
     const currentWeightFlavours = allVariants.filter(v => (v["Weight / Size"] || "").trim() === (selectedVar["Weight / Size"] || "").trim());
     const flavoursHTML = currentWeightFlavours.map(v => {
       const isSelected = (v["Product ID"] || "").trim() === (selectedVar["Product ID"] || "").trim();
-      return `<button type="button" class="variant-chip ${isSelected ? 'active' : ''}" onclick="selectVariant('${escapeQuotes(v["Product ID"])}')">${v["Flavour"]}</button>`;
+      return `<button type="button" class="variant-chip ${isSelected ? 'active' : ''}" onclick="window.handleFlavorClick('${escapeQuotes(v["Product ID"])}')">${v["Flavour"]}</button>`;
     }).join("");
 
     document.getElementById("modalInfo").innerHTML = `
@@ -741,18 +759,18 @@
     `;
   }
 
-  function selectWeight(productName, weight) {
+  window.handleWeightClick = function(productName, weight) {
     const allVariants = allProducts.filter(p => p["Product Name"] === productName);
     const target = allVariants.find(p => (p["Weight / Size"] || "").trim() === weight.trim()) || allVariants[0];
     updateModalContent(allVariants, target);
-  }
+  };
 
-  function selectVariant(prodId) {
+  window.handleFlavorClick = function(prodId) {
     const found = allProducts.find(p => String(p["Product ID"]).trim() === String(prodId).trim());
     if (!found) return;
     const allVariants = allProducts.filter(p => p["Product Name"] === found["Product Name"]);
     updateModalContent(allVariants, found);
-  }
+  };
 
   function escapeQuotes(str) {
     return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
