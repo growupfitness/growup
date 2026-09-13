@@ -157,6 +157,15 @@
   .drawer-footer{margin-top:20px;padding-top:16px;border-top:1px solid var(--border-color);}
   .drawer-total{display:flex;justify-content:space-between;font-size:18px;font-weight:800;margin-bottom:16px;}
 
+  /* CHECKOUT MODAL FORM */
+  .checkout-form input, .checkout-form textarea{
+    width:100%;padding:12px 14px;margin-bottom:12px;
+    background:var(--iron);border:1px solid var(--border-color);
+    border-radius:var(--radius);color:var(--chalk);font-size:14px;font-family:'Inter';
+  }
+  .checkout-form textarea{resize:none;height:80px;}
+  .checkout-form input:focus, .checkout-form textarea:focus{outline:none;border-color:var(--ember);}
+
   /* BRAND CARD ITEM */
   .brand-card-item {
     background: #141414;
@@ -445,6 +454,7 @@
   </div>
 </div>
 
+<!-- CART DRAWER WITH CHECKOUT & UPI AUTOMATION -->
 <div class="modal-overlay" id="cartDrawer">
   <div class="modal-box drawer-box">
     <button class="modal-close" onclick="closeDrawer('cartDrawer')">✕</button>
@@ -453,11 +463,16 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="wishlistDrawer">
-  <div class="modal-box drawer-box">
-    <button class="modal-close" onclick="closeDrawer('wishlistDrawer')">✕</button>
-    <h2>Your Wishlist</h2>
-    <div id="wishlistItemsWrap"></div>
+<!-- CHECKOUT FORM MODAL -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal-box login-box checkout-form" style="display:block; max-width:440px;">
+    <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
+    <h2>Delivery Details</h2>
+    <p class="sub-text">Enter your shipping address for direct order placement.</p>
+    <input type="text" id="chkName" placeholder="Full Name">
+    <input type="tel" id="chkPhone" placeholder="Phone Number" maxlength="10">
+    <textarea id="chkAddress" placeholder="Complete Shipping Address (House No, Street, City, Pincode)"></textarea>
+    <button class="btn-primary" onclick="proceedToUPIPayment()" style="width:100%; margin-top:10px;">Proceed to Pay via UPI</button>
   </div>
 </div>
 
@@ -505,6 +520,8 @@
 
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbyL0AFliTsmlN-f85n0VN7cOXPC2geT7oGCWNlzA0zM4LiBKJnkJs_Qy4O03XUvCzV4/exec";
+  const MERCHANT_UPI = "salvinitinudr-6@okaxis";
+  const MERCHANT_NAME = "Grow Up Fitness";
 
   let allProducts = [];
   let displayProducts = [];
@@ -538,7 +555,6 @@
       const data = await response.json();
       allProducts = data.filter(p => p["Stock Status"] === "In Stock");
       
-      // UNIQUE WEIGHTS PER PRODUCT: Home grid par har product + weight ka sirf 1 card dikhega
       const uniqueMap = new Map();
       allProducts.forEach(p => {
         const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
@@ -714,14 +730,12 @@
     const savePct = hasDiscount ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0;
     const pid = selectedVar["Product ID"] || selectedVar["Product Name"];
 
-    // 1. UNIQUE WEIGHTS (1kg, 2kg etc.)
     const uniqueWeights = [...new Set(allVariants.map(v => v["Weight / Size"]).filter(Boolean))];
     const weightsHTML = uniqueWeights.map(w => {
       const isSelected = (selectedVar["Weight / Size"] || "").trim() === w.trim();
       return `<button type="button" class="variant-chip ${isSelected ? 'active' : ''}" onclick="window.handleWeightClick('${escapeQuotes(selectedVar["Product Name"])}', '${escapeQuotes(w)}')">${w}</button>`;
     }).join("");
 
-    // 2. FLAVOURS for currently selected Weight (Matched properly)
     const currentWeightFlavours = allVariants.filter(v => (v["Weight / Size"] || "").trim() === (selectedVar["Weight / Size"] || "").trim());
     const flavoursHTML = currentWeightFlavours.map(v => {
       const isSelected = (v["Flavour"] || "").trim() === (selectedVar["Flavour"] || "").trim();
@@ -962,9 +976,53 @@
     wrap.innerHTML = itemsHTML + `
       <div class="drawer-footer">
         <div class="drawer-total"><span>Total</span><span>₹${total}</span></div>
-        <a href="https://wa.me/919571214461?text=${waMsg}" target="_blank" class="btn-primary" style="display:block;text-align:center;">Checkout on WhatsApp</a>
+        <button class="btn-primary" onclick="openCheckoutModal()" style="width:100%; margin-bottom:8px;">Proceed to Checkout</button>
+        <a href="https://wa.me/919571214461?text=${waMsg}" target="_blank" class="btn-ghost" style="display:block;text-align:center;">Checkout on WhatsApp</a>
       </div>
     `;
+  }
+
+  function openCheckoutModal() {
+    closeDrawer('cartDrawer');
+    if(currentUser) {
+      document.getElementById("chkName").value = currentUser["User Name"] || "";
+      document.getElementById("chkPhone").value = currentUser["Mobile Number"] || "";
+    }
+    document.getElementById("checkoutModal").classList.add("open");
+  }
+  function closeCheckoutModal() {
+    document.getElementById("checkoutModal").classList.remove("open");
+  }
+
+  function proceedToUPIPayment() {
+    const name = document.getElementById("chkName").value.trim();
+    const phone = document.getElementById("chkPhone").value.trim();
+    const address = document.getElementById("chkAddress").value.trim();
+
+    if(!name || !phone || !address || phone.length !== 10) {
+      alert("Please fill in valid name, 10-digit phone number, and address.");
+      return;
+    }
+
+    let total = 0;
+    cart.forEach(item => {
+      const p = allProducts.find(pr => (pr["Product ID"] || pr["Product Name"]) === item.id);
+      if(p) total += (Number(p["Selling Price"]) || 0) * item.qty;
+    });
+
+    const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent("Order by " + name)}`;
+    window.location.href = upiLink;
+
+    const orderDetails = cart.map(i => {
+      const p = allProducts.find(pr => (pr["Product ID"] || pr["Product Name"]) === i.id);
+      return p ? `${p["Product Name"]} (${p["Weight / Size"]}) [${p["Flavour"]}] x${i.qty}` : "";
+    }).join(", ");
+
+    fetch(`${API_URL}?action=saveOrder&name=${encodeURIComponent(name)}&phone=${phone}&address=${encodeURIComponent(address)}&amount=${total}&items=${encodeURIComponent(orderDetails)}`)
+    .catch(e => console.log(e));
+
+    alert("Redirecting to UPI payment app... Once paid, your order will be recorded!");
+    closeCheckoutModal();
   }
 
   function renderWishlistDrawer() {
@@ -1006,6 +1064,9 @@
   });
   document.getElementById("loginModal").addEventListener("click", (e) => {
     if (e.target.id === "loginModal") closeLoginModal();
+  });
+  document.getElementById("checkoutModal").addEventListener("click", (e) => {
+    if (e.target.id === "checkoutModal") closeCheckoutModal();
   });
 
   loadProducts();
