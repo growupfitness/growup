@@ -550,10 +550,17 @@
 
   async function loadProducts() {
     const grid = document.getElementById("prodGrid");
+    grid.innerHTML = `<p class="prod-empty">Loading products…</p>`;
     try {
       const response = await fetch(API_URL);
       const data = await response.json();
-      allProducts = data.filter(p => p["Stock Status"] === "In Stock");
+      
+      if (!Array.isArray(data) || data.length === 0) {
+        grid.innerHTML = `<p class="prod-empty">Sheet me koi products nahi mile.</p>`;
+        return;
+      }
+
+      allProducts = data.filter(p => String(p["Stock Status"]).trim().toLowerCase() === "in stock");
       
       const uniqueMap = new Map();
       allProducts.forEach(p => {
@@ -583,7 +590,7 @@
       allBrands = await res.json();
       const brandGrid = document.getElementById("brandGrid");
       
-      if(allBrands.length === 0) {
+      if(!allBrands || allBrands.length === 0) {
         brandGrid.innerHTML = `<p style="color:var(--steel);">No brands found in sheet.</p>`;
         return;
       }
