@@ -1063,17 +1063,13 @@
 
   document.querySelectorAll(".reveal, .reveal-stagger").forEach(el => revealObserver.observe(el));
 
-  document.getElementById("cartDrawer").addEventListener("click", (e) => {
-    if (e.target.id === "cartDrawer") closeDrawer("cartDrawer");
-  });
-  document.getElementById("wishlistDrawer").addEventListener("click", (e) => {
-    if (e.target.id === "wishlistDrawer") closeDrawer("wishlistDrawer");
-  });
-  document.getElementById("loginModal").addEventListener("click", (e) => {
-    if (e.target.id === "loginModal") closeLoginModal();
-  });
-  document.getElementById("checkoutModal").addEventListener("click", (e) => {
-    if (e.target.id === "checkoutModal") closeCheckoutModal();
+  ["cartDrawer", "wishlistDrawer", "loginModal", "checkoutModal", "productModal", "brandModal"].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) {
+      el.addEventListener("click", (e) => {
+        if (e.target.id === id) el.classList.remove("open");
+      });
+    }
   });
 
   loadProducts();
