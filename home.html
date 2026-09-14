@@ -454,7 +454,7 @@
   </div>
 </div>
 
-<!-- CART DRAWER WITH CHECKOUT & UPI AUTOMATION -->
+<!-- CART DRAWER -->
 <div class="modal-overlay" id="cartDrawer">
   <div class="modal-box drawer-box">
     <button class="modal-close" onclick="closeDrawer('cartDrawer')">✕</button>
@@ -463,20 +463,30 @@
   </div>
 </div>
 
-<!-- CHECKOUT FORM MODAL WITH SCREENSHOT UPLOAD -->
+<!-- STEP 1: CHECKOUT FORM MODAL -->
 <div class="modal-overlay" id="checkoutModal">
   <div class="modal-box login-box checkout-form" style="display:block; max-width:440px;">
     <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
-    <h2>Delivery Details</h2>
-    <p class="sub-text">Enter shipping address &amp; payment proof screenshot.</p>
+    <h2>Step 1: Delivery Details</h2>
+    <p class="sub-text">Enter shipping address to proceed to UPI payment.</p>
     <input type="text" id="chkName" placeholder="Full Name">
     <input type="tel" id="chkPhone" placeholder="Phone Number" maxlength="10">
     <textarea id="chkAddress" placeholder="Complete Shipping Address (House No, Street, City, Pincode)"></textarea>
-    
-    <label style="font-size:12px; color:var(--steel); display:block; margin-bottom:6px; font-weight:600;">Payment Screenshot (Proof):</label>
-    <input type="file" id="chkScreenshot" accept="image/*" style="padding:8px; margin-bottom:12px; color:var(--chalk); background:var(--iron); border:1px solid var(--border-color); border-radius:var(--radius); width:100%;">
+    <button class="btn-primary" onclick="launchUPIPayment()" style="width:100%; margin-top:10px;">Pay via UPI (Step 1)</button>
+  </div>
+</div>
 
-    <button class="btn-primary" onclick="proceedToUPIPayment()" style="width:100%; margin-top:10px;">Proceed to Pay via UPI &amp; Order</button>
+<!-- STEP 2: PAYMENT PROOF UPLOAD MODAL -->
+<div class="modal-overlay" id="proofModal">
+  <div class="modal-box login-box checkout-form" style="display:block; max-width:440px;">
+    <button class="modal-close" onclick="closeProofModal()">✕</button>
+    <h2 style="color:var(--ember);">Step 2: Upload Payment Proof</h2>
+    <p class="sub-text">Payment done? Please upload your payment screenshot below so we can confirm your order immediately!</p>
+    
+    <label style="font-size:12px; color:var(--chalk); display:block; margin-bottom:6px; font-weight:700;">Select Payment Screenshot (Required):</label>
+    <input type="file" id="chkScreenshot" accept="image/*" style="padding:8px; margin-bottom:16px; color:var(--chalk); background:var(--iron); border:1px solid var(--border-color); border-radius:var(--radius); width:100%;">
+
+    <button class="btn-primary" onclick="submitFinalOrder()" style="width:100%;">Submit Order &amp; Proof</button>
   </div>
 </div>
 
@@ -535,6 +545,7 @@
   let wishlist = [];
   let allBrands = [];
   let currentSelectedVariant = null;
+  let tempOrderData = null; // Temporary storage between step 1 and step 2
 
   function getImages(p) {
     return [p["Image 1"], p["Image 2"], p["Image 3"]].filter(img => img && img.trim() !== "");
@@ -1001,15 +1012,14 @@
     }
     document.getElementById("checkoutModal").classList.add("open");
   }
-  function closeCheckoutModal() {
-    document.getElementById("checkoutModal").classList.remove("open");
-  }
+  function closeCheckoutModal() { document.getElementById("checkoutModal").classList.remove("open"); }
+  function closeProofModal() { document.getElementById("proofModal").classList.remove("open"); }
 
-  function proceedToUPIPayment() {
+  // STEP 1: Launch UPI Payment and save details temporarily
+  function launchUPIPayment() {
     const name = document.getElementById("chkName").value.trim();
     const phone = document.getElementById("chkPhone").value.trim();
     const address = document.getElementById("chkAddress").value.trim();
-    const fileInput = document.getElementById("chkScreenshot");
 
     if(!name || !phone || !address || phone.length !== 10) {
       alert("Please fill in valid name, 10-digit phone number, and address.");
@@ -1027,57 +1037,61 @@
       return p ? `${p["Product Name"]} (${p["Weight / Size"]}) [${p["Flavour"]}] x${i.qty}` : "";
     }).join(", ");
 
-    if (fileInput.files && fileInput.files[0]) {
-      const file = fileInput.files[0];
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const base64Data = e.target.result.split(',')[1];
-        
-        // Send order with screenshot to Google Sheet
-        fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify({
-            action: "saveOrder",
-            name: name,
-            phone: phone,
-            address: address,
-            amount: total,
-            items: orderDetails,
-            fileData: base64Data,
-            fileName: file.name,
-            mimeType: file.type
-          })
-        }).catch(err => console.log(err));
-        
-        triggerUPIAndClose(total, name);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      // Send order without screenshot
+    // Save details temporarily for Step 2
+    tempOrderData = { name, phone, address, total, orderDetails };
+
+    // Trigger UPI Intent
+    const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent("Order by " + name)}`;
+    window.location.href = upiLink;
+
+    // Close checkout and open Step 2 Proof Upload modal immediately
+    closeCheckoutModal();
+    document.getElementById("proofModal").classList.add("open");
+  }
+
+  // STEP 2: Finalize order with uploaded screenshot
+  function submitFinalOrder() {
+    if (!tempOrderData) {
+      alert("Session expired. Please restart checkout.");
+      closeProofModal();
+      return;
+    }
+
+    const fileInput = document.getElementById("chkScreenshot");
+    if (!fileInput.files || !fileInput.files[0]) {
+      alert("Please upload your payment screenshot to confirm the order!");
+      return;
+    }
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const base64Data = e.target.result.split(',')[1];
+      
+      // Send final order with screenshot to Google Sheet
       fetch(API_URL, {
         method: "POST",
         body: JSON.stringify({
           action: "saveOrder",
-          name: name,
-          phone: phone,
-          address: address,
-          amount: total,
-          items: orderDetails,
-          fileData: "",
-          fileName: "",
-          mimeType: ""
+          name: tempOrderData.name,
+          phone: tempOrderData.phone,
+          address: tempOrderData.address,
+          amount: tempOrderData.total,
+          items: tempOrderData.orderDetails,
+          fileData: base64Data,
+          fileName: file.name,
+          mimeType: file.type
         })
       }).catch(err => console.log(err));
       
-      triggerUPIAndClose(total, name);
-    }
-  }
-
-  function triggerUPIAndClose(total, name) {
-    const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent("Order by " + name)}`;
-    window.location.href = upiLink;
-    alert("Order recorded & Redirecting to UPI app!");
-    closeCheckoutModal();
+      alert("Order & Payment Proof successfully submitted! We will verify and ship your order soon.");
+      cart = [];
+      syncCart();
+      renderCartBadge();
+      closeProofModal();
+      tempOrderData = null;
+    };
+    reader.readAsDataURL(file);
   }
 
   function renderWishlistDrawer() {
@@ -1111,7 +1125,7 @@
 
   document.querySelectorAll(".reveal, .reveal-stagger").forEach(el => revealObserver.observe(el));
 
-  ["cartDrawer", "wishlistDrawer", "loginModal", "checkoutModal", "productModal", "brandModal"].forEach(id => {
+  ["cartDrawer", "wishlistDrawer", "loginModal", "checkoutModal", "proofModal", "productModal", "brandModal"].forEach(id => {
     const el = document.getElementById(id);
     if(el) {
       el.addEventListener("click", (e) => {
