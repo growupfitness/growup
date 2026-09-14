@@ -157,7 +157,7 @@
   .drawer-footer{margin-top:20px;padding-top:16px;border-top:1px solid var(--border-color);}
   .drawer-total{display:flex;justify-content:space-between;font-size:18px;font-weight:800;margin-bottom:16px;}
 
-  /* CHECKOUT MODAL FORM */
+  /* CHECKOUT FORM MODAL */
   .checkout-form input, .checkout-form textarea{
     width:100%;padding:12px 14px;margin-bottom:12px;
     background:var(--iron);border:1px solid var(--border-color);
@@ -463,16 +463,20 @@
   </div>
 </div>
 
-<!-- CHECKOUT FORM MODAL -->
+<!-- CHECKOUT FORM MODAL WITH SCREENSHOT UPLOAD -->
 <div class="modal-overlay" id="checkoutModal">
   <div class="modal-box login-box checkout-form" style="display:block; max-width:440px;">
     <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
     <h2>Delivery Details</h2>
-    <p class="sub-text">Enter your shipping address for direct order placement.</p>
+    <p class="sub-text">Enter shipping address &amp; payment proof screenshot.</p>
     <input type="text" id="chkName" placeholder="Full Name">
     <input type="tel" id="chkPhone" placeholder="Phone Number" maxlength="10">
     <textarea id="chkAddress" placeholder="Complete Shipping Address (House No, Street, City, Pincode)"></textarea>
-    <button class="btn-primary" onclick="proceedToUPIPayment()" style="width:100%; margin-top:10px;">Proceed to Pay via UPI</button>
+    
+    <label style="font-size:12px; color:var(--steel); display:block; margin-bottom:6px; font-weight:600;">Payment Screenshot (Proof):</label>
+    <input type="file" id="chkScreenshot" accept="image/*" style="padding:8px; margin-bottom:12px; color:var(--chalk); background:var(--iron); border:1px solid var(--border-color); border-radius:var(--radius); width:100%;">
+
+    <button class="btn-primary" onclick="proceedToUPIPayment()" style="width:100%; margin-top:10px;">Proceed to Pay via UPI &amp; Order</button>
   </div>
 </div>
 
@@ -1005,6 +1009,7 @@
     const name = document.getElementById("chkName").value.trim();
     const phone = document.getElementById("chkPhone").value.trim();
     const address = document.getElementById("chkAddress").value.trim();
+    const fileInput = document.getElementById("chkScreenshot");
 
     if(!name || !phone || !address || phone.length !== 10) {
       alert("Please fill in valid name, 10-digit phone number, and address.");
@@ -1017,18 +1022,61 @@
       if(p) total += (Number(p["Selling Price"]) || 0) * item.qty;
     });
 
-    const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent("Order by " + name)}`;
-    window.location.href = upiLink;
-
     const orderDetails = cart.map(i => {
       const p = allProducts.find(pr => (pr["Product ID"] || pr["Product Name"]) === i.id);
       return p ? `${p["Product Name"]} (${p["Weight / Size"]}) [${p["Flavour"]}] x${i.qty}` : "";
     }).join(", ");
 
-    fetch(`${API_URL}?action=saveOrder&name=${encodeURIComponent(name)}&phone=${phone}&address=${encodeURIComponent(address)}&amount=${total}&items=${encodeURIComponent(orderDetails)}`)
-    .catch(e => console.log(e));
+    if (fileInput.files && fileInput.files[0]) {
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64Data = e.target.result.split(',')[1];
+        
+        // Send order with screenshot to Google Sheet
+        fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "saveOrder",
+            name: name,
+            phone: phone,
+            address: address,
+            amount: total,
+            items: orderDetails,
+            fileData: base64Data,
+            fileName: file.name,
+            mimeType: file.type
+          })
+        }).catch(err => console.log(err));
+        
+        triggerUPIAndClose(total, name);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      // Send order without screenshot
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "saveOrder",
+          name: name,
+          phone: phone,
+          address: address,
+          amount: total,
+          items: orderDetails,
+          fileData: "",
+          fileName: "",
+          mimeType: ""
+        })
+      }).catch(err => console.log(err));
+      
+      triggerUPIAndClose(total, name);
+    }
+  }
 
-    alert("Redirecting to UPI payment app... Once paid, your order will be recorded!");
+  function triggerUPIAndClose(total, name) {
+    const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent("Order by " + name)}`;
+    window.location.href = upiLink;
+    alert("Order recorded & Redirecting to UPI app!");
     closeCheckoutModal();
   }
 
