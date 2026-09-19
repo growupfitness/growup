@@ -1046,7 +1046,7 @@
     document.getElementById("proofModal").classList.add("open");
   }
 
-  // STEP 2: Finalize order via GET request (Bulletproof)
+  // STEP 2: Finalize order and upload screenshot to Google Drive via POST
   function submitFinalOrder() {
     if (!tempOrderData) {
       alert("Session expired. Please restart checkout.");
@@ -1060,28 +1060,42 @@
       return;
     }
 
-    // For simplicity and instant sheet update, we pass file name or status
-    const fileName = fileInput.files[0].name;
-    const fileUrlParam = encodeURIComponent("Screenshot Attached (" + fileName + ")");
-
-    const targetUrl = `${API_URL}?action=saveOrder&name=${encodeURIComponent(tempOrderData.name)}&phone=${tempOrderData.phone}&address=${encodeURIComponent(tempOrderData.address)}&amount=${tempOrderData.total}&items=${encodeURIComponent(tempOrderData.orderDetails)}&fileUrl=${fileUrlParam}`;
-
-    fetch(targetUrl)
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const base64Data = e.target.result.split(',')[1];
+      
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "saveOrder",
+          name: tempOrderData.name,
+          phone: tempOrderData.phone,
+          address: tempOrderData.address,
+          amount: tempOrderData.total,
+          items: tempOrderData.orderDetails,
+          fileData: base64Data,
+          fileName: file.name,
+          mimeType: file.type
+        })
+      })
       .then(res => res.json())
       .then(res => {
         if(res.success) {
-          alert("Order & Payment Proof successfully submitted! We will verify and ship your order soon.");
+          alert("Order & Payment Proof successfully submitted! Drive link generated.");
           cart = [];
           syncCart();
           renderCartBadge();
         } else {
-          alert("Order save karne me thodi problem aayi, kripya dobara try karein.");
+          alert("Error saving order: " + (res.error || "Unknown"));
         }
       })
       .catch(err => {
         console.error(err);
         alert("Order submitted successfully!");
       });
+    };
+    reader.readAsDataURL(file);
 
     closeProofModal();
     tempOrderData = null;
