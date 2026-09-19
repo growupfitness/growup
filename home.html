@@ -786,7 +786,7 @@
       <div class="modal-price" style="margin-top:16px;">
         ${hasDiscount ? `<span class="modal-mrp">₹${mrp}</span>` : ""}₹${sellingPrice}
       </div>
-      ${hasDiscount ? `<div class="save-tag">${savePct}% OFF — you save ₹${mrp - sellingPrice}</div>` : "<div style='margin-bottom:24px;'></div>"}
+      ${hasDiscount ? `<div class="save-tag">${savePct}\% OFF — you save ₹${mrp - sellingPrice}</div>` : "<div style='margin-bottom:24px;'></div>"}
       <div class="modal-actions">
         <button class="btn-primary" onclick="addToCart('${pid}'); closeModal();">Add to Cart</button>
         <button class="btn-ghost" onclick="toggleWishlist('${pid}')">${wishlist.includes(pid) ? '♥ Wishlisted' : '♡ Wishlist'}</button>
@@ -1032,12 +1032,7 @@
       if(p) total += (Number(p["Selling Price"]) || 0) * item.qty;
     });
 
-    const orderDetails = cart.map(i => {
-      const p = allProducts.find(pr => (pr["Product ID"] || pr["Product Name"]) === i.id);
-      return p ? `${p["Product Name"]} (${p["Weight / Size"]}) [${p["Flavour"]}] x${i.qty}` : "";
-    }).join(", ");
-
-    tempOrderData = { name, phone, address, total, orderDetails };
+    tempOrderData = { name, phone, address, total };
 
     const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent("Order by " + name)}`;
     window.location.href = upiLink;
@@ -1046,8 +1041,8 @@
     document.getElementById("proofModal").classList.add("open");
   }
 
-  // STEP 2: Finalize order via GET request with file name
-  function submitFinalOrder() {
+  // STEP 2: Finalize order - Sending each cart item in separate rows
+  async function submitFinalOrder() {
     if (!tempOrderData) {
       alert("Session expired. Please restart checkout.");
       closeProofModal();
@@ -1060,25 +1055,27 @@
       fileName = fileInput.files[0].name;
     }
 
-    const targetUrl = `${API_URL}?action=saveOrder&name=${encodeURIComponent(tempOrderData.name)}&phone=${tempOrderData.phone}&address=${encodeURIComponent(tempOrderData.address)}&amount=${tempOrderData.total}&items=${encodeURIComponent(tempOrderData.orderDetails)}&fileName=${encodeURIComponent(fileName)}`;
+    for (let i = 0; i < cart.length; i++) {
+      const item = cart[i];
+      const p = allProducts.find(pr => (pr["Product ID"] || pr["Product Name"]) === item.id);
+      if (!p) continue;
 
-    fetch(targetUrl)
-      .then(res => res.json())
-      .then(res => {
-        if(res.success) {
-          alert("Order & Payment Proof successfully submitted!");
-          cart = [];
-          syncCart();
-          renderCartBadge();
-        } else {
-          alert("Order save karne me error aayi.");
-        }
-      })
-      .catch(err => {
+      const singleItemName = `${p["Product Name"]} (${p["Weight / Size"] || ""}) [${p["Flavour"] || ""}] x${item.qty}`;
+      const rowAmount = (i === 0) ? tempOrderData.total : "";
+
+      const targetUrl = `${API_URL}?action=saveOrder&name=${encodeURIComponent(tempOrderData.name)}&phone=${tempOrderData.phone}&address=${encodeURIComponent(tempOrderData.address)}&amount=${rowAmount}&items=${encodeURIComponent(singleItemName)}&fileName=${encodeURIComponent(fileName)}`;
+
+      try {
+        await fetch(targetUrl);
+      } catch (err) {
         console.error(err);
-        alert("Order submitted successfully!");
-      });
+      }
+    }
 
+    alert("Order & Payment Proof successfully submitted!");
+    cart = [];
+    syncCart();
+    renderCartBadge();
     closeProofModal();
     tempOrderData = null;
   }
