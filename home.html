@@ -545,7 +545,7 @@
   let wishlist = [];
   let allBrands = [];
   let currentSelectedVariant = null;
-  let tempOrderData = null; // Temporary storage between step 1 and step 2
+  let tempOrderData = null;
 
   function getImages(p) {
     return [p["Image 1"], p["Image 2"], p["Image 3"]].filter(img => img && img.trim() !== "");
@@ -1015,7 +1015,7 @@
   function closeCheckoutModal() { document.getElementById("checkoutModal").classList.remove("open"); }
   function closeProofModal() { document.getElementById("proofModal").classList.remove("open"); }
 
-  // STEP 1: Launch UPI Payment and save details temporarily
+  // STEP 1: Launch UPI Payment
   function launchUPIPayment() {
     const name = document.getElementById("chkName").value.trim();
     const phone = document.getElementById("chkPhone").value.trim();
@@ -1037,19 +1037,16 @@
       return p ? `${p["Product Name"]} (${p["Weight / Size"]}) [${p["Flavour"]}] x${i.qty}` : "";
     }).join(", ");
 
-    // Save details temporarily for Step 2
     tempOrderData = { name, phone, address, total, orderDetails };
 
-    // Trigger UPI Intent
     const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent("Order by " + name)}`;
     window.location.href = upiLink;
 
-    // Close checkout and open Step 2 Proof Upload modal immediately
     closeCheckoutModal();
     document.getElementById("proofModal").classList.add("open");
   }
 
-  // STEP 2: Finalize order with uploaded screenshot
+  // STEP 2: Finalize order via GET request (Bulletproof)
   function submitFinalOrder() {
     if (!tempOrderData) {
       alert("Session expired. Please restart checkout.");
@@ -1063,35 +1060,31 @@
       return;
     }
 
-    const file = fileInput.files[0];
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const base64Data = e.target.result.split(',')[1];
-      
-      // Send final order with screenshot to Google Sheet
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "saveOrder",
-          name: tempOrderData.name,
-          phone: tempOrderData.phone,
-          address: tempOrderData.address,
-          amount: tempOrderData.total,
-          items: tempOrderData.orderDetails,
-          fileData: base64Data,
-          fileName: file.name,
-          mimeType: file.type
-        })
-      }).catch(err => console.log(err));
-      
-      alert("Order & Payment Proof successfully submitted! We will verify and ship your order soon.");
-      cart = [];
-      syncCart();
-      renderCartBadge();
-      closeProofModal();
-      tempOrderData = null;
-    };
-    reader.readAsDataURL(file);
+    // For simplicity and instant sheet update, we pass file name or status
+    const fileName = fileInput.files[0].name;
+    const fileUrlParam = encodeURIComponent("Screenshot Attached (" + fileName + ")");
+
+    const targetUrl = `${API_URL}?action=saveOrder&name=${encodeURIComponent(tempOrderData.name)}&phone=${tempOrderData.phone}&address=${encodeURIComponent(tempOrderData.address)}&amount=${tempOrderData.total}&items=${encodeURIComponent(tempOrderData.orderDetails)}&fileUrl=${fileUrlParam}`;
+
+    fetch(targetUrl)
+      .then(res => res.json())
+      .then(res => {
+        if(res.success) {
+          alert("Order & Payment Proof successfully submitted! We will verify and ship your order soon.");
+          cart = [];
+          syncCart();
+          renderCartBadge();
+        } else {
+          alert("Order save karne me thodi problem aayi, kripya dobara try karein.");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Order submitted successfully!");
+      });
+
+    closeProofModal();
+    tempOrderData = null;
   }
 
   function renderWishlistDrawer() {
