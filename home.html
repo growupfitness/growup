@@ -481,7 +481,7 @@
   <div class="modal-box login-box checkout-form" style="display:block; max-width:440px;">
     <button class="modal-close" onclick="closeProofModal()">✕</button>
     <h2 style="color:var(--ember);">Step 2: Upload Payment Proof</h2>
-    <p class="sub-text">Payment done? Please upload your payment screenshot below so we can confirm your order immediately!</p>
+    <p class="sub-text">Payment done? Please select your payment screenshot below so we can record the file name!</p>
     
     <label style="font-size:12px; color:var(--chalk); display:block; margin-bottom:6px; font-weight:700;">Select Payment Screenshot (Required):</label>
     <input type="file" id="chkScreenshot" accept="image/*" style="padding:8px; margin-bottom:16px; color:var(--chalk); background:var(--iron); border:1px solid var(--border-color); border-radius:var(--radius); width:100%;">
@@ -1046,7 +1046,7 @@
     document.getElementById("proofModal").classList.add("open");
   }
 
-  // STEP 2: Finalize order and upload screenshot to Google Drive via POST
+  // STEP 2: Finalize order via GET request with file name
   function submitFinalOrder() {
     if (!tempOrderData) {
       alert("Session expired. Please restart checkout.");
@@ -1055,47 +1055,29 @@
     }
 
     const fileInput = document.getElementById("chkScreenshot");
-    if (!fileInput.files || !fileInput.files[0]) {
-      alert("Please upload your payment screenshot to confirm the order!");
-      return;
+    let fileName = "No Screenshot";
+    if (fileInput.files && fileInput.files[0]) {
+      fileName = fileInput.files[0].name;
     }
 
-    const file = fileInput.files[0];
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const base64Data = e.target.result.split(',')[1];
-      
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "saveOrder",
-          name: tempOrderData.name,
-          phone: tempOrderData.phone,
-          address: tempOrderData.address,
-          amount: tempOrderData.total,
-          items: tempOrderData.orderDetails,
-          fileData: base64Data,
-          fileName: file.name,
-          mimeType: file.type
-        })
-      })
+    const targetUrl = `${API_URL}?action=saveOrder&name=${encodeURIComponent(tempOrderData.name)}&phone=${tempOrderData.phone}&address=${encodeURIComponent(tempOrderData.address)}&amount=${tempOrderData.total}&items=${encodeURIComponent(tempOrderData.orderDetails)}&fileName=${encodeURIComponent(fileName)}`;
+
+    fetch(targetUrl)
       .then(res => res.json())
       .then(res => {
         if(res.success) {
-          alert("Order & Payment Proof successfully submitted! Drive link generated.");
+          alert("Order & Payment Proof successfully submitted!");
           cart = [];
           syncCart();
           renderCartBadge();
         } else {
-          alert("Error saving order: " + (res.error || "Unknown"));
+          alert("Order save karne me error aayi.");
         }
       })
       .catch(err => {
         console.error(err);
         alert("Order submitted successfully!");
       });
-    };
-    reader.readAsDataURL(file);
 
     closeProofModal();
     tempOrderData = null;
