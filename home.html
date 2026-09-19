@@ -166,40 +166,41 @@
   .checkout-form textarea{resize:none;height:80px;}
   .checkout-form input:focus, .checkout-form textarea:focus{outline:none;border-color:var(--ember);}
 
-  /* PREMIUM STEP 2 MODAL STYLING */
-  .proof-card {
-    background: var(--iron-light);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 32px 24px;
+  /* ULTRA MODERN GLASSMORPHIC STEP 2 MODAL */
+  .proof-card-modern {
+    background: linear-gradient(135deg, #181b22 0%, #0d0f12 100%);
+    border: 1px solid rgba(37, 211, 102, 0.3);
+    border-radius: 16px;
+    padding: 36px 28px;
     text-align: center;
     max-width: 420px;
     width: 92vw;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 30px rgba(37, 211, 102, 0.1);
     position: relative;
+    color: #ffffff;
   }
-  .proof-icon-box {
-    width: 64px; height: 64px; background: rgba(37, 211, 102, 0.1); color: #25D366;
-    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px;
-    margin: 0 auto 18px;
+  .proof-icon-glow {
+    width: 72px; height: 72px; background: rgba(37, 211, 102, 0.15); color: #25D366;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 34px;
+    margin: 0 auto 20px; box-shadow: 0 0 20px rgba(37, 211, 102, 0.3);
   }
-  .proof-card h2 {
-    font-size: 24px; font-family: 'Inter', sans-serif; font-weight: 700; color: var(--chalk); margin-bottom: 8px; text-transform: none;
+  .proof-card-modern h2 {
+    font-size: 26px; font-family: 'Inter', sans-serif; font-weight: 800; color: #ffffff; margin-bottom: 8px; text-transform: none;
   }
-  .proof-card p {
-    font-size: 14px; color: var(--steel); line-height: 1.5; margin-bottom: 24px;
+  .proof-card-modern p {
+    font-size: 14px; color: #94a3b8; line-height: 1.6; margin-bottom: 28px;
   }
-  .btn-whatsapp-pro {
-    background: #25D366; color: #ffffff; padding: 14px 20px; font-weight: 700; font-size: 14px;
-    border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    gap: 10px; width: 100%; text-decoration: none; box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35); transition: transform 0.2s, background 0.2s;
+  .btn-whatsapp-ultra {
+    background: #25D366; color: #ffffff; padding: 15px 20px; font-weight: 700; font-size: 15px;
+    border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    gap: 10px; width: 100%; text-decoration: none; box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4); transition: transform 0.2s, background 0.2s;
   }
-  .btn-whatsapp-pro:hover { background: #20ba5a; transform: translateY(-1px); }
-  .btn-close-pro {
-    background: transparent; color: var(--steel); border: none; font-size: 13px; font-weight: 600;
-    cursor: pointer; margin-top: 16px; padding: 6px; text-decoration: underline;
+  .btn-whatsapp-ultra:hover { background: #20ba5a; transform: translateY(-2px); box-shadow: 0 12px 30px rgba(37, 211, 102, 0.6); }
+  .btn-close-ultra {
+    background: transparent; color: #94a3b8; border: none; font-size: 13px; font-weight: 600;
+    cursor: pointer; margin-top: 18px; padding: 6px; text-decoration: underline; transition: color 0.2s;
   }
-  .btn-close-pro:hover { color: var(--chalk); }
+  .btn-close-ultra:hover { color: #ffffff; }
 
   /* BRAND CARD ITEM */
   .brand-card-item {
@@ -498,7 +499,7 @@
   </div>
 </div>
 
-<!-- WISHLIST DRAWER (FIXED) -->
+<!-- WISHLIST DRAWER -->
 <div class="modal-overlay" id="wishlistDrawer">
   <div class="modal-box drawer-box">
     <button class="modal-close" onclick="closeDrawer('wishlistDrawer')">✕</button>
@@ -520,20 +521,20 @@
   </div>
 </div>
 
-<!-- STEP 2: PREMIUM WHATSAPP PROOF MODAL -->
+<!-- STEP 2: ULTRA MODERN DARK GLASSMORPHISM WHATSAPP MODAL -->
 <div class="modal-overlay" id="proofModal">
-  <div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%;">
-    <div class="proof-card">
-      <button class="modal-close" onclick="closeProofModal()" style="top:12px; right:12px;">✕</button>
-      <div class="proof-icon-box">💬</div>
+  <div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; padding:16px;">
+    <div class="proof-card-modern">
+      <button class="modal-close" onclick="closeProofModal()" style="top:14px; right:14px; background:rgba(255,255,255,0.1); color:#fff;">✕</button>
+      <div class="proof-icon-glow">💬</div>
       <h2>Step 2: Send Payment Proof</h2>
-      <p>Payment successful? Click the button below to send your payment screenshot directly on WhatsApp to confirm your order instantly!</p>
+      <p>Payment successful? Tap below to send your payment screenshot directly on WhatsApp to confirm your order instantly!</p>
       
-      <a href="#" id="whatsappProofBtn" target="_blank" class="btn-whatsapp-pro">
+      <a href="#" id="whatsappProofBtn" target="_blank" class="btn-whatsapp-ultra">
         <span>🟢</span> Send Screenshot on WhatsApp
       </a>
 
-      <button class="btn-close-pro" onclick="finishOrderProcess()">Done / Close</button>
+      <button class="btn-close-ultra" onclick="finishOrderProcess()">Done / Close</button>
     </div>
   </div>
 </div>
@@ -948,7 +949,7 @@
       }
     } else {
       document.getElementById("lpTitle").innerText = "Last Purchase";
-      document.getElementById("lpDesc").innerText = "Login with your mobile number to view your previous order and re-order instantly.";
+      document.getElementById("lpDesc").innerText = "No previous orders found yet.";
       lpCard.onclick = null;
     }
 
@@ -1068,7 +1069,6 @@
     `;
   }
 
-  // FIXED WISHLIST DRAWER RENDERING
   function renderWishlistDrawer() {
     const wrap = document.getElementById("wishlistItemsWrap");
     if (wishlist.length === 0) { wrap.innerHTML = `<p class="drawer-empty">Your wishlist is empty.</p>`; return; }
@@ -1100,7 +1100,6 @@
   function closeCheckoutModal() { document.getElementById("checkoutModal").classList.remove("open"); }
   function closeProofModal() { document.getElementById("proofModal").classList.remove("open"); }
 
-  // STEP 1: Launch UPI Payment & Save Order to Sheet immediately
   async function launchUPIPayment() {
     const name = document.getElementById("chkName").value.trim();
     const phone = document.getElementById("chkPhone").value.trim();
@@ -1119,7 +1118,6 @@
 
     tempOrderData = { name, phone, address, total };
 
-    // Send order items to sheet in separate rows
     for (let i = 0; i < cart.length; i++) {
       const item = cart[i];
       const p = allProducts.find(pr => (pr["Product ID"] || pr["Product Name"]) === item.id);
@@ -1137,11 +1135,9 @@
       }
     }
 
-    // Set WhatsApp link with pre-filled message
     const waText = encodeURIComponent(`Hi Grow Up Fitness, I have placed an order for ₹${total}.\nName: ${name}\nPhone: ${phone}\nHere is my payment screenshot:`);
     document.getElementById("whatsappProofBtn").href = `https://wa.me/919571214461?text=${waText}`;
 
-    // Trigger UPI Payment App
     const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent("Order by " + name)}`;
     window.location.href = upiLink;
 
@@ -1178,7 +1174,6 @@
     }
   });
 
-  // Initialize theme on page load
   initTheme();
   loadProducts();
 </script>
