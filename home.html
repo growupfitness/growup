@@ -8,18 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --iron:#141414;
-    --iron-light:#1E1E1E;
-    --steel:#8B8B88;
-    --chalk:#F5F5F3;
-    --ember:#00A0E3;
-    --ember-dim:#075D82;
-    --plate-blue:#2B2A29;
-    --border-color: rgba(243,241,233,0.08);
-    --radius:2px;
-  }
-
-  [data-theme="light"] {
     --iron:#f8fafc;
     --iron-light:#ffffff;
     --steel:#64748b;
@@ -28,6 +16,18 @@
     --ember-dim:#0056b3;
     --plate-blue:#e2e8f0;
     --border-color: rgba(15, 23, 42, 0.08);
+    --radius:2px;
+  }
+
+  [data-theme="dark"] {
+    --iron:#141414;
+    --iron-light:#1E1E1E;
+    --steel:#8B8B88;
+    --chalk:#F5F5F3;
+    --ember:#00A0E3;
+    --ember-dim:#075D82;
+    --plate-blue:#2B2A29;
+    --border-color: rgba(243,241,233,0.08);
   }
 
   *{margin:0;padding:0;box-sizing:border-box; transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;}
@@ -101,7 +101,7 @@
     background:var(--iron-light);border:1px solid var(--ember);
     padding:16px 20px;border-radius:var(--radius);
     max-width:280px;transform:translateX(120%);transition:transform .35s ease;
-    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+    box-shadow:0 10px 30px rgba(0,0,0,0.15);
   }
   .welcome-toast.show{transform:translateX(0);}
   .welcome-toast .title{font-family:'Bebas Neue';font-size:20px;color:var(--ember);letter-spacing:1px;}
@@ -127,7 +127,7 @@
   }
   .icon-btn:hover{border-color:var(--ember);color:var(--ember);}
   .badge{
-    position:absolute;top:-6px;right:-6px;background:var(--ember);color:var(--iron);
+    position:absolute;top:-6px;right:-6px;background:var(--ember);color:#fff;
     font-size:10px;font-weight:800;width:18px;height:18px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
   }
@@ -138,7 +138,7 @@
   .card-heart.wishlisted{color:var(--ember);}
 
   .badge-discount {
-    position: absolute; top: 10px; left: 10px; background: var(--ember); color: var(--iron);
+    position: absolute; top: 10px; left: 10px; background: var(--ember); color: #fff;
     font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 20px; z-index: 5; text-transform: uppercase;
   }
 
@@ -166,9 +166,44 @@
   .checkout-form textarea{resize:none;height:80px;}
   .checkout-form input:focus, .checkout-form textarea:focus{outline:none;border-color:var(--ember);}
 
+  /* PREMIUM STEP 2 MODAL STYLING */
+  .proof-card {
+    background: var(--iron-light);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 32px 24px;
+    text-align: center;
+    max-width: 420px;
+    width: 92vw;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  .proof-icon-box {
+    width: 64px; height: 64px; background: rgba(37, 211, 102, 0.1); color: #25D366;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px;
+    margin: 0 auto 18px;
+  }
+  .proof-card h2 {
+    font-size: 24px; font-family: 'Inter', sans-serif; font-weight: 700; color: var(--chalk); margin-bottom: 8px; text-transform: none;
+  }
+  .proof-card p {
+    font-size: 14px; color: var(--steel); line-height: 1.5; margin-bottom: 24px;
+  }
+  .btn-whatsapp-pro {
+    background: #25D366; color: #ffffff; padding: 14px 20px; font-weight: 700; font-size: 14px;
+    border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    gap: 10px; width: 100%; text-decoration: none; box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35); transition: transform 0.2s, background 0.2s;
+  }
+  .btn-whatsapp-pro:hover { background: #20ba5a; transform: translateY(-1px); }
+  .btn-close-pro {
+    background: transparent; color: var(--steel); border: none; font-size: 13px; font-weight: 600;
+    cursor: pointer; margin-top: 16px; padding: 6px; text-decoration: underline;
+  }
+  .btn-close-pro:hover { color: var(--chalk); }
+
   /* BRAND CARD ITEM */
   .brand-card-item {
-    background: #141414;
+    background: var(--iron-light);
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
     padding: 20px;
@@ -191,11 +226,11 @@
   }
   .hero-video-overlay{
     position:absolute;top:0;left:0;width:100%;height:100%;
-    background:linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(20,20,20,0.95) 100%);
+    background:linear-gradient(180deg, rgba(0,0,0,0.3) 0%, var(--iron) 100%);
     z-index:2;
   }
   .hero-video-content{position:relative;z-index:3;padding:0 20px;max-width:700px;}
-  .hero-video-content h1{font-size:68px;margin-bottom:10px;color:#fff;}
+  .hero-video-content h1{font-size:68px;margin-bottom:10px;color:var(--chalk);}
   .hero-video-content p{color:var(--steel);font-size:16px;margin-bottom:28px;}
 
   .section{padding:90px 24px;max-width:1140px;margin:0 auto;}
@@ -220,7 +255,7 @@
 
   .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
   .prod-card{background:var(--iron-light);border:1px solid var(--border-color);border-radius:var(--radius);overflow:hidden;cursor:pointer;position:relative;transition:border-color .25s ease, transform .25s ease, box-shadow .25s ease;}
-  .prod-card:hover{border-color:var(--ember);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,0.4);}
+  .prod-card:hover{border-color:var(--ember);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,0.1);}
   .prod-img{height:200px;position:relative;background:var(--iron);overflow:hidden;}
   .prod-img .slide-track{display:flex;height:100%;transition:transform .3s ease;}
   .prod-img .slide-track img{width:100%;height:200px;object-fit:contain;background:var(--iron);flex-shrink:0;padding:10px;transition:transform .4s ease;}
@@ -238,7 +273,7 @@
   .prod-price{display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
   .prod-price .price{font-weight:800;font-size:16px;color:var(--chalk);}
   .prod-price button{background:none;border:1px solid var(--ember);color:var(--ember);padding:6px 14px;font-size:12px;font-weight:700;border-radius:var(--radius);cursor:pointer;}
-  .prod-price button:hover{background:var(--ember);color:var(--iron);}
+  .prod-price button:hover{background:var(--ember);color:#fff;}
   .prod-empty{color:var(--steel);font-size:14px;grid-column:1/-1;text-align:center;padding:40px 0;}
 
   /* PRODUCT DETAIL MODAL */
@@ -274,16 +309,13 @@
   .variant-chip{background:var(--iron);border:1px solid var(--border-color);color:var(--chalk);padding:8px 14px;font-size:13px;border-radius:var(--radius);cursor:pointer;font-weight:500;}
   .variant-chip.active{border-color:var(--ember);color:var(--ember);background:rgba(0,160,227,0.08);}
 
-  .btn-primary{background:var(--ember);color:var(--iron);padding:14px 24px;font-weight:800;font-size:13px;border-radius:var(--radius);border:none;cursor:pointer;position:relative;overflow:hidden;}
+  .btn-primary{background:var(--ember);color:#fff;padding:14px 24px;font-weight:800;font-size:13px;border-radius:var(--radius);border:none;cursor:pointer;position:relative;overflow:hidden;}
   .btn-primary::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.25);transform:translateX(-100%);transition:transform .5s ease;}
   .btn-primary:hover::after{transform:translateX(0);}
   .btn-primary:active{transform:scale(0.97);}
 
-  .btn-ghost{border:1px solid rgba(243,241,233,0.3);color:var(--chalk);padding:14px 24px;font-weight:700;font-size:13px;border-radius:var(--radius);background:none;cursor:pointer;}
-  .btn-ghost:hover{background:rgba(243,241,233,0.06);border-color:var(--chalk);}
-
-  .btn-wa{background:#25D366;color:#fff;padding:14px 24px;font-weight:800;font-size:14px;border-radius:var(--radius);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;text-align:center;width:100%;text-decoration:none;margin-top:10px;}
-  .btn-wa:hover{background:#20ba5a;}
+  .btn-ghost{border:1px solid rgba(15,23,42,0.2);color:var(--chalk);padding:14px 24px;font-weight:700;font-size:13px;border-radius:var(--radius);background:none;cursor:pointer;}
+  .btn-ghost:hover{background:rgba(15,23,42,0.04);border-color:var(--chalk);}
 
   .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:200;align-items:center;justify-content:center;}
   .lightbox.open{display:flex;}
@@ -304,7 +336,7 @@
   footer a{display:block;color:var(--chalk);opacity:0.8;font-size:14px;margin-bottom:10px;}
   .footer-bottom{max-width:1140px;margin:40px auto 0;padding-top:20px;border-top:1px solid var(--border-color);color:var(--steel);font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
 
-  .wa-float{position:fixed;bottom:24px;right:24px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 20px rgba(0,0,0,0.4);z-index:60;}
+  .wa-float{position:fixed;bottom:24px;right:24px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 20px rgba(0,0,0,0.2);z-index:60;}
 
   /* SCROLL REVEAL ANIMATIONS */
   .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease, transform .7s ease;}
@@ -466,6 +498,15 @@
   </div>
 </div>
 
+<!-- WISHLIST DRAWER (FIXED) -->
+<div class="modal-overlay" id="wishlistDrawer">
+  <div class="modal-box drawer-box">
+    <button class="modal-close" onclick="closeDrawer('wishlistDrawer')">✕</button>
+    <h2>Your Wishlist</h2>
+    <div id="wishlistItemsWrap"></div>
+  </div>
+</div>
+
 <!-- STEP 1: CHECKOUT FORM MODAL -->
 <div class="modal-overlay" id="checkoutModal">
   <div class="modal-box login-box checkout-form" style="display:block; max-width:440px;">
@@ -479,19 +520,21 @@
   </div>
 </div>
 
-<!-- STEP 2: WHATSAPP PROOF MODAL -->
+<!-- STEP 2: PREMIUM WHATSAPP PROOF MODAL -->
 <div class="modal-overlay" id="proofModal">
-  <div class="modal-box login-box checkout-form" style="display:block; max-width:440px; text-align:center;">
-    <button class="modal-close" onclick="closeProofModal()">✕</button>
-    <div style="font-size:42px; margin-bottom:10px;">💬</div>
-    <h2 style="color:var(--ember); margin-bottom:8px;">Step 2: Send Payment Proof</h2>
-    <p class="sub-text" style="margin-bottom:20px;">Payment successful? Click the button below to send your payment screenshot directly on WhatsApp to confirm your order instantly!</p>
-    
-    <a href="#" id="whatsappProofBtn" target="_blank" class="btn-wa">
-      <span>🟢</span> Send Screenshot on WhatsApp
-    </a>
+  <div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%;">
+    <div class="proof-card">
+      <button class="modal-close" onclick="closeProofModal()" style="top:12px; right:12px;">✕</button>
+      <div class="proof-icon-box">💬</div>
+      <h2>Step 2: Send Payment Proof</h2>
+      <p>Payment successful? Click the button below to send your payment screenshot directly on WhatsApp to confirm your order instantly!</p>
+      
+      <a href="#" id="whatsappProofBtn" target="_blank" class="btn-whatsapp-pro">
+        <span>🟢</span> Send Screenshot on WhatsApp
+      </a>
 
-    <button class="btn-ghost" onclick="finishOrderProcess()" style="width:100%; margin-top:12px; font-size:12px;">Done / Close</button>
+      <button class="btn-close-pro" onclick="finishOrderProcess()">Done / Close</button>
+    </div>
   </div>
 </div>
 
@@ -556,14 +599,30 @@
     return [p["Image 1"], p["Image 2"], p["Image 3"]].filter(img => img && img.trim() !== "");
   }
 
+  // DEFAULT LIGHT MODE LOGIC
+  function initTheme() {
+    const html = document.documentElement;
+    const btn = document.getElementById("themeBtn");
+    const savedTheme = localStorage.getItem("gufTheme") || "light";
+    if (savedTheme === "dark") {
+      html.setAttribute("data-theme", "dark");
+      btn.innerText = "☀️";
+    } else {
+      html.removeAttribute("data-theme");
+      btn.innerText = "🌙";
+    }
+  }
+
   function toggleTheme() {
     const html = document.documentElement;
     const btn = document.getElementById("themeBtn");
-    if (html.getAttribute("data-theme") === "light") {
+    if (html.getAttribute("data-theme") === "dark") {
       html.removeAttribute("data-theme");
+      localStorage.setItem("gufTheme", "light");
       btn.innerText = "🌙";
     } else {
-      html.setAttribute("data-theme", "light");
+      html.setAttribute("data-theme", "dark");
+      localStorage.setItem("gufTheme", "dark");
       btn.innerText = "☀️";
     }
   }
@@ -618,7 +677,7 @@
       brandGrid.innerHTML = allBrands.map(b => `
         <div class="brand-card-item" onclick="filterByBrand('${b["Brand Name"]}')">
           ${b["Logo URL"] ? `<img src="${b["Logo URL"]}" style="width:110px; height:55px; object-fit:contain; margin-bottom:12px; display:block; margin-left:auto; margin-right:auto;" onerror="this.style.display='none'">` : ''}
-          <h4 style="font-size:15px; font-family:'Inter', sans-serif; font-weight:700; color:#ffffff;">${b["Brand Name"]}</h4>
+          <h4 style="font-size:15px; font-family:'Inter', sans-serif; font-weight:700; color:var(--chalk);">${b["Brand Name"]}</h4>
         </div>
       `).join("");
     } catch(e) {
@@ -889,7 +948,7 @@
       }
     } else {
       document.getElementById("lpTitle").innerText = "Last Purchase";
-      document.getElementById("lpDesc").innerText = "No previous orders found yet.";
+      document.getElementById("lpDesc").innerText = "Login with your mobile number to view your previous order and re-order instantly.";
       lpCard.onclick = null;
     }
 
@@ -1009,6 +1068,27 @@
     `;
   }
 
+  // FIXED WISHLIST DRAWER RENDERING
+  function renderWishlistDrawer() {
+    const wrap = document.getElementById("wishlistItemsWrap");
+    if (wishlist.length === 0) { wrap.innerHTML = `<p class="drawer-empty">Your wishlist is empty.</p>`; return; }
+    wrap.innerHTML = wishlist.map(id => {
+      const p = allProducts.find(pr => (pr["Product ID"] || pr["Product Name"]) === id);
+      if (!p) return "";
+      return `
+        <div class="drawer-item">
+          <img src="${p["Image 1"] || ""}">
+          <div class="info">
+            <h5>${p["Product Name"]} (${p["Weight / Size"] || ""})</h5>
+            <div class="price">₹${p["Selling Price"]}</div>
+          </div>
+          <button class="btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="addToCart('${id}'); closeDrawer('wishlistDrawer');">Add Cart</button>
+          <span class="drawer-remove" onclick="toggleWishlist('${id}'); renderWishlistDrawer();">Remove</span>
+        </div>
+      `;
+    }).join("");
+  }
+
   function openCheckoutModal() {
     closeDrawer('cartDrawer');
     if(currentUser) {
@@ -1078,26 +1158,6 @@
     alert("Order completed! Thank you for shopping with Grow Up Fitness.");
   }
 
-  function renderWishlistDrawer() {
-    const wrap = document.getElementById("wishlistItemsWrap");
-    if (wishlist.length === 0) { wrap.innerHTML = `<p class="drawer-empty">Your wishlist is empty.</p>`; return; }
-    wrap.innerHTML = wishlist.map(id => {
-      const p = allProducts.find(pr => (pr["Product ID"] || pr["Product Name"]) === id);
-      if (!p) return "";
-      return `
-        <div class="drawer-item">
-          <img src="${p["Image 1"] || ""}">
-          <div class="info">
-            <h5>${p["Product Name"]} (${p["Weight / Size"] || ""})</h5>
-            <div class="price">₹${p["Selling Price"]}</div>
-          </div>
-          <button class="btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="addToCart('${id}')">Add Cart</button>
-          <span class="drawer-remove" onclick="wishlist = wishlist.filter(i=>i !== '${id}'); syncWishlist(); renderWishlistBadge(); renderWishlistDrawer(); renderProductsGrid();">Remove</span>
-        </div>
-      `;
-    }).join("");
-  }
-
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -1118,6 +1178,8 @@
     }
   });
 
+  // Initialize theme on page load
+  initTheme();
   loadProducts();
 </script>
 </body>
