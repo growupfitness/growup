@@ -282,6 +282,9 @@
   .btn-ghost{border:1px solid rgba(243,241,233,0.3);color:var(--chalk);padding:14px 24px;font-weight:700;font-size:13px;border-radius:var(--radius);background:none;cursor:pointer;}
   .btn-ghost:hover{background:rgba(243,241,233,0.06);border-color:var(--chalk);}
 
+  .btn-wa{background:#25D366;color:#fff;padding:14px 24px;font-weight:800;font-size:14px;border-radius:var(--radius);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;text-align:center;width:100%;text-decoration:none;margin-top:10px;}
+  .btn-wa:hover{background:#20ba5a;}
+
   .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:200;align-items:center;justify-content:center;}
   .lightbox.open{display:flex;}
   .lightbox img{max-width:92vw;max-height:92vh;object-fit:contain;}
@@ -476,17 +479,19 @@
   </div>
 </div>
 
-<!-- STEP 2: PAYMENT PROOF UPLOAD MODAL -->
+<!-- STEP 2: WHATSAPP PROOF MODAL -->
 <div class="modal-overlay" id="proofModal">
-  <div class="modal-box login-box checkout-form" style="display:block; max-width:440px;">
+  <div class="modal-box login-box checkout-form" style="display:block; max-width:440px; text-align:center;">
     <button class="modal-close" onclick="closeProofModal()">✕</button>
-    <h2 style="color:var(--ember);">Step 2: Upload Payment Proof</h2>
-    <p class="sub-text">Payment done? Please select your payment screenshot below so we can record the file name!</p>
+    <div style="font-size:42px; margin-bottom:10px;">💬</div>
+    <h2 style="color:var(--ember); margin-bottom:8px;">Step 2: Send Payment Proof</h2>
+    <p class="sub-text" style="margin-bottom:20px;">Payment successful? Click the button below to send your payment screenshot directly on WhatsApp to confirm your order instantly!</p>
     
-    <label style="font-size:12px; color:var(--chalk); display:block; margin-bottom:6px; font-weight:700;">Select Payment Screenshot (Required):</label>
-    <input type="file" id="chkScreenshot" accept="image/*" style="padding:8px; margin-bottom:16px; color:var(--chalk); background:var(--iron); border:1px solid var(--border-color); border-radius:var(--radius); width:100%;">
+    <a href="#" id="whatsappProofBtn" target="_blank" class="btn-wa">
+      <span>🟢</span> Send Screenshot on WhatsApp
+    </a>
 
-    <button class="btn-primary" onclick="submitFinalOrder()" style="width:100%;">Submit Order &amp; Proof</button>
+    <button class="btn-ghost" onclick="finishOrderProcess()" style="width:100%; margin-top:12px; font-size:12px;">Done / Close</button>
   </div>
 </div>
 
@@ -786,7 +791,7 @@
       <div class="modal-price" style="margin-top:16px;">
         ${hasDiscount ? `<span class="modal-mrp">₹${mrp}</span>` : ""}₹${sellingPrice}
       </div>
-      ${hasDiscount ? `<div class="save-tag">${savePct}\% OFF — you save ₹${mrp - sellingPrice}</div>` : "<div style='margin-bottom:24px;'></div>"}
+      ${hasDiscount ? `<div class="save-tag">${savePct}% OFF — you save ₹${mrp - sellingPrice}</div>` : "<div style='margin-bottom:24px;'></div>"}
       <div class="modal-actions">
         <button class="btn-primary" onclick="addToCart('${pid}'); closeModal();">Add to Cart</button>
         <button class="btn-ghost" onclick="toggleWishlist('${pid}')">${wishlist.includes(pid) ? '♥ Wishlisted' : '♡ Wishlist'}</button>
@@ -1015,8 +1020,8 @@
   function closeCheckoutModal() { document.getElementById("checkoutModal").classList.remove("open"); }
   function closeProofModal() { document.getElementById("proofModal").classList.remove("open"); }
 
-  // STEP 1: Launch UPI Payment
-  function launchUPIPayment() {
+  // STEP 1: Launch UPI Payment & Save Order to Sheet immediately
+  async function launchUPIPayment() {
     const name = document.getElementById("chkName").value.trim();
     const phone = document.getElementById("chkPhone").value.trim();
     const address = document.getElementById("chkAddress").value.trim();
@@ -1034,36 +1039,16 @@
 
     tempOrderData = { name, phone, address, total };
 
-    const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent("Order by " + name)}`;
-    window.location.href = upiLink;
-
-    closeCheckoutModal();
-    document.getElementById("proofModal").classList.add("open");
-  }
-
-  // STEP 2: Finalize order - Sending each cart item in separate rows
-  async function submitFinalOrder() {
-    if (!tempOrderData) {
-      alert("Session expired. Please restart checkout.");
-      closeProofModal();
-      return;
-    }
-
-    const fileInput = document.getElementById("chkScreenshot");
-    let fileName = "No Screenshot";
-    if (fileInput.files && fileInput.files[0]) {
-      fileName = fileInput.files[0].name;
-    }
-
+    // Send order items to sheet in separate rows
     for (let i = 0; i < cart.length; i++) {
       const item = cart[i];
       const p = allProducts.find(pr => (pr["Product ID"] || pr["Product Name"]) === item.id);
       if (!p) continue;
 
       const singleItemName = `${p["Product Name"]} (${p["Weight / Size"] || ""}) [${p["Flavour"] || ""}] x${item.qty}`;
-      const rowAmount = (i === 0) ? tempOrderData.total : "";
+      const rowAmount = (i === 0) ? total : "";
 
-      const targetUrl = `${API_URL}?action=saveOrder&name=${encodeURIComponent(tempOrderData.name)}&phone=${tempOrderData.phone}&address=${encodeURIComponent(tempOrderData.address)}&amount=${rowAmount}&items=${encodeURIComponent(singleItemName)}&fileName=${encodeURIComponent(fileName)}`;
+      const targetUrl = `${API_URL}?action=saveOrder&name=${encodeURIComponent(name)}&phone=${phone}&address=${encodeURIComponent(address)}&amount=${rowAmount}&items=${encodeURIComponent(singleItemName)}&fileName=Sent%20via%20WhatsApp`;
 
       try {
         await fetch(targetUrl);
@@ -1072,12 +1057,25 @@
       }
     }
 
-    alert("Order & Payment Proof successfully submitted!");
+    // Set WhatsApp link with pre-filled message
+    const waText = encodeURIComponent(`Hi Grow Up Fitness, I have placed an order for ₹${total}.\nName: ${name}\nPhone: ${phone}\nHere is my payment screenshot:`);
+    document.getElementById("whatsappProofBtn").href = `https://wa.me/919571214461?text=${waText}`;
+
+    // Trigger UPI Payment App
+    const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent("Order by " + name)}`;
+    window.location.href = upiLink;
+
+    closeCheckoutModal();
+    document.getElementById("proofModal").classList.add("open");
+  }
+
+  function finishOrderProcess() {
     cart = [];
     syncCart();
     renderCartBadge();
     closeProofModal();
     tempOrderData = null;
+    alert("Order completed! Thank you for shopping with Grow Up Fitness.");
   }
 
   function renderWishlistDrawer() {
