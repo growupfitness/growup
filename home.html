@@ -142,6 +142,11 @@
     font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 20px; z-index: 5; text-transform: uppercase;
   }
 
+  .badge-outstock {
+    position: absolute; top: 10px; left: 10px; background: #64748b; color: #fff;
+    font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 20px; z-index: 5; text-transform: uppercase;
+  }
+
   /* DRAWER */
   .drawer-box{max-width:420px;width:100%;padding:28px 24px;display:block;text-align:left; background:var(--iron-light);}
   .drawer-box h2{font-size:24px;margin-bottom:20px;text-transform:none;font-family:'Inter';}
@@ -257,6 +262,9 @@
   .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
   .prod-card{background:var(--iron-light);border:1px solid var(--border-color);border-radius:var(--radius);overflow:hidden;cursor:pointer;position:relative;transition:border-color .25s ease, transform .25s ease, box-shadow .25s ease;}
   .prod-card:hover{border-color:var(--ember);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,0.1);}
+  .prod-card.out-of-stock{opacity:0.75;}
+  .prod-card.out-of-stock img{filter:grayscale(60%);}
+
   .prod-img{height:200px;position:relative;background:var(--iron);overflow:hidden;}
   .prod-img .slide-track{display:flex;height:100%;transition:transform .3s ease;}
   .prod-img .slide-track img{width:100%;height:200px;object-fit:contain;background:var(--iron);flex-shrink:0;padding:10px;transition:transform .4s ease;}
@@ -275,6 +283,7 @@
   .prod-price .price{font-weight:800;font-size:16px;color:var(--chalk);}
   .prod-price button{background:none;border:1px solid var(--ember);color:var(--ember);padding:6px 14px;font-size:12px;font-weight:700;border-radius:var(--radius);cursor:pointer;}
   .prod-price button:hover{background:var(--ember);color:#fff;}
+  .prod-price button.disabled{border-color:var(--steel);color:var(--steel);cursor:not-allowed;background:none;}
   .prod-empty{color:var(--steel);font-size:14px;grid-column:1/-1;text-align:center;padding:40px 0;}
 
   /* PRODUCT DETAIL MODAL */
@@ -314,6 +323,7 @@
   .btn-primary::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.25);transform:translateX(-100%);transition:transform .5s ease;}
   .btn-primary:hover::after{transform:translateX(0);}
   .btn-primary:active{transform:scale(0.97);}
+  .btn-primary.disabled{background:var(--steel);cursor:not-allowed;opacity:0.6;}
 
   .btn-ghost{border:1px solid rgba(15,23,42,0.2);color:var(--chalk);padding:14px 24px;font-weight:700;font-size:13px;border-radius:var(--radius);background:none;cursor:pointer;}
   .btn-ghost:hover{background:rgba(15,23,42,0.04);border-color:var(--chalk);}
@@ -393,7 +403,6 @@
   </nav>
 </header>
 
-<!-- HERO VIDEO SECTION -->
 <section class="hero-video-section">
   <video autoplay loop muted playsinline>
     <source src="Top-Banner.mp4" type="video/mp4">
@@ -407,7 +416,6 @@
   </div>
 </section>
 
-<!-- PERSONALIZED SHOPPING SECTION -->
 <section class="section reveal" id="categories">
   <div class="section-head">
     <div>
@@ -448,7 +456,6 @@
   </div>
 </section>
 
-<!-- MODALS -->
 <div class="modal-overlay" id="productModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -462,7 +469,6 @@
   </div>
 </div>
 
-<!-- BRAND MODAL -->
 <div class="modal-overlay" id="brandModal">
   <div class="modal-box" style="display:block; max-width:650px; padding:32px;">
     <button class="modal-close" onclick="closeBrandModal()">✕</button>
@@ -490,7 +496,6 @@
   </div>
 </div>
 
-<!-- CART DRAWER -->
 <div class="modal-overlay" id="cartDrawer">
   <div class="modal-box drawer-box">
     <button class="modal-close" onclick="closeDrawer('cartDrawer')">✕</button>
@@ -499,7 +504,6 @@
   </div>
 </div>
 
-<!-- WISHLIST DRAWER -->
 <div class="modal-overlay" id="wishlistDrawer">
   <div class="modal-box drawer-box">
     <button class="modal-close" onclick="closeDrawer('wishlistDrawer')">✕</button>
@@ -508,7 +512,6 @@
   </div>
 </div>
 
-<!-- STEP 1: CHECKOUT FORM MODAL -->
 <div class="modal-overlay" id="checkoutModal">
   <div class="modal-box login-box checkout-form" style="display:block; max-width:440px;">
     <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
@@ -521,7 +524,6 @@
   </div>
 </div>
 
-<!-- STEP 2: ULTRA MODERN DARK GLASSMORPHISM WHATSAPP MODAL -->
 <div class="modal-overlay" id="proofModal">
   <div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; padding:16px;">
     <div class="proof-card-modern">
@@ -640,7 +642,8 @@
         return;
       }
 
-      allProducts = data.filter(p => String(p["Stock Status"]).trim().toLowerCase() === "in stock");
+      // Sabhi products ko load karenge (In Stock aur Out of Stock dono)
+      allProducts = data;
       
       const uniqueMap = new Map();
       allProducts.forEach(p => {
@@ -716,6 +719,9 @@
       const sellingPrice = Number(p["Selling Price"]) || 0;
       const hasDiscount = mrp > sellingPrice;
       const offPct = hasDiscount ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0;
+      
+      const stockStatus = String(p["Stock Status"] || "").trim().toLowerCase();
+      const isOut = stockStatus === "out of stock";
 
       const priceHTML = hasDiscount
         ? `<span style="text-decoration:line-through;color:var(--steel);font-size:12px;margin-right:6px;">₹${mrp}</span><span class="price">₹${sellingPrice}</span>`
@@ -727,9 +733,9 @@
       const isWishlisted = wishlist.includes(pid);
 
       const card = document.createElement("div");
-      card.className = "prod-card";
+      card.className = `prod-card ${isOut ? 'out-of-stock' : ''}`;
       card.innerHTML = `
-        ${hasDiscount ? `<div class="badge-discount">-${offPct}% OFF</div>` : ""}
+        ${isOut ? `<div class="badge-outstock">Out of Stock</div>` : (hasDiscount ? `<div class="badge-discount">-${offPct}% OFF</div>` : "")}
         <button class="card-heart ${isWishlisted ? 'wishlisted' : ''}" onclick="event.stopPropagation(); toggleWishlist('${pid}')">${isWishlisted ? '♥' : '♡'}</button>
         <div class="prod-img" data-slide="0" data-total="${images.length}">
           <div class="slide-track">${slidesHTML}</div>
@@ -745,7 +751,7 @@
           <p style="color:var(--chalk);font-size:14px;font-weight:600;margin-bottom:8px;">${p["Weight / Size"] || ""}</p>
           <div class="prod-price">
             <span>${priceHTML}</span>
-            <button onclick="event.stopPropagation(); openModal(${index >= 0 ? index : 0})">View Options</button>
+            <button class="${isOut ? 'disabled' : ''}">${isOut ? 'Sold Out' : 'View Options'}</button>
           </div>
         </div>
       `;
@@ -817,6 +823,9 @@
     const savePct = hasDiscount ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0;
     const pid = selectedVar["Product ID"] || selectedVar["Product Name"];
 
+    const stockStatus = String(selectedVar["Stock Status"] || "").trim().toLowerCase();
+    const isOut = stockStatus === "out of stock";
+
     const uniqueWeights = [...new Set(allVariants.map(v => v["Weight / Size"]).filter(Boolean))];
     const weightsHTML = uniqueWeights.map(w => {
       const isSelected = (selectedVar["Weight / Size"] || "").trim() === w.trim();
@@ -852,9 +861,16 @@
         ${hasDiscount ? `<span class="modal-mrp">₹${mrp}</span>` : ""}₹${sellingPrice}
       </div>
       ${hasDiscount ? `<div class="save-tag">${savePct}% OFF — you save ₹${mrp - sellingPrice}</div>` : "<div style='margin-bottom:24px;'></div>"}
+      
+      ${isOut ? `<div style="background:rgba(100,116,139,0.15); color:var(--steel); padding:12px; text-align:center; font-weight:700; border-radius:var(--radius); margin-bottom:14px;">🚫 Currently Out of Stock</div>` : ""}
+
       <div class="modal-actions">
-        <button class="btn-primary" onclick="addToCart('${pid}'); closeModal();">Add to Cart</button>
-        <button class="btn-ghost" onclick="toggleWishlist('${pid}')">${wishlist.includes(pid) ? '♥ Wishlisted' : '♡ Wishlist'}</button>
+        ${isOut ? `
+          <button class="btn-primary disabled" disabled style="width:100%;">Sold Out (Out of Stock)</button>
+        ` : `
+          <button class="btn-primary" onclick="addToCart('${pid}'); closeModal();">Add to Cart</button>
+          <button class="btn-ghost" onclick="toggleWishlist('${pid}')">${wishlist.includes(pid) ? '♥ Wishlisted' : '♡ Wishlist'}</button>
+        `}
         <a href="https://wa.me/919571214461?text=Hi,%20I'm%20interested%20in%20${encodeURIComponent(selectedVar["Product Name"] + " " + (selectedVar["Weight / Size"] || "") + " - " + (selectedVar["Flavour"] || ""))}" target="_blank" class="btn-ghost" style="padding-top:14px; text-align:center;">Order on WhatsApp</a>
       </div>
     `;
