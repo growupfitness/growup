@@ -162,13 +162,14 @@
   .drawer-footer{margin-top:20px;padding-top:16px;border-top:1px solid var(--border-color);}
   .drawer-total{display:flex;justify-content:space-between;font-size:18px;font-weight:800;margin-bottom:16px;}
 
-  /* CHECKOUT FORM MODAL */
+  /* MODERN CHECKOUT FORM (KROX STYLE) */
+  .checkout-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .checkout-form input, .checkout-form textarea{
-    width:100%;padding:12px 14px;margin-bottom:12px;
+    width:100%;padding:11px 13px;margin-bottom:10px;
     background:var(--iron);border:1px solid var(--border-color);
-    border-radius:var(--radius);color:var(--chalk);font-size:14px;font-family:'Inter';
+    border-radius:var(--radius);color:var(--chalk);font-size:13px;font-family:'Inter';
   }
-  .checkout-form textarea{resize:none;height:80px;}
+  .checkout-form textarea{resize:none;height:65px;}
   .checkout-form input:focus, .checkout-form textarea:focus{outline:none;border-color:var(--ember);}
 
   /* ULTRA MODERN GLASSMORPHIC STEP 2 MODAL */
@@ -403,6 +404,7 @@
   </nav>
 </header>
 
+<!-- HERO VIDEO SECTION -->
 <section class="hero-video-section">
   <video autoplay loop muted playsinline>
     <source src="Top-Banner.mp4" type="video/mp4">
@@ -416,6 +418,7 @@
   </div>
 </section>
 
+<!-- PERSONALIZED SHOPPING SECTION -->
 <section class="section reveal" id="categories">
   <div class="section-head">
     <div>
@@ -456,6 +459,7 @@
   </div>
 </section>
 
+<!-- MODALS -->
 <div class="modal-overlay" id="productModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -469,6 +473,7 @@
   </div>
 </div>
 
+<!-- BRAND MODAL -->
 <div class="modal-overlay" id="brandModal">
   <div class="modal-box" style="display:block; max-width:650px; padding:32px;">
     <button class="modal-close" onclick="closeBrandModal()">✕</button>
@@ -496,6 +501,7 @@
   </div>
 </div>
 
+<!-- CART DRAWER -->
 <div class="modal-overlay" id="cartDrawer">
   <div class="modal-box drawer-box">
     <button class="modal-close" onclick="closeDrawer('cartDrawer')">✕</button>
@@ -504,6 +510,7 @@
   </div>
 </div>
 
+<!-- WISHLIST DRAWER -->
 <div class="modal-overlay" id="wishlistDrawer">
   <div class="modal-box drawer-box">
     <button class="modal-close" onclick="closeDrawer('wishlistDrawer')">✕</button>
@@ -512,18 +519,34 @@
   </div>
 </div>
 
+<!-- STEP 1: DETAILED CHECKOUT FORM MODAL (KROX STYLE) -->
 <div class="modal-overlay" id="checkoutModal">
-  <div class="modal-box login-box checkout-form" style="display:block; max-width:440px;">
+  <div class="modal-box login-box checkout-form" style="display:block; max-width:485px;">
     <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
-    <h2>Step 1: Delivery Details</h2>
-    <p class="sub-text">Enter shipping address to proceed to UPI payment.</p>
-    <input type="text" id="chkName" placeholder="Full Name">
-    <input type="tel" id="chkPhone" placeholder="Phone Number" maxlength="10">
-    <textarea id="chkAddress" placeholder="Complete Shipping Address (House No, Street, City, Pincode)"></textarea>
-    <button class="btn-primary" onclick="launchUPIPayment()" style="width:100%; margin-top:10px;">Pay via UPI (Step 1)</button>
+    <h2>Billing Details</h2>
+    <p class="sub-text">Enter your precise shipping and contact information.</p>
+    
+    <div class="checkout-grid">
+      <input type="text" id="chkFirstName" placeholder="First Name *">
+      <input type="text" id="chkLastName" placeholder="Last Name *">
+    </div>
+
+    <input type="tel" id="chkPhone" placeholder="Phone Number (10 digits) *" maxlength="10">
+    <input type="email" id="chkEmail" placeholder="Email Address (Optional)">
+    <textarea id="chkAddress" placeholder="Street Address (House No, Building, Street) *"></textarea>
+    
+    <div class="checkout-grid">
+      <input type="text" id="chkCity" placeholder="Town / City *">
+      <input type="text" id="chkState" placeholder="State *">
+    </div>
+
+    <input type="text" id="chkPincode" placeholder="PIN Code *" maxlength="6">
+
+    <button class="btn-primary" onclick="launchUPIPayment()" style="width:100%; margin-top:6px;">Proceed to Pay via UPI</button>
   </div>
 </div>
 
+<!-- STEP 2: ULTRA MODERN DARK GLASSMORPHISM WHATSAPP MODAL -->
 <div class="modal-overlay" id="proofModal">
   <div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; padding:16px;">
     <div class="proof-card-modern">
@@ -642,7 +665,6 @@
         return;
       }
 
-      // Sabhi products ko load karenge (In Stock aur Out of Stock dono)
       allProducts = data;
       
       const uniqueMap = new Map();
@@ -1106,23 +1128,28 @@
   }
 
   function openCheckoutModal() {
+    if (!currentUser) { openLoginModal(); return; }
     closeDrawer('cartDrawer');
-    if(currentUser) {
-      document.getElementById("chkName").value = currentUser["User Name"] || "";
-      document.getElementById("chkPhone").value = currentUser["Mobile Number"] || "";
-    }
+    document.getElementById("chkFirstName").value = currentUser["User Name"] ? currentUser["User Name"].split(' ')[0] : "";
+    document.getElementById("chkLastName").value = currentUser["User Name"] ? currentUser["User Name"].split(' ').slice(1).join(' ') : "";
+    document.getElementById("chkPhone").value = currentUser["Mobile Number"] || "";
     document.getElementById("checkoutModal").classList.add("open");
   }
   function closeCheckoutModal() { document.getElementById("checkoutModal").classList.remove("open"); }
   function closeProofModal() { document.getElementById("proofModal").classList.remove("open"); }
 
   async function launchUPIPayment() {
-    const name = document.getElementById("chkName").value.trim();
+    const firstName = document.getElementById("chkFirstName").value.trim();
+    const lastName = document.getElementById("chkLastName").value.trim();
     const phone = document.getElementById("chkPhone").value.trim();
+    const email = document.getElementById("chkEmail").value.trim();
     const address = document.getElementById("chkAddress").value.trim();
+    const city = document.getElementById("chkCity").value.trim();
+    const state = document.getElementById("chkState").value.trim();
+    const pincode = document.getElementById("chkPincode").value.trim();
 
-    if(!name || !phone || !address || phone.length !== 10) {
-      alert("Please fill in valid name, 10-digit phone number, and address.");
+    if(!firstName || !lastName || !phone || !address || !city || !state || !pincode || phone.length !== 10 || pincode.length !== 6) {
+      alert("Please fill in all required billing details (First Name, Last Name, Phone, Address, City, State, Pincode).");
       return;
     }
 
@@ -1132,7 +1159,7 @@
       if(p) total += (Number(p["Selling Price"]) || 0) * item.qty;
     });
 
-    tempOrderData = { name, phone, address, total };
+    tempOrderData = { firstName, lastName, phone, email, address, city, state, pincode, total };
 
     for (let i = 0; i < cart.length; i++) {
       const item = cart[i];
@@ -1142,7 +1169,7 @@
       const singleItemName = `${p["Product Name"]} (${p["Weight / Size"] || ""}) [${p["Flavour"] || ""}] x${item.qty}`;
       const rowAmount = (i === 0) ? total : "";
 
-      const targetUrl = `${API_URL}?action=saveOrder&name=${encodeURIComponent(name)}&phone=${phone}&address=${encodeURIComponent(address)}&amount=${rowAmount}&items=${encodeURIComponent(singleItemName)}&fileName=Sent%20via%20WhatsApp`;
+      const targetUrl = `${API_URL}?action=saveOrder&firstName=${encodeURIComponent(firstName)}&lastName=${encodeURIComponent(lastName)}&phone=${phone}&email=${encodeURIComponent(email)}&address=${encodeURIComponent(address)}&city=${encodeURIComponent(city)}&state=${encodeURIComponent(state)}&pincode=${pincode}&amount=${rowAmount}&items=${encodeURIComponent(singleItemName)}&fileName=Sent%20via%20WhatsApp`;
 
       try {
         await fetch(targetUrl);
@@ -1151,10 +1178,10 @@
       }
     }
 
-    const waText = encodeURIComponent(`Hi Grow Up Fitness, I have placed an order for ₹${total}.\nName: ${name}\nPhone: ${phone}\nHere is my payment screenshot:`);
+    const waText = encodeURIComponent(`Hi Grow Up Fitness, I have placed an order for ₹${total}.\nName: ${firstName} ${lastName}\nPhone: ${phone}\nAddress: ${address}, ${city}, ${state} - ${pincode}\nHere is my payment screenshot:`);
     document.getElementById("whatsappProofBtn").href = `https://wa.me/919571214461?text=${waText}`;
 
-    const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent("Order by " + name)}`;
+    const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent("Order by " + firstName)}`;
     window.location.href = upiLink;
 
     closeCheckoutModal();
