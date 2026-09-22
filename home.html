@@ -15,7 +15,7 @@
     --ember:#0072ff;
     --ember-dim:#0056b3;
     --plate-blue:#e2e8f0;
-    --border-color: rgba(15, 23, 42, 0.08);
+    --border-color: rgba(15, 23, 42, 0.12);
     --radius:2px;
   }
 
@@ -27,7 +27,7 @@
     --ember:#00A0E3;
     --ember-dim:#075D82;
     --plate-blue:#2B2A29;
-    --border-color: rgba(243,241,233,0.08);
+    --border-color: rgba(243,241,233,0.15);
   }
 
   *{margin:0;padding:0;box-sizing:border-box; transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;}
@@ -95,7 +95,6 @@
   .user-chip{font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px;}
   .user-chip .logout-link{color:var(--steel);font-weight:500;cursor:pointer;font-size:12px;text-decoration:underline;}
 
-  /* WELCOME TOAST */
   .welcome-toast{
     position:fixed;top:90px;right:24px;z-index:300;
     background:var(--iron-light);border:1px solid var(--ember);
@@ -107,19 +106,17 @@
   .welcome-toast .title{font-family:'Bebas Neue';font-size:20px;color:var(--ember);letter-spacing:1px;}
   .welcome-toast p{font-size:13px;color:var(--steel);margin-top:4px;}
 
-  /* LOGIN MODAL */
-  .login-box{max-width:380px;padding:36px 32px;display:block;}
-  .login-box h2{font-size:26px;margin-bottom:6px;text-transform:none;font-family:'Inter';}
+  .login-box{max-width:380px;padding:36px 32px;display:block;background:var(--iron-light);border:1px solid var(--border-color);border-radius:var(--radius);}
+  .login-box h2{font-size:26px;margin-bottom:6px;text-transform:none;font-family:'Inter';color:var(--chalk);}
   .login-box p.sub-text{color:var(--steel);font-size:13px;margin-bottom:24px;}
-  .login-box input{
-    width:100%;padding:13px 14px;margin-bottom:14px;
+  .login-box input, .login-box textarea{
+    width:100%;padding:12px 14px;margin-bottom:12px;
     background:var(--iron);border:1px solid var(--border-color);
     border-radius:var(--radius);color:var(--chalk);font-size:14px;font-family:'Inter';
   }
-  .login-box input:focus{outline:none;border-color:var(--ember);}
+  .login-box input:focus, .login-box textarea:focus{outline:none;border-color:var(--ember);}
   .login-error{color:var(--ember);font-size:12px;margin:-8px 0 12px;display:none;}
 
-  /* ICONS */
   .icon-btn{
     position:relative;background:none;border:1px solid var(--border-color);
     color:var(--chalk);width:38px;height:38px;border-radius:50%;
@@ -141,40 +138,29 @@
     position: absolute; top: 10px; left: 10px; background: var(--ember); color: #fff;
     font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 20px; z-index: 5; text-transform: uppercase;
   }
-
   .badge-outstock {
     position: absolute; top: 10px; left: 10px; background: #64748b; color: #fff;
     font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 20px; z-index: 5; text-transform: uppercase;
   }
 
-  /* DRAWER */
-  .drawer-box{max-width:420px;width:100%;padding:28px 24px;display:block;text-align:left; background:var(--iron-light);}
-  .drawer-box h2{font-size:24px;margin-bottom:20px;text-transform:none;font-family:'Inter';}
+  .drawer-box{max-width:420px;width:100%;padding:28px 24px;display:block;text-align:left; background:var(--iron-light);border:1px solid var(--border-color);}
+  .drawer-box h2{font-size:24px;margin-bottom:20px;text-transform:none;font-family:'Inter';color:var(--chalk);}
   .drawer-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-color);align-items:center;}
   .drawer-item img{width:56px;height:56px;object-fit:contain;background:var(--iron);border-radius:var(--radius);padding:4px;}
   .drawer-item .info{flex:1;}
-  .drawer-item .info h5{font-size:14px;font-weight:600;margin-bottom:4px;}
+  .drawer-item .info h5{font-size:14px;font-weight:600;margin-bottom:4px;color:var(--chalk);}
   .drawer-item .info .price{font-size:13px;color:var(--steel);}
   .qty-controls{display:flex;align-items:center;gap:10px;}
   .qty-controls button{background:var(--iron);border:1px solid var(--border-color);color:var(--chalk);width:24px;height:24px;border-radius:4px;cursor:pointer;}
   .drawer-remove{color:var(--steel);font-size:12px;text-decoration:underline;cursor:pointer;margin-left:10px;}
   .drawer-empty{color:var(--steel);font-size:14px;text-align:center;padding:30px 0;}
   .drawer-footer{margin-top:20px;padding-top:16px;border-top:1px solid var(--border-color);}
-  .drawer-total{display:flex;justify-content:space-between;font-size:18px;font-weight:800;margin-bottom:16px;}
+  .drawer-total{display:flex;justify-content:space-between;font-size:18px;font-weight:800;margin-bottom:16px;color:var(--chalk);}
 
-  /* MODERN CHECKOUT FORM (PINCODE FIRST WITH AUTOFILL) */
   .checkout-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .checkout-form input, .checkout-form textarea{
-    width:100%;padding:11px 13px;margin-bottom:10px;
-    background:var(--iron);border:1px solid var(--border-color);
-    border-radius:var(--radius);color:var(--chalk);font-size:13px;font-family:'Inter';
-  }
-  .checkout-form textarea{resize:none;height:65px;}
-  .checkout-form input:focus, .checkout-form textarea:focus{outline:none;border-color:var(--ember);}
+  .checkout-form textarea{resize:none;height:60px;}
+  .pincode-status{font-size:11px;color:var(--ember);margin:-4px 0 10px;font-weight:600;display:none;}
 
-  .pincode-status{font-size:11px;color:var(--ember);margin:-6px 0 10px;font-weight:600;display:none;}
-
-  /* ULTRA MODERN GLASSMORPHIC STEP 2 MODAL */
   .proof-card-modern {
     background: linear-gradient(135deg, #181b22 0%, #0d0f12 100%);
     border: 1px solid rgba(37, 211, 102, 0.3);
@@ -210,7 +196,6 @@
   }
   .btn-close-ultra:hover { color: #ffffff; }
 
-  /* BRAND CARD ITEM */
   .brand-card-item {
     background: var(--iron-light);
     border: 1px solid var(--border-color);
@@ -220,12 +205,8 @@
     cursor: pointer;
     transition: all .2s ease;
   }
-  .brand-card-item:hover {
-    border-color: var(--ember);
-    transform: translateY(-2px);
-  }
+  .brand-card-item:hover { border-color: var(--ember); transform: translateY(-2px); }
 
-  /* HERO VIDEO BANNER */
   .hero-video-section{
     position:relative;width:100%;height:460px;overflow:hidden;
     display:flex;align-items:center;justify-content:center;text-align:center;
@@ -281,7 +262,7 @@
   
   .prod-body{padding:18px;}
   .prod-body .cat-label{font-size:11px;color:var(--ember);letter-spacing:1px;font-weight:700;}
-  .prod-body h4{font-size:17px;margin:6px 0 6px;font-family:'Inter';font-weight:700;text-transform:none;}
+  .prod-body h4{font-size:17px;margin:6px 0 6px;font-family:'Inter';font-weight:700;text-transform:none;color:var(--chalk);}
   .prod-price{display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
   .prod-price .price{font-weight:800;font-size:16px;color:var(--chalk);}
   .prod-price button{background:none;border:1px solid var(--ember);color:var(--ember);padding:6px 14px;font-size:12px;font-weight:700;border-radius:var(--radius);cursor:pointer;}
@@ -289,13 +270,11 @@
   .prod-price button.disabled{border-color:var(--steel);color:var(--steel);cursor:not-allowed;background:none;}
   .prod-empty{color:var(--steel);font-size:14px;grid-column:1/-1;text-align:center;padding:40px 0;}
 
-  /* PRODUCT DETAIL MODAL */
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;align-items:center;justify-content:center;padding:20px;}
   .modal-overlay.open{display:flex;}
-  .modal-box{background:var(--iron-light);max-width:900px;width:100%;max-height:90vh;overflow-y:auto;border-radius:var(--radius);position:relative;display:grid;grid-template-columns:1fr 1fr;}
+  .modal-box{background:var(--iron-light);max-width:900px;width:100%;max-height:90vh;overflow-y:auto;border-radius:var(--radius);position:relative;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border-color);}
   .modal-close{position:absolute;top:14px;right:14px;background:rgba(0,0,0,0.5);color:#fff;border:none;width:34px;height:34px;border-radius:50%;font-size:18px;cursor:pointer;z-index:3;}
   
-  /* Modal Gallery Fixed Arrows */
   .modal-gallery{position:relative;background:var(--iron);overflow:hidden;display:flex;align-items:center;justify-content:center;}
   .modal-gallery .slide-track{display:flex;transition:transform .3s ease;width:100%;height:100%;}
   .modal-gallery .slide-track img{width:100%;flex-shrink:0;object-fit:contain;background:var(--iron-light);height:420px;padding:16px;cursor:zoom-in;}
@@ -308,14 +287,13 @@
 
   .modal-info{padding:36px 32px;}
   .modal-info .cat-label{color:var(--ember);font-weight:700;font-size:13px;letter-spacing:1px;}
-  .modal-info h2{font-size:32px;margin:10px 0 6px;text-transform:none;font-family:'Inter';}
+  .modal-info h2{font-size:32px;margin:10px 0 6px;text-transform:none;font-family:'Inter';color:var(--chalk);}
   .modal-info .sub{color:var(--steel);font-size:14px;margin-bottom:20px;}
-  .modal-info .modal-price{font-size:30px;font-weight:800;margin-bottom:4px;}
+  .modal-info .modal-price{font-size:30px;font-weight:800;margin-bottom:4px;color:var(--chalk);}
   .modal-info .modal-mrp{text-decoration:line-through;color:var(--steel);font-size:16px;margin-right:10px;}
   .modal-info .save-tag{color:#10b981;font-size:13px;font-weight:700;margin-bottom:24px;}
   .modal-actions{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;}
 
-  /* Variant & Flavour Selector Buttons */
   .variant-selector{margin:14px 0;}
   .variant-selector label{display:block;font-size:12px;font-weight:600;color:var(--steel);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
   .variant-chips{display:flex;gap:8px;flex-wrap:wrap;}
@@ -325,11 +303,10 @@
   .btn-primary{background:var(--ember);color:#fff;padding:14px 24px;font-weight:800;font-size:13px;border-radius:var(--radius);border:none;cursor:pointer;position:relative;overflow:hidden;}
   .btn-primary::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.25);transform:translateX(-100%);transition:transform .5s ease;}
   .btn-primary:hover::after{transform:translateX(0);}
-  .btn-primary:active{transform:scale(0.97);}
   .btn-primary.disabled{background:var(--steel);cursor:not-allowed;opacity:0.6;}
 
-  .btn-ghost{border:1px solid rgba(15,23,42,0.2);color:var(--chalk);padding:14px 24px;font-weight:700;font-size:13px;border-radius:var(--radius);background:none;cursor:pointer;}
-  .btn-ghost:hover{background:rgba(15,23,42,0.04);border-color:var(--chalk);}
+  .btn-ghost{border:1px solid var(--border-color);color:var(--chalk);padding:14px 24px;font-weight:700;font-size:13px;border-radius:var(--radius);background:none;cursor:pointer;}
+  .btn-ghost:hover{background:var(--border-color);border-color:var(--chalk);}
 
   .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:200;align-items:center;justify-content:center;}
   .lightbox.open{display:flex;}
@@ -337,11 +314,11 @@
 
   .why{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center;}
   .why .num{font-family:'Bebas Neue';font-size:48px;color:var(--ember);}
-  .why h4{font-size:16px;margin:8px 0 6px;font-family:'Inter';font-weight:700;}
+  .why h4{font-size:16px;margin:8px 0 6px;font-family:'Inter';font-weight:700;color:var(--chalk);}
   .why p{color:var(--steel);font-size:13px;}
 
-  .cta-band{background:linear-gradient(120deg,var(--ember-dim),var(--iron));border-radius:var(--radius);padding:60px 40px;text-align:center;}
-  .cta-band h2{font-size:42px;margin-bottom:16px;}
+  .cta-band{background:linear-gradient(120deg,var(--ember-dim),var(--iron));border-radius:var(--radius);padding:60px 40px;text-align:center;border:1px solid var(--border-color);}
+  .cta-band h2{font-size:42px;margin-bottom:16px;color:var(--chalk);}
   .cta-band p{color:var(--chalk);opacity:0.8;margin-bottom:28px;}
 
   footer{border-top:1px solid var(--border-color);padding:50px 24px 30px;}
@@ -352,7 +329,6 @@
 
   .wa-float{position:fixed;bottom:24px;right:24px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 20px rgba(0,0,0,0.2);z-index:60;}
 
-  /* SCROLL REVEAL ANIMATIONS */
   .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease, transform .7s ease;}
   .reveal.in-view{opacity:1;transform:translateY(0);}
   .reveal-stagger.in-view .cat-card,
@@ -475,7 +451,7 @@
 <div class="modal-overlay" id="brandModal">
   <div class="modal-box" style="display:block; max-width:650px; padding:32px;">
     <button class="modal-close" onclick="closeBrandModal()">✕</button>
-    <h2 style="font-size:26px; margin-bottom:24px; font-family:'Inter'; font-weight:700;">Select Brand</h2>
+    <h2 style="font-size:26px; margin-bottom:24px; font-family:'Inter'; font-weight:700; color:var(--chalk);">Select Brand</h2>
     <div id="brandGrid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
       <p style="color:var(--steel);">Loading brands...</p>
     </div>
@@ -515,6 +491,7 @@
   </div>
 </div>
 
+<!-- CHECKOUT MODAL FIXED FIELD MAPPING -->
 <div class="modal-overlay" id="checkoutModal">
   <div class="modal-box login-box checkout-form" style="display:block; max-width:485px;">
     <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
@@ -920,21 +897,11 @@
     document.querySelectorAll("#modalDots span").forEach((d, i) => d.classList.toggle("active", i === modalIndex));
   }
 
-  document.getElementById("productModal").addEventListener("click", (e) => {
-    if (e.target.id === "productModal") closeModal();
-  });
-  document.getElementById("brandModal").addEventListener("click", (e) => {
-    if (e.target.id === "brandModal") closeBrandModal();
-  });
-
   function openLightbox() {
     document.getElementById("lightboxImg").src = modalImages[modalIndex];
     document.getElementById("imageLightbox").classList.add("open");
   }
   function closeLightbox() { document.getElementById("imageLightbox").classList.remove("open"); }
-  document.getElementById("imageLightbox").addEventListener("click", (e) => {
-    if (e.target.id === "imageLightbox") closeLightbox();
-  });
 
   let currentUser = null;
   function openLoginModal() { document.getElementById("loginModal").classList.add("open"); }
@@ -1121,7 +1088,6 @@
     }).join("");
   }
 
-  // PINCODE AUTO-FILL API LOGIC (SHIPROCKET/POSTAL STYLE)
   async function lookupPincode(pincode) {
     const cleanPin = pincode.trim();
     const statusEl = document.getElementById("pincodeStatus");
@@ -1131,6 +1097,7 @@
     if (cleanPin.length === 6) {
       statusEl.style.display = "block";
       statusEl.innerText = "🔍 Fetching location from Pincode...";
+      statusEl.style.color = "var(--ember)";
       try {
         const response = await fetch(`https://api.postalpincode.in/pincode/${cleanPin}`);
         const data = await response.json();
