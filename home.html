@@ -491,6 +491,7 @@
   </div>
 </div>
 
+<!-- CHECKOUT MODAL FIXED -->
 <div class="modal-overlay" id="checkoutModal">
   <div class="modal-box login-box checkout-form" style="display:block; max-width:485px;">
     <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
@@ -1158,11 +1159,24 @@
       return p ? `${p["Product Name"]} (${p["Weight / Size"] || ""}) [${p["Flavour"] || ""}] x${item.qty}` : "";
     }).filter(Boolean).join(", ");
 
-    // Using reliable GET method for order saving as well
-    const targetUrl = `${API_URL}?action=saveOrder&firstName=${encodeURIComponent(firstName)}&lastName=${encodeURIComponent(lastName)}&phone=${phone}&email=${encodeURIComponent(email)}&address=${encodeURIComponent(address)}&city=${encodeURIComponent(city)}&state=${encodeURIComponent(state)}&pincode=${pincode}&amount=${total}&items=${encodeURIComponent(itemsCombined)}&fileName=Sent%20via%20WhatsApp`;
-
     try {
-      await fetch(targetUrl);
+      await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "saveOrder",
+          firstName: firstName,
+          lastName: lastName,
+          phone: phone,
+          email: email,
+          address: address,
+          city: city,
+          state: state,
+          pincode: pincode,
+          amount: total,
+          items: itemsCombined,
+          fileName: "Sent via WhatsApp"
+        })
+      });
     } catch (err) {
       console.error("Order save error:", err);
     }
