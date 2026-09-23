@@ -491,7 +491,7 @@
   </div>
 </div>
 
-<!-- CHECKOUT MODAL FIXED FIELD MAPPING -->
+<!-- CHECKOUT MODAL FIXED -->
 <div class="modal-overlay" id="checkoutModal">
   <div class="modal-box login-box checkout-form" style="display:block; max-width:485px;">
     <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
@@ -917,7 +917,10 @@
       return;
     }
     try {
-      const res = await fetch(`${API_URL}?action=login&mobile=${mobile}&name=${encodeURIComponent(name)}`);
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "login", mobile: mobile, name: name })
+      });
       const user = await res.json();
       if (!user.success) { errorEl.innerText = user.error || "Error"; errorEl.style.display = "block"; return; }
       handleLoginSuccess(user);
@@ -977,7 +980,10 @@
     const savedName = localStorage.getItem("gufName");
     if (!savedMobile || !savedName) return;
     try {
-      const res = await fetch(`${API_URL}?action=login&mobile=${savedMobile}&name=${encodeURIComponent(savedName)}`);
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "login", mobile: savedMobile, name: savedName })
+      });
       const user = await res.json();
       if (user.success) handleLoginSuccess(user);
     } catch (err) { console.error(err); }
@@ -1007,11 +1013,18 @@
 
   async function syncCart() {
     if (!currentUser) return;
-    await fetch(`${API_URL}?action=updateCart&mobile=${currentUser["Mobile Number"]}&data=${encodeURIComponent(JSON.stringify(cart))}`);
+    await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "updateCart", mobile: currentUser["Mobile Number"], data: JSON.stringify(cart) })
+    });
   }
+
   async function syncWishlist() {
     if (!currentUser) return;
-    await fetch(`${API_URL}?action=updateWishlist&mobile=${currentUser["Mobile Number"]}&data=${encodeURIComponent(JSON.stringify(wishlist))}`);
+    await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "updateWishlist", mobile: currentUser["Mobile Number"], data: JSON.stringify(wishlist) })
+    });
   }
 
   function renderCartBadge() {
@@ -1153,23 +1166,31 @@
       if(p) total += (Number(p["Selling Price"]) || 0) * item.qty;
     });
 
-    tempOrderData = { firstName, lastName, phone, email, address, city, state, pincode, total };
-
-    for (let i = 0; i < cart.length; i++) {
-      const item = cart[i];
+    let itemsCombined = cart.map(item => {
       const p = allProducts.find(pr => (pr["Product ID"] || pr["Product Name"]) === item.id);
-      if (!p) continue;
+      return p ? `${p["Product Name"]} (${p["Weight / Size"] || ""}) [${p["Flavour"] || ""}] x${item.qty}` : "";
+    }).filter(Boolean).join(", ");
 
-      const singleItemName = `${p["Product Name"]} (${p["Weight / Size"] || ""}) [${p["Flavour"] || ""}] x${item.qty}`;
-      const rowAmount = (i === 0) ? total : "";
-
-      const targetUrl = `${API_URL}?action=saveOrder&firstName=${encodeURIComponent(firstName)}&lastName=${encodeURIComponent(lastName)}&phone=${phone}&email=${encodeURIComponent(email)}&address=${encodeURIComponent(address)}&city=${encodeURIComponent(city)}&state=${encodeURIComponent(state)}&pincode=${pincode}&amount=${rowAmount}&items=${encodeURIComponent(singleItemName)}&fileName=Sent%20via%20WhatsApp`;
-
-      try {
-        await fetch(targetUrl);
-      } catch (err) {
-        console.error(err);
-      }
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "saveOrder",
+          firstName: firstName,
+          lastName: lastName,
+          phone: phone,
+          email: email,
+          address: address,
+          city: city,
+          state: state,
+          pincode: pincode,
+          amount: total,
+          items: itemsCombined,
+          fileName: "Sent via WhatsApp"
+        })
+      });
+    } catch (err) {
+      console.error("Order save error:", err);
     }
 
     const waText = encodeURIComponent(`Hi Grow Up Fitness, I have placed an order for ₹${total}.\nName: ${firstName} ${lastName}\nPhone: ${phone}\nPincode: ${pincode}\nAddress: ${address}, ${city}, ${state}\nHere is my payment screenshot:`);
