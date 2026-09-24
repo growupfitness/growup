@@ -200,12 +200,19 @@
     background: var(--iron-light);
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
-    padding: 20px;
+    padding: 16px;
     text-align: center;
     cursor: pointer;
     transition: all .2s ease;
   }
   .brand-card-item:hover { border-color: var(--ember); transform: translateY(-2px); }
+  .brand-card-item.all-brands {
+    grid-column: 1 / -1;
+    background: rgba(0, 114, 255, 0.08);
+    border-color: var(--ember);
+    color: var(--ember);
+    font-weight: 700;
+  }
 
   .hero-video-section{
     position:relative;width:100%;height:460px;overflow:hidden;
@@ -409,7 +416,7 @@
       <h3>Shop by Brand</h3>
       <p>Filter products by top-tier fitness and nutritional brands.</p>
     </div>
-    <div class="cat-card" id="lpCard" style="border-color:var(--ember);" onclick="openLoginModal()">
+    <div class="cat-card" id="lpCard" style="border-color:var(--ember);" onclick="handleLastPurchaseClick()">
       <div class="cat-plate">RE-BUY</div>
       <h3 id="lpTitle">Last Purchase</h3>
       <p id="lpDesc">Login with your mobile number to view your previous order and re-order instantly.</p>
@@ -448,6 +455,7 @@
   </div>
 </div>
 
+<!-- BRAND MODAL WITH ALL BRANDS OPTION -->
 <div class="modal-overlay" id="brandModal">
   <div class="modal-box" style="display:block; max-width:650px; padding:32px;">
     <button class="modal-close" onclick="closeBrandModal()">✕</button>
@@ -491,7 +499,6 @@
   </div>
 </div>
 
-<!-- CHECKOUT MODAL WITH NEW API URL -->
 <div class="modal-overlay" id="checkoutModal">
   <div class="modal-box login-box checkout-form" style="display:block; max-width:485px;">
     <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
@@ -579,7 +586,6 @@
 <a href="https://wa.me/919571214461?text=Hi,%20I%20have%20an%20inquiry" target="_blank" class="wa-float">💬</a>
 
 <script>
-  // Updated API URL linked to the latest deployment
   const API_URL = "https://script.google.com/macros/s/AKfycbxCADMOE1_I4I3EFGw3a-1boePqfYmDsRjzf21jFDn-2ojD0JmHC0On4wlRIUhMEqg/exec";
   const MERCHANT_UPI = "salvinitinudr-6@okaxis";
   const MERCHANT_NAME = "Grow Up Fitness";
@@ -672,12 +678,20 @@
         return;
       }
 
-      brandGrid.innerHTML = allBrands.map(b => `
+      let brandsHTML = `
+        <div class="brand-card-item all-brands" onclick="showAllProductsFromModal()">
+          <h4>🌟 Show All Brands (View All)</h4>
+        </div>
+      `;
+
+      brandsHTML += allBrands.map(b => `
         <div class="brand-card-item" onclick="filterByBrand('${b["Brand Name"]}')">
-          ${b["Logo URL"] ? `<img src="${b["Logo URL"]}" style="width:110px; height:55px; object-fit:contain; margin-bottom:12px; display:block; margin-left:auto; margin-right:auto;" onerror="this.style.display='none'">` : ''}
+          ${b["Logo URL"] ? `<img src="${b["Logo URL"]}" style="width:110px; height:50px; object-fit:contain; margin-bottom:8px; display:block; margin-left:auto; margin-right:auto;" onerror="this.style.display='none'">` : ''}
           <h4 style="font-size:15px; font-family:'Inter', sans-serif; font-weight:700; color:var(--chalk);">${b["Brand Name"]}</h4>
         </div>
       `).join("");
+
+      brandGrid.innerHTML = brandsHTML;
     } catch(e) {
       document.getElementById("brandGrid").innerHTML = `<p style="color:var(--steel);">Brands load nahi ho payi.</p>`;
     }
@@ -696,6 +710,26 @@
     renderProductsGrid();
     closeBrandModal();
     document.getElementById("products").scrollIntoView();
+  }
+
+  function showAllProductsFromModal() {
+    const uniqueMap = new Map();
+    allProducts.forEach(p => {
+      const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
+      if (!uniqueMap.has(key)) uniqueMap.set(key, p);
+    });
+    displayProducts = Array.from(uniqueMap.values());
+    renderProductsGrid();
+    closeBrandModal();
+    document.getElementById("products").scrollIntoView();
+  }
+
+  function handleLastPurchaseClick() {
+    if (!currentUser) {
+      openLoginModal();
+    } else {
+      alert("No previous orders found yet. Place your first order to see it here!");
+    }
   }
 
   function renderProductsGrid() {
@@ -950,7 +984,7 @@
     } else {
       document.getElementById("lpTitle").innerText = "Last Purchase";
       document.getElementById("lpDesc").innerText = "No previous orders found yet.";
-      lpCard.onclick = null;
+      lpCard.onclick = handleLastPurchaseClick;
     }
 
     document.getElementById("authArea").innerHTML = `
@@ -969,7 +1003,7 @@
     document.getElementById("authArea").innerHTML = `<button class="login-btn" onclick="openLoginModal()">Login</button>`;
     document.getElementById("lpTitle").innerText = "Last Purchase";
     document.getElementById("lpDesc").innerText = "Login with your mobile number to view your previous order and re-order instantly.";
-    document.getElementById("lpCard").onclick = openLoginModal;
+    document.getElementById("lpCard").onclick = handleLastPurchaseClick;
     renderCartBadge(); renderWishlistBadge(); renderProductsGrid();
   }
 
