@@ -336,12 +336,6 @@
 
   .wa-float{position:fixed;bottom:24px;right:24px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 20px rgba(0,0,0,0.2);z-index:60;}
 
-  /* ORDER HISTORY DRAWER STYLING */
-  .history-item{display:flex;flex-direction:column;gap:6px;padding:14px 0;border-bottom:1px solid var(--border-color);}
-  .history-item .date{font-size:11px;color:var(--steel);}
-  .history-item .item-name{font-size:14px;font-weight:700;color:var(--chalk);}
-  .history-item .meta{display:flex;justify-content:space-between;font-size:12px;color:var(--steel);}
-
   .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease, transform .7s ease;}
   .reveal.in-view{opacity:1;transform:translateY(0);}
   .reveal-stagger.in-view .cat-card,
@@ -422,12 +416,12 @@
       <h3>Shop by Brand</h3>
       <p>Filter products by top-tier fitness and nutritional brands.</p>
     </div>
-    <div class="cat-card" id="lpCard" style="border-color:var(--ember);" onclick="openOrderHistoryDrawer()">
+    <div class="cat-card" id="lpCard" style="border-color:var(--ember);" onclick="openOrderHistoryWhatsApp()">
       <div class="cat-plate">ORDERS</div>
-      <h3 id="lpTitle">Order History</h3>
-      <p id="lpDesc">Login to view all your previous orders and re-order instantly.</p>
+      <h3>Track Order / History</h3>
+      <p>Click here to check your order status directly on WhatsApp with our team.</p>
     </div>
-    <div class="cat-card" onclick="document.getElementById('searchInput').focus();">
+    <div class="cat-card" onclick="document.getElementById('searchInput'].focus();">
       <div class="cat-plate">FLV</div>
       <h3>Shop by Flavour</h3>
       <p>Find your favorite taste like Swiss Chocolate, Strawberry, etc.</p>
@@ -501,15 +495,6 @@
     <button class="modal-close" onclick="closeDrawer('wishlistDrawer')">✕</button>
     <h2>Your Wishlist</h2>
     <div id="wishlistItemsWrap"></div>
-  </div>
-</div>
-
-<!-- ORDER HISTORY DRAWER -->
-<div class="modal-overlay" id="orderHistoryDrawer">
-  <div class="modal-box drawer-box">
-    <button class="modal-close" onclick="closeDrawer('orderHistoryDrawer')">✕</button>
-    <h2>Your Order History</h2>
-    <div id="orderHistoryWrap"></div>
   </div>
 </div>
 
@@ -611,7 +596,6 @@
   let cart = [];
   let wishlist = [];
   let allBrands = [];
-  let userOrdersHistory = [];
   let currentSelectedVariant = null;
   let tempOrderData = null;
   let isCheckingOut = false;
@@ -740,41 +724,11 @@
     document.getElementById("products").scrollIntoView();
   }
 
-  async function openOrderHistoryDrawer() {
-    if (!currentUser) {
-      openLoginModal();
-      return;
-    }
-
-    const wrap = document.getElementById("orderHistoryWrap");
-    wrap.innerHTML = `<p class="drawer-empty">Loading your orders...</p>`;
-    document.getElementById("orderHistoryDrawer").classList.add("open");
-
-    try {
-      const res = await fetch(`${API_URL}?action=getOrders`);
-      const orders = await res.json();
-      const userMobile = String(currentUser["Mobile Number"]).replace(/\D/g, "").slice(-10);
-
-      userOrdersHistory = orders.filter(o => String(o["Phone Number"]).replace(/\D/g, "").slice(-10) === userMobile);
-
-      if (userOrdersHistory.length === 0) {
-        wrap.innerHTML = `<p class="drawer-empty">No previous orders found yet. Place your first order!</p>`;
-        return;
-      }
-
-      wrap.innerHTML = userOrdersHistory.reverse().map(ord => `
-        <div class="history-item">
-          <span class="date">📅 ${ord["Order Date"] || "Recent"}</span>
-          <div class="item-name">📦 ${ord["Item Ordered"] || "Product"}</div>
-          <div class="meta">
-            <span>Amount: <strong>₹${ord["Total Amount"] || "Paid"}</strong></span>
-            <span style="color:var(--ember); font-weight:600;">${ord["Order Status"] || "Pending"}</span>
-          </div>
-        </div>
-      `).join("");
-    } catch (err) {
-      wrap.innerHTML = `<p class="drawer-empty">Could not load order history.</p>`;
-    }
+  function openOrderHistoryWhatsApp() {
+    const userPhone = currentUser ? currentUser["Mobile Number"] : "";
+    const userName = currentUser ? currentUser["User Name"] : "Customer";
+    const msg = encodeURIComponent(`Hi Grow Up Fitness, I am ${userName} (${userPhone}). I want to check my order history and status.`);
+    window.open(`https://wa.me/919571214461?text=${msg}`, '_blank');
   }
 
   function renderProductsGrid() {
@@ -1005,7 +959,7 @@
     } catch (e) { console.error(e); }
   }
 
-  async function handleLoginSuccess(user) {
+  function handleLoginSuccess(user) {
     currentUser = user;
     localStorage.setItem("gufMobile", user["Mobile Number"]);
     localStorage.setItem("gufName", user["User Name"]);
@@ -1015,21 +969,8 @@
     renderWishlistBadge();
     renderProductsGrid();
 
-    // Check user orders to update card title
-    try {
-      const ordRes = await fetch(`${API_URL}?action=getOrders`);
-      const orders = await ordRes.json();
-      if (Array.isArray(orders) && orders.length > 0) {
-        const userMobile = String(user["Mobile Number"]).replace(/\D/g, "").slice(-10);
-        const userOrders = orders.filter(o => String(o["Phone Number"]).replace(/\D/g, "").slice(-10) === userMobile);
-        if (userOrders.length > 0) {
-          document.getElementById("lpTitle").innerText = "Order History (" + userOrders.length + ")";
-          document.getElementById("lpDesc").innerText = `View all ${userOrders.length} previous orders & re-order.`;
-        }
-      }
-    } catch(err) {
-      console.error(err);
-    }
+    document.getElementById("lpTitle").innerText = "Track Orders";
+    document.getElementById("lpDesc").innerText = `Click to chat on WhatsApp and check your live order history.`;
 
     document.getElementById("authArea").innerHTML = `
       <div class="user-chip">Hi, ${user["User Name"].split(' ')[0]} <span class="logout-link" onclick="logout()">Logout</span></div>
@@ -1045,8 +986,8 @@
     currentUser = null; cart = []; wishlist = [];
     localStorage.removeItem("gufMobile"); localStorage.removeItem("gufName");
     document.getElementById("authArea").innerHTML = `<button class="login-btn" onclick="openLoginModal()">Login</button>`;
-    document.getElementById("lpTitle").innerText = "Order History";
-    document.getElementById("lpDesc").innerText = "Login to view all your previous orders and re-order instantly.";
+    document.getElementById("lpTitle").innerText = "Track Orders";
+    document.getElementById("lpDesc").innerText = "Click to chat on WhatsApp and check your live order history.";
     renderCartBadge(); renderWishlistBadge(); renderProductsGrid();
   }
 
@@ -1260,7 +1201,7 @@
         })
       });
     } catch (err) {
-      console.error("Order save error:", err);
+      console.error("Order save order error:", err);
     }
 
     const waText = encodeURIComponent(`Hi Grow Up Fitness, I have placed an order for ₹${total}.\nName: ${firstName} ${lastName}\nPhone: ${phone}\nPincode: ${pincode}\nAddress: ${address}, ${city}, ${state}\nHere is my payment screenshot:`);
@@ -1295,7 +1236,7 @@
 
   document.querySelectorAll(".reveal, .reveal-stagger").forEach(el => revealObserver.observe(el));
 
-  ["cartDrawer", "wishlistDrawer", "loginModal", "checkoutModal", "proofModal", "productModal", "brandModal", "orderHistoryDrawer"].forEach(id => {
+  ["cartDrawer", "wishlistDrawer", "loginModal", "checkoutModal", "proofModal", "productModal", "brandModal"].forEach(id => {
     const el = document.getElementById(id);
     if(el) {
       el.addEventListener("click", (e) => {
