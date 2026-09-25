@@ -599,6 +599,7 @@
   let currentSelectedVariant = null;
   let tempOrderData = null;
   let isCheckingOut = false;
+  let lastPurchasedProductString = "";
 
   function getImages(p) {
     return [p["Image 1"], p["Image 2"], p["Image 3"]].filter(img => img && img.trim() !== "");
@@ -727,6 +728,14 @@
   function handleLastPurchaseClick() {
     if (!currentUser) {
       openLoginModal();
+    } else if (lastPurchasedProductString) {
+      const found = allProducts.find(p => lastPurchasedProductString.toLowerCase().includes((p["Product Name"] || "").toLowerCase()));
+      if (found) {
+        const index = allProducts.findIndex(p => p["Product ID"] === found["Product ID"]);
+        if (index >= 0) openModal(index);
+      } else {
+        alert("Last ordered item: " + lastPurchasedProductString);
+      }
     } else {
       alert("No previous orders found yet. Place your first order to see it here!");
     }
@@ -960,7 +969,7 @@
     } catch (e) { console.error(e); }
   }
 
-  function handleLoginSuccess(user) {
+  async function handleLoginSuccess(user) {
     currentUser = user;
     localStorage.setItem("gufMobile", user["Mobile Number"]);
     localStorage.setItem("gufName", user["User Name"]);
@@ -970,20 +979,27 @@
     renderWishlistBadge();
     renderProductsGrid();
 
-    const lpCard = document.getElementById("lpCard");
-    if (user["LastPurchasedItem"]) {
-      const orderedItemStr = String(user["LastPurchasedItem"]);
-      document.getElementById("lpTitle").innerText = "Re-order";
-      document.getElementById("lpDesc").innerText = `Last ordered: ${orderedItemStr}`;
-      lpCard.onclick = () => {
-        const found = allProducts.find(p => orderedItemStr.toLowerCase().includes((p["Product Name"] || "").toLowerCase()));
-        if (found) {
-          const index = allProducts.findIndex(p => p["Product ID"] === found["Product ID"]);
-          if (index >= 0) openModal(index);
-        } else {
-          alert("Order item: " + orderedItemStr);
+    // Fetch orders directly from sheet to find last purchased item for this mobile
+    try {
+      const ordRes = await fetch(`${API_URL}?action=getOrders`);
+      const orders = await ordRes.json();
+      if (Array.isArray(orders) && orders.length > 0) {
+        const userMobile = String(user["Mobile Number"]).replace(/\D/g, "").slice(-10);
+        const userOrders = orders.filter(o => String(o["Phone Number"]).replace(/\D/g, "").slice(-10) === userMobile);
+        if (userOrders.length > 0) {
+          const lastOrder = userOrders[userOrders.length - 1];
+          lastPurchasedProductString = lastOrder["Item Ordered"] || "";
         }
-      };
+      }
+    } catch(err) {
+      console.error("Error fetching orders for last purchase:", err);
+    }
+
+    const lpCard = document.getElementById("lpCard");
+    if (lastPurchasedProductString) {
+      document.getElementById("lpTitle").innerText = "Re-order";
+      document.getElementById("lpDesc").innerText = `Last ordered: ${lastPurchasedProductString}`;
+      lpCard.onclick = handleLastPurchaseClick;
     } else {
       document.getElementById("lpTitle").innerText = "Last Purchase";
       document.getElementById("lpDesc").innerText = "No previous orders found yet.";
@@ -1001,7 +1017,7 @@
   }
 
   function logout() {
-    currentUser = null; cart = []; wishlist = [];
+    currentUser = null; cart = []; wishlist = []; lastPurchasedProductString = "";
     localStorage.removeItem("gufMobile"); localStorage.removeItem("gufName");
     document.getElementById("authArea").innerHTML = `<button class="login-btn" onclick="openLoginModal()">Login</button>`;
     document.getElementById("lpTitle").innerText = "Last Purchase";
