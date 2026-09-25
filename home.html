@@ -455,7 +455,6 @@
   </div>
 </div>
 
-<!-- BRAND MODAL WITH ALL BRANDS OPTION -->
 <div class="modal-overlay" id="brandModal">
   <div class="modal-box" style="display:block; max-width:650px; padding:32px;">
     <button class="modal-close" onclick="closeBrandModal()">✕</button>
@@ -599,6 +598,7 @@
   let allBrands = [];
   let currentSelectedVariant = null;
   let tempOrderData = null;
+  let isCheckingOut = false;
 
   function getImages(p) {
     return [p["Image 1"], p["Image 2"], p["Image 3"]].filter(img => img && img.trim() !== "");
@@ -1172,6 +1172,8 @@
   function closeProofModal() { document.getElementById("proofModal").classList.remove("open"); }
 
   async function launchUPIPayment() {
+    if (isCheckingOut) return;
+    
     const firstName = document.getElementById("chkFirstName").value.trim();
     const lastName = document.getElementById("chkLastName").value.trim();
     const phone = document.getElementById("chkPhone").value.trim();
@@ -1185,6 +1187,8 @@
       alert("Please fill in all required fields. Ensure Pincode (6 digits) and Phone (10 digits) are correct.");
       return;
     }
+
+    isCheckingOut = true;
 
     let total = 0;
     cart.forEach(item => {
@@ -1227,6 +1231,8 @@
 
     closeCheckoutModal();
     document.getElementById("proofModal").classList.add("open");
+    
+    setTimeout(() => { isCheckingOut = false; }, 3000);
   }
 
   function finishOrderProcess() {
