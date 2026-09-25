@@ -971,16 +971,19 @@
     renderProductsGrid();
 
     const lpCard = document.getElementById("lpCard");
-    if (user["LastPurchased"]) {
-      const lastProd = allProducts.find(p => (p["Product ID"] || "").trim() === String(user["LastPurchased"]).trim());
-      if (lastProd) {
-        document.getElementById("lpTitle").innerText = "Re-order";
-        document.getElementById("lpDesc").innerText = `Quick re-order: ${lastProd["Product Name"]} (${lastProd["Flavour"] || ""})`;
-        lpCard.onclick = () => {
-          const index = allProducts.findIndex(p => p["Product ID"] === lastProd["Product ID"]);
+    if (user["LastPurchasedItem"]) {
+      const orderedItemStr = String(user["LastPurchasedItem"]);
+      document.getElementById("lpTitle").innerText = "Re-order";
+      document.getElementById("lpDesc").innerText = `Last ordered: ${orderedItemStr}`;
+      lpCard.onclick = () => {
+        const found = allProducts.find(p => orderedItemStr.toLowerCase().includes((p["Product Name"] || "").toLowerCase()));
+        if (found) {
+          const index = allProducts.findIndex(p => p["Product ID"] === found["Product ID"]);
           if (index >= 0) openModal(index);
-        };
-      }
+        } else {
+          alert("Order item: " + orderedItemStr);
+        }
+      };
     } else {
       document.getElementById("lpTitle").innerText = "Last Purchase";
       document.getElementById("lpDesc").innerText = "No previous orders found yet.";
