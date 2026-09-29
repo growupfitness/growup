@@ -424,7 +424,7 @@
     <div class="cat-card" id="lpCard" style="border-color:var(--ember);" onclick="openOrderHistoryDrawer()">
       <div class="cat-plate">ORDERS</div>
       <h3 id="lpTitle">Order History</h3>
-      <p id="lpDesc">View all your previous orders placed on this device.</p>
+      <p id="lpDesc">View all your previous orders synced from Google Sheet.</p>
     </div>
     <div class="cat-card" onclick="document.getElementById('searchInput'].focus();">
       <div class="cat-plate">FLV</div>
@@ -738,36 +738,41 @@
     document.getElementById("products").scrollIntoView();
   }
 
-  function openOrderHistoryDrawer() {
+  async function openOrderHistoryDrawer() {
     if (!currentUser) {
       openLoginModal();
       return;
     }
 
     const wrap = document.getElementById("orderHistoryWrap");
+    wrap.innerHTML = `<p class="drawer-empty">Loading history from Google Sheet...</p>`;
     document.getElementById("orderHistoryDrawer").classList.add("open");
 
-    const historyKey = "guf_orders_" + currentUser["Mobile Number"];
-    let historyArr = [];
     try {
-      historyArr = JSON.parse(localStorage.getItem(historyKey) || "[]");
-    } catch(e) { historyArr = []; }
+      const res = await fetch(`${API_URL}?action=getOrders`);
+      const orders = await res.json();
+      const userMobile = String(currentUser["Mobile Number"]).replace(/\D/g, "").slice(-10);
 
-    if (historyArr.length === 0) {
-      wrap.innerHTML = `<p class="drawer-empty">No previous orders found on this device. Place your first order!</p>`;
-      return;
-    }
+      const userOrders = orders.filter(o => String(o["Phone Number"]).replace(/\D/g, "").slice(-10) === userMobile);
 
-    wrap.innerHTML = historyArr.reverse().map(ord => `
-      <div class="history-item">
-        <span class="date">📅 ${ord.date || "Recent"}</span>
-        <div class="item-name">📦 ${ord.items || "Product"}</div>
-        <div class="meta">
-          <span>Amount: <strong>₹${ord.amount || "0"}</strong></span>
-          <span style="color:var(--ember); font-weight:600;">${ord.status || "Pending Verification"}</span>
+      if (userOrders.length === 0) {
+        wrap.innerHTML = `<p class="drawer-empty">No previous orders found in Google Sheet for this number.</p>`;
+        return;
+      }
+
+      wrap.innerHTML = userOrders.reverse().map(ord => `
+        <div class="history-item">
+          <span class="date">📅 ${ord["Order Date"] || "Recent"}</span>
+          <div class="item-name">📦 ${ord["Item Ordered"] || "Product"}</div>
+          <div class="meta">
+            <span>Amount: <strong>₹${ord["Total Amount"] || "Paid"}</strong></span>
+            <span style="color:var(--ember); font-weight:600;">${ord["Order Status"] || "Pending"}</span>
+          </div>
         </div>
-      </div>
-    `).join("");
+      `).join("");
+    } catch (err) {
+      wrap.innerHTML = `<p class="drawer-empty">Could not load order history from server.</p>`;
+    }
   }
 
   function renderProductsGrid() {
@@ -998,7 +1003,7 @@
     } catch (e) { console.error(e); }
   }
 
-  function handleLoginSuccess(user) {
+  async function handleLoginSuccess(user) {
     currentUser = user;
     localStorage.setItem("gufMobile", user["Mobile Number"]);
     localStorage.setItem("gufName", user["User Name"]);
@@ -1008,16 +1013,20 @@
     renderWishlistBadge();
     renderProductsGrid();
 
-    const historyKey = "guf_orders_" + user["Mobile Number"];
-    let historyArr = [];
-    try { historyArr = JSON.parse(localStorage.getItem(historyKey) || "[]"); } catch(e) { historyArr = []; }
-
-    if (historyArr.length > 0) {
-      document.getElementById("lpTitle").innerText = "Order History (" + historyArr.length + ")";
-      document.getElementById("lpDesc").innerText = `View all ${historyArr.length} previous orders & re-order.`;
-    } else {
-      document.getElementById("lpTitle").innerText = "Order History";
-      document.getElementById("lpDesc").innerText = "No orders yet. Click to view history.";
+    // Check Google Sheet Orders tab for this user's total past orders count
+    try {
+      const ordRes = await fetch(`${API_URL}?action=getOrders`);
+      const orders = await ordRes.json();
+      if (Array.isArray(orders) && orders.length > 0) {
+        const userMobile = String(user["Mobile Number"]).replace(/\D/g, "").slice(-10);
+        const userOrders = orders.filter(o => String(o["Phone Number"]).replace(/\D/g, "").slice(-10) === userMobile);
+        if (userOrders.length > 0) {
+          document.getElementById("lpTitle").innerText = "Order History (" + userOrders.length + ")";
+          document.getElementById("lpDesc").innerText = `View all ${userOrders.length} previous orders from Google Sheet.`;
+        }
+      }
+    } catch(err) {
+      console.error(err);
     }
 
     document.getElementById("authArea").innerHTML = `
@@ -1035,7 +1044,7 @@
     localStorage.removeItem("gufMobile"); localStorage.removeItem("gufName");
     document.getElementById("authArea").innerHTML = `<button class="login-btn" onclick="openLoginModal()">Login</button>`;
     document.getElementById("lpTitle").innerText = "Order History";
-    document.getElementById("lpDesc").innerText = "Login to view all your previous orders directly on the website.";
+    document.getElementById("lpDesc").innerText = "Login to view all your previous orders directly from Google Sheet.";
     renderCartBadge(); renderWishlistBadge(); renderProductsGrid();
   }
 
@@ -1230,7 +1239,6 @@
       return p ? `${p["Product Name"]} (${p["Weight / Size"] || ""}) [${p["Flavour"] || ""}] x${item.qty}` : "";
     }).filter(Boolean).join(", ");
 
-    // Save order to Google Sheet
     try {
       await fetch(API_URL, {
         method: "POST",
@@ -1251,21 +1259,6 @@
       });
     } catch (err) {
       console.error("Order save error:", err);
-    }
-
-    // Save order to LocalStorage for instant history display on website
-    if (currentUser) {
-      const historyKey = "guf_orders_" + currentUser["Mobile Number"];
-      let historyArr = [];
-      try { historyArr = JSON.parse(localStorage.getItem(historyKey) || "[]"); } catch(e) { historyArr = []; }
-
-      historyArr.push({
-        date: new Date().toLocaleString(),
-        items: itemsCombined,
-        amount: total,
-        status: "Pending Verification"
-      });
-      localStorage.setItem(historyKey, JSON.stringify(historyArr));
     }
 
     const waText = encodeURIComponent(`Hi Grow Up Fitness, I have placed an order for ₹${total}.\nName: ${firstName} ${lastName}\nPhone: ${phone}\nPincode: ${pincode}\nAddress: ${address}, ${city}, ${state}\nHere is my payment screenshot:`);
