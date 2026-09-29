@@ -143,7 +143,7 @@
     font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 20px; z-index: 5; text-transform: uppercase;
   }
 
-  .drawer-box{max-width:420px;width:100%;padding:28px 24px;display:block;text-align:left; background:var(--iron-light);border:1px solid var(--border-color);}
+  .drawer-box{max-width:480px;width:100%;padding:28px 24px;display:block;text-align:left; background:var(--iron-light);border:1px solid var(--border-color);max-height:85vh;overflow-y:auto;}
   .drawer-box h2{font-size:24px;margin-bottom:20px;text-transform:none;font-family:'Inter';color:var(--chalk);}
   .drawer-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-color);align-items:center;}
   .drawer-item img{width:56px;height:56px;object-fit:contain;background:var(--iron);border-radius:var(--radius);padding:4px;}
@@ -336,10 +336,35 @@
 
   .wa-float{position:fixed;bottom:24px;right:24px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 20px rgba(0,0,0,0.2);z-index:60;}
 
-  .history-item{display:flex;flex-direction:column;gap:6px;padding:14px 0;border-bottom:1px solid var(--border-color);}
-  .history-item .date{font-size:11px;color:var(--steel);}
-  .history-item .item-name{font-size:14px;font-weight:700;color:var(--chalk);}
-  .history-item .meta{display:flex;justify-content:space-between;font-size:12px;color:var(--steel);}
+  /* ORDER HISTORY CARD STYLING */
+  .history-card {
+    background: var(--iron);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .history-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--steel);
+    margin-bottom: 8px;
+  }
+  .history-items {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--chalk);
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .history-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 8px;
+  }
 
   .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease, transform .7s ease;}
   .reveal.in-view{opacity:1;transform:translateY(0);}
@@ -505,9 +530,9 @@
 
 <!-- ORDER HISTORY DRAWER -->
 <div class="modal-overlay" id="orderHistoryDrawer">
-  <div class="modal-box drawer-box">
+  <div class="modal-box drawer-box" style="max-width:520px;">
     <button class="modal-close" onclick="closeDrawer('orderHistoryDrawer')">✕</button>
-    <h2>Your Order History</h2>
+    <h2>Order History</h2>
     <div id="orderHistoryWrap"></div>
   </div>
 </div>
@@ -745,7 +770,7 @@
     }
 
     const wrap = document.getElementById("orderHistoryWrap");
-    wrap.innerHTML = `<p class="drawer-empty">Loading history from Google Sheet...</p>`;
+    wrap.innerHTML = `<p class="drawer-empty">Fetching orders from Google Sheet...</p>`;
     document.getElementById("orderHistoryDrawer").classList.add("open");
 
     try {
@@ -755,23 +780,36 @@
 
       const userOrders = orders.filter(o => String(o["Phone Number"]).replace(/\D/g, "").slice(-10) === userMobile);
 
-      if (userOrders.length === 0) {
-        wrap.innerHTML = `<p class="drawer-empty">No previous orders found in Google Sheet for this number.</p>`;
+      if (!userOrders || userOrders.length === 0) {
+        wrap.innerHTML = `<p class="drawer-empty">No previous orders found for this number.</p>`;
         return;
       }
 
-      wrap.innerHTML = userOrders.reverse().map(ord => `
-        <div class="history-item">
-          <span class="date">📅 ${ord["Order Date"] || "Recent"}</span>
-          <div class="item-name">📦 ${ord["Item Ordered"] || "Product"}</div>
-          <div class="meta">
-            <span>Amount: <strong>₹${ord["Total Amount"] || "Paid"}</strong></span>
-            <span style="color:var(--ember); font-weight:600;">${ord["Order Status"] || "Pending"}</span>
+      wrap.innerHTML = userOrders.reverse().map(ord => {
+        const itemTitle = ord["Item Ordered"] || ord["Product Name"] || "Ordered Item";
+        const dateStr = ord["Order Date"] ? new Date(ord["Order Date"]).toLocaleString() : "Recent Order";
+        const amountStr = ord["Total Amount"] ? `₹${ord["Total Amount"]}` : "Paid";
+        const statusStr = ord["Order Status"] || "Pending Verification";
+
+        return `
+          <div class="history-card">
+            <div class="history-header">
+              <span>📅 ${dateStr}</span>
+              <span style="color:var(--ember); font-weight:700;">${statusStr}</span>
+            </div>
+            <div class="history-items">
+              📦 ${itemTitle}
+            </div>
+            <div class="history-footer">
+              <span style="font-size:12px; color:var(--steel);">Amount:</span>
+              <strong style="color:var(--chalk); font-size:15px;">${amountStr}</strong>
+            </div>
           </div>
-        </div>
-      `).join("");
+        `;
+      }).join("");
+
     } catch (err) {
-      wrap.innerHTML = `<p class="drawer-empty">Could not load order history from server.</p>`;
+      wrap.innerHTML = `<p class="drawer-empty">Failed to load order history from sheet.</p>`;
     }
   }
 
@@ -1013,21 +1051,8 @@
     renderWishlistBadge();
     renderProductsGrid();
 
-    // Check Google Sheet Orders tab for this user's total past orders count
-    try {
-      const ordRes = await fetch(`${API_URL}?action=getOrders`);
-      const orders = await ordRes.json();
-      if (Array.isArray(orders) && orders.length > 0) {
-        const userMobile = String(user["Mobile Number"]).replace(/\D/g, "").slice(-10);
-        const userOrders = orders.filter(o => String(o["Phone Number"]).replace(/\D/g, "").slice(-10) === userMobile);
-        if (userOrders.length > 0) {
-          document.getElementById("lpTitle").innerText = "Order History (" + userOrders.length + ")";
-          document.getElementById("lpDesc").innerText = `View all ${userOrders.length} previous orders from Google Sheet.`;
-        }
-      }
-    } catch(err) {
-      console.error(err);
-    }
+    document.getElementById("lpTitle").innerText = "Order History";
+    document.getElementById("lpDesc").innerText = "View all your past orders directly from Google Sheet.";
 
     document.getElementById("authArea").innerHTML = `
       <div class="user-chip">Hi, ${user["User Name"].split(' ')[0]} <span class="logout-link" onclick="logout()">Logout</span></div>
