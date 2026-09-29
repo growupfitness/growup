@@ -143,8 +143,8 @@
     font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 20px; z-index: 5; text-transform: uppercase;
   }
 
-  .drawer-box{max-width:480px;width:100%;padding:28px 24px;display:block;text-align:left; background:var(--iron-light);border:1px solid var(--border-color);max-height:85vh;overflow-y:auto;}
-  .drawer-box h2{font-size:24px;margin-bottom:20px;text-transform:none;font-family:'Inter';color:var(--chalk);}
+  .drawer-box{max-width:540px;width:95vw;padding:28px 20px;display:block;text-align:left; background:var(--iron-light);border:1px solid var(--border-color);max-height:88vh;overflow-y:auto;}
+  .drawer-box h2{font-size:24px;margin-bottom:18px;text-transform:none;font-family:'Inter';color:var(--chalk);}
   .drawer-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-color);align-items:center;}
   .drawer-item img{width:56px;height:56px;object-fit:contain;background:var(--iron);border-radius:var(--radius);padding:4px;}
   .drawer-item .info{flex:1;}
@@ -336,34 +336,53 @@
 
   .wa-float{position:fixed;bottom:24px;right:24px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 20px rgba(0,0,0,0.2);z-index:60;}
 
-  /* ORDER HISTORY CARD STYLING */
-  .history-card {
+  /* DETAILED ORDER HISTORY CARD */
+  .history-card-box {
     background: var(--iron);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 14px;
-    margin-bottom: 12px;
-  }
-  .history-header {
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 14px;
     display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--steel);
-    margin-bottom: 8px;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
   }
-  .history-items {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--chalk);
-    line-height: 1.4;
-    margin-bottom: 8px;
-  }
-  .history-footer {
+  .history-card-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px dashed var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+    font-size: 12px;
+    color: var(--steel);
+  }
+  .history-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--chalk);
+    line-height: 1.4;
+  }
+  .history-badge {
+    background: rgba(0, 114, 255, 0.12);
+    color: var(--ember);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+  .history-badge.confirmed {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+  }
+  .history-card-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 4px;
     padding-top: 8px;
+    border-top: 1px dashed var(--border-color);
   }
 
   .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease, transform .7s ease;}
@@ -449,9 +468,9 @@
     <div class="cat-card" id="lpCard" style="border-color:var(--ember);" onclick="openOrderHistoryDrawer()">
       <div class="cat-plate">ORDERS</div>
       <h3 id="lpTitle">Order History</h3>
-      <p id="lpDesc">View all your previous orders synced from Google Sheet.</p>
+      <p id="lpDesc">View all your previous purchases, items and status.</p>
     </div>
-    <div class="cat-card" onclick="document.getElementById('searchInput'].focus();">
+    <div class="cat-card" onclick="document.getElementById('searchInput').focus();">
       <div class="cat-plate">FLV</div>
       <h3>Shop by Flavour</h3>
       <p>Find your favorite taste like Swiss Chocolate, Strawberry, etc.</p>
@@ -530,10 +549,10 @@
 
 <!-- ORDER HISTORY DRAWER -->
 <div class="modal-overlay" id="orderHistoryDrawer">
-  <div class="modal-box drawer-box" style="max-width:520px;">
+  <div class="modal-box drawer-box">
     <button class="modal-close" onclick="closeDrawer('orderHistoryDrawer')">✕</button>
-    <h2>Order History</h2>
-    <div id="orderHistoryWrap"></div>
+    <h2>Your Order History</h2>
+    <div id="orderHistoryWrap" style="width:100%;"></div>
   </div>
 </div>
 
@@ -770,7 +789,7 @@
     }
 
     const wrap = document.getElementById("orderHistoryWrap");
-    wrap.innerHTML = `<p class="drawer-empty">Fetching orders from Google Sheet...</p>`;
+    wrap.innerHTML = `<p class="drawer-empty">Fetching detailed orders from Google Sheet...</p>`;
     document.getElementById("orderHistoryDrawer").classList.add("open");
 
     try {
@@ -778,39 +797,88 @@
       const orders = await res.json();
       const userMobile = String(currentUser["Mobile Number"]).replace(/\D/g, "").slice(-10);
 
-      const userOrders = orders.filter(o => String(o["Phone Number"]).replace(/\D/g, "").slice(-10) === userMobile);
+      const userOrders = orders.filter(o => {
+        const phone = String(o["Phone Number"] || o["Phone"] || o["Mobile Number"] || "").replace(/\D/g, "").slice(-10);
+        return phone === userMobile;
+      });
 
       if (!userOrders || userOrders.length === 0) {
-        wrap.innerHTML = `<p class="drawer-empty">No previous orders found for this number.</p>`;
+        wrap.innerHTML = `<p class="drawer-empty">No orders found for this account.</p>`;
         return;
       }
 
       wrap.innerHTML = userOrders.reverse().map(ord => {
-        const itemTitle = ord["Item Ordered"] || ord["Product Name"] || "Ordered Item";
-        const dateStr = ord["Order Date"] ? new Date(ord["Order Date"]).toLocaleString() : "Recent Order";
-        const amountStr = ord["Total Amount"] ? `₹${ord["Total Amount"]}` : "Paid";
-        const statusStr = ord["Order Status"] || "Pending Verification";
+        // Robust extraction of Item Ordered column
+        let itemTitle = ord["Item Ordered"] || ord["ItemOrdered"] || ord["Item"] || ord["Product Name"] || "";
+        if (!itemTitle) {
+          // If keys have spaces/trim issue, search through all properties
+          for (let k in ord) {
+            if (k.toLowerCase().includes("item") || k.toLowerCase().includes("product")) {
+              if (ord[k]) { itemTitle = ord[k]; break; }
+            }
+          }
+        }
+        if (!itemTitle) itemTitle = "Fitness Nutrition Package";
+
+        const dateStr = ord["Order Date"] ? String(ord["Order Date"]) : "Recent";
+        const totalAmount = Number(ord["Total Amount"] || ord["Amount"] || 0);
+        const statusStr = ord["Order Status"] || ord["Status"] || "Pending Verification";
+        const isConfirmed = statusStr.toLowerCase().includes("confirm");
+
+        // Match with product database to fetch original MRP & discount
+        const matchedProduct = allProducts.find(p => itemTitle.toLowerCase().includes((p["Product Name"] || "").toLowerCase()));
+        let mrpDisplay = "";
+        let offBadge = "";
+
+        if (matchedProduct && Number(matchedProduct["MRP"])) {
+          const mrpVal = Number(matchedProduct["MRP"]);
+          const sellingVal = Number(matchedProduct["Selling Price"]) || totalAmount;
+          if (mrpVal > sellingVal) {
+            const offPct = Math.round(((mrpVal - sellingVal) / mrpVal) * 100);
+            mrpDisplay = `<span style="text-decoration:line-through; color:var(--steel); font-size:12px; margin-right:6px;">₹${mrpVal}</span>`;
+            offBadge = `<span style="color:#10b981; font-size:11px; font-weight:700;">(${offPct}% OFF)</span>`;
+          }
+        }
 
         return `
-          <div class="history-card">
-            <div class="history-header">
+          <div class="history-card-box">
+            <div class="history-card-top">
               <span>📅 ${dateStr}</span>
-              <span style="color:var(--ember); font-weight:700;">${statusStr}</span>
+              <span class="history-badge ${isConfirmed ? 'confirmed' : ''}">● ${statusStr}</span>
             </div>
-            <div class="history-items">
+            
+            <div class="history-card-title">
               📦 ${itemTitle}
             </div>
-            <div class="history-footer">
-              <span style="font-size:12px; color:var(--steel);">Amount:</span>
-              <strong style="color:var(--chalk); font-size:15px;">${amountStr}</strong>
+
+            <div class="history-card-details">
+              <div>
+                <span style="font-size:11px; color:var(--steel); display:block;">Paid Amount</span>
+                <span style="font-size:16px; font-weight:800; color:var(--chalk);">
+                  ${mrpDisplay} ₹${totalAmount || 'Paid'} ${offBadge}
+                </span>
+              </div>
+              
+              ${matchedProduct ? `
+                <button class="btn-ghost" style="padding:6px 12px; font-size:11px;" onclick="reorderProduct('${matchedProduct["Product ID"] || matchedProduct["Product Name"]}')">
+                  ↻ Re-order
+                </button>
+              ` : ''}
             </div>
           </div>
         `;
       }).join("");
 
     } catch (err) {
-      wrap.innerHTML = `<p class="drawer-empty">Failed to load order history from sheet.</p>`;
+      console.error(err);
+      wrap.innerHTML = `<p class="drawer-empty">Could not load orders. Please try again.</p>`;
     }
+  }
+
+  function reorderProduct(pid) {
+    addToCart(pid);
+    closeDrawer('orderHistoryDrawer');
+    openCartDrawer();
   }
 
   function renderProductsGrid() {
@@ -1052,7 +1120,7 @@
     renderProductsGrid();
 
     document.getElementById("lpTitle").innerText = "Order History";
-    document.getElementById("lpDesc").innerText = "View all your past orders directly from Google Sheet.";
+    document.getElementById("lpDesc").innerText = "Click to view your past purchases and items.";
 
     document.getElementById("authArea").innerHTML = `
       <div class="user-chip">Hi, ${user["User Name"].split(' ')[0]} <span class="logout-link" onclick="logout()">Logout</span></div>
