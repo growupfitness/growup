@@ -424,7 +424,7 @@
     <div class="cat-card" id="lpCard" style="border-color:var(--ember);" onclick="openOrderHistoryDrawer()">
       <div class="cat-plate">ORDERS</div>
       <h3 id="lpTitle">Order History</h3>
-      <p id="lpDesc">Login to view all your previous orders directly on the website.</p>
+      <p id="lpDesc">View all your previous orders placed on this device.</p>
     </div>
     <div class="cat-card" onclick="document.getElementById('searchInput'].focus();">
       <div class="cat-plate">FLV</div>
@@ -599,7 +599,7 @@
 <a href="https://wa.me/919571214461?text=Hi,%20I%20have%20an%20inquiry" target="_blank" class="wa-float">💬</a>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbxCADMOE1_I4I3EFGw3a-1boePqfYmDsRjzf21jFDn-2ojD0JmHC0On4wlRIUhMEqg/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycby2PTil_uOiY5DaF9jCcNSU951tfWuxd12CsQCiJCkagfkaoR6qJW8P3WVv1Yhl6WXN/exec";
   const MERCHANT_UPI = "salvinitinudr-6@okaxis";
   const MERCHANT_NAME = "Grow Up Fitness";
 
@@ -747,13 +747,14 @@
     const wrap = document.getElementById("orderHistoryWrap");
     document.getElementById("orderHistoryDrawer").classList.add("open");
 
+    const historyKey = "guf_orders_" + currentUser["Mobile Number"];
     let historyArr = [];
     try {
-      historyArr = JSON.parse(currentUser["Order History"] || "[]");
+      historyArr = JSON.parse(localStorage.getItem(historyKey) || "[]");
     } catch(e) { historyArr = []; }
 
     if (historyArr.length === 0) {
-      wrap.innerHTML = `<p class="drawer-empty">No previous orders found yet. Place your first order!</p>`;
+      wrap.innerHTML = `<p class="drawer-empty">No previous orders found on this device. Place your first order!</p>`;
       return;
     }
 
@@ -763,7 +764,7 @@
         <div class="item-name">📦 ${ord.items || "Product"}</div>
         <div class="meta">
           <span>Amount: <strong>₹${ord.amount || "0"}</strong></span>
-          <span style="color:var(--ember); font-weight:600;">${ord.status || "Pending"}</span>
+          <span style="color:var(--ember); font-weight:600;">${ord.status || "Pending Verification"}</span>
         </div>
       </div>
     `).join("");
@@ -1007,8 +1008,9 @@
     renderWishlistBadge();
     renderProductsGrid();
 
+    const historyKey = "guf_orders_" + user["Mobile Number"];
     let historyArr = [];
-    try { historyArr = JSON.parse(user["Order History"] || "[]"); } catch(e) { historyArr = []; }
+    try { historyArr = JSON.parse(localStorage.getItem(historyKey) || "[]"); } catch(e) { historyArr = []; }
 
     if (historyArr.length > 0) {
       document.getElementById("lpTitle").innerText = "Order History (" + historyArr.length + ")";
@@ -1228,6 +1230,7 @@
       return p ? `${p["Product Name"]} (${p["Weight / Size"] || ""}) [${p["Flavour"] || ""}] x${item.qty}` : "";
     }).filter(Boolean).join(", ");
 
+    // Save order to Google Sheet
     try {
       await fetch(API_URL, {
         method: "POST",
@@ -1248,6 +1251,21 @@
       });
     } catch (err) {
       console.error("Order save error:", err);
+    }
+
+    // Save order to LocalStorage for instant history display on website
+    if (currentUser) {
+      const historyKey = "guf_orders_" + currentUser["Mobile Number"];
+      let historyArr = [];
+      try { historyArr = JSON.parse(localStorage.getItem(historyKey) || "[]"); } catch(e) { historyArr = []; }
+
+      historyArr.push({
+        date: new Date().toLocaleString(),
+        items: itemsCombined,
+        amount: total,
+        status: "Pending Verification"
+      });
+      localStorage.setItem(historyKey, JSON.stringify(historyArr));
     }
 
     const waText = encodeURIComponent(`Hi Grow Up Fitness, I have placed an order for ₹${total}.\nName: ${firstName} ${lastName}\nPhone: ${phone}\nPincode: ${pincode}\nAddress: ${address}, ${city}, ${state}\nHere is my payment screenshot:`);
