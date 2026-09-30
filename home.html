@@ -16,7 +16,7 @@
     --ember-dim:#0056b3;
     --plate-blue:#e2e8f0;
     --border-color: rgba(15, 23, 42, 0.12);
-    --radius:2px;
+    --radius:4px;
   }
 
   [data-theme="dark"] {
@@ -30,11 +30,11 @@
     --border-color: rgba(243,241,233,0.15);
   }
 
-  *{margin:0;padding:0;box-sizing:border-box; transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;}
+  *{margin:0;padding:0;box-sizing:border-box; transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;}
   html{scroll-behavior:smooth;}
-  ::-webkit-scrollbar{width:10px;}
+  ::-webkit-scrollbar{width:8px;}
   ::-webkit-scrollbar-track{background:var(--iron);}
-  ::-webkit-scrollbar-thumb{background:var(--ember-dim);border-radius:5px;}
+  ::-webkit-scrollbar-thumb{background:var(--ember-dim);border-radius:4px;}
   body{
     background:var(--iron);
     color:var(--chalk);
@@ -143,7 +143,7 @@
     font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 20px; z-index: 5; text-transform: uppercase;
   }
 
-  .drawer-box{max-width:520px;width:95vw;padding:24px 20px;display:block;text-align:left; background:var(--iron-light);border:1px solid var(--border-color);max-height:88vh;overflow-y:auto;}
+  .drawer-box{max-width:560px;width:94vw;padding:26px 20px;display:block;text-align:left; background:var(--iron-light);border:1px solid var(--border-color);max-height:88vh;overflow-y:auto;border-radius:6px;}
   .drawer-box h2{font-size:24px;margin-bottom:18px;text-transform:none;font-family:'Inter';color:var(--chalk);}
   .drawer-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-color);align-items:center;}
   .drawer-item img{width:56px;height:56px;object-fit:contain;background:var(--iron);border-radius:var(--radius);padding:4px;}
@@ -336,51 +336,65 @@
 
   .wa-float{position:fixed;bottom:24px;right:24px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 20px rgba(0,0,0,0.2);z-index:60;}
 
-  /* ORDER CARD MODERN DESIGN */
-  .order-box {
+  /* DETAILED ORDER BOX WITH FLAVOUR & WEIGHT BADGES */
+  .order-item-card {
     background: var(--iron);
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 14px;
-    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
   }
-  .order-box-header {
+  .order-item-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 8px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--steel);
   }
-  .order-box-title {
-    font-size: 15px;
+  .order-item-title {
+    font-size: 16px;
     font-weight: 700;
     color: var(--chalk);
-    line-height: 1.4;
+    line-height: 1.3;
   }
-  .order-box-details {
+  .order-meta-tags {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 6px;
     margin-top: 4px;
-    padding-top: 8px;
-    border-top: 1px dashed var(--border-color);
   }
-  .order-tag {
-    background: rgba(0, 114, 255, 0.1);
-    color: var(--ember);
+  .meta-tag {
+    background: var(--iron-light);
+    border: 1px solid var(--border-color);
+    color: var(--chalk);
+    font-size: 11px;
+    font-weight: 600;
     padding: 3px 8px;
     border-radius: 4px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
   }
-  .order-tag.confirmed {
+  .order-item-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 10px;
+    margin-top: 4px;
+  }
+  .order-status-badge {
+    padding: 4px 9px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    background: rgba(0, 114, 255, 0.12);
+    color: var(--ember);
+  }
+  .order-status-badge.confirmed {
     background: rgba(16, 185, 129, 0.15);
     color: #10b981;
   }
@@ -470,7 +484,7 @@
       <h3 id="lpTitle">Order History</h3>
       <p id="lpDesc">View all your previous purchases, items and status.</p>
     </div>
-    <div class="cat-card" onclick="document.getElementById('searchInput'].focus();">
+    <div class="cat-card" onclick="document.getElementById('searchInput').focus();">
       <div class="cat-plate">FLV</div>
       <h3>Shop by Flavour</h3>
       <p>Find your favorite taste like Swiss Chocolate, Strawberry, etc.</p>
@@ -549,9 +563,9 @@
 
 <!-- ORDER HISTORY DRAWER -->
 <div class="modal-overlay" id="orderHistoryDrawer">
-  <div class="modal-box drawer-box" style="max-width:540px;">
+  <div class="modal-box drawer-box">
     <button class="modal-close" onclick="closeDrawer('orderHistoryDrawer')">✕</button>
-    <h2>Order History</h2>
+    <h2>Your Order History</h2>
     <div id="orderHistoryWrap" style="width:100%;"></div>
   </div>
 </div>
@@ -643,6 +657,7 @@
 <a href="https://wa.me/919571214461?text=Hi,%20I%20have%20an%20inquiry" target="_blank" class="wa-float">💬</a>
 
 <script>
+  // Updated Google Apps Script API URL
   const API_URL = "https://script.google.com/macros/s/AKfycby2PTil_uOiY5DaF9jCcNSU951tfWuxd12CsQCiJCkagfkaoR6qJW8P3WVv1Yhl6WXN/exec";
   const MERCHANT_UPI = "salvinitinudr-6@okaxis";
   const MERCHANT_NAME = "Grow Up Fitness";
@@ -668,7 +683,7 @@
     const savedTheme = localStorage.getItem("gufTheme") || "light";
     if (savedTheme === "dark") {
       html.setAttribute("data-theme", "dark");
-      btn.innerText = "☀️️";
+      btn.innerText = "☀️";
     } else {
       html.removeAttribute("data-theme");
       btn.innerText = "🌙";
@@ -782,6 +797,25 @@
     document.getElementById("products").scrollIntoView();
   }
 
+  // Parse exact details from item text: "Product Name (Weight) [Flavour] xQty"
+  function parseOrderString(rawStr) {
+    let title = rawStr || "Product";
+    let weight = "";
+    let flavour = "";
+    let qty = "1";
+
+    const qtyMatch = title.match(/x(\d+)/i);
+    if (qtyMatch) { qty = qtyMatch[1]; title = title.replace(qtyMatch[0], "").trim(); }
+
+    const flavMatch = title.match(/\[(.*?)\]/);
+    if (flavMatch) { flavour = flavMatch[1]; title = title.replace(flavMatch[0], "").trim(); }
+
+    const weightMatch = title.match(/\((.*?)\)/);
+    if (weightMatch) { weight = weightMatch[1]; title = title.replace(weightMatch[0], "").trim(); }
+
+    return { title: title.trim(), weight: weight.trim(), flavour: flavour.trim(), qty: qty };
+  }
+
   async function openOrderHistoryDrawer() {
     if (!currentUser) {
       openLoginModal();
@@ -792,27 +826,28 @@
     wrap.innerHTML = `<p class="drawer-empty">Fetching detailed orders from Google Sheet...</p>`;
     document.getElementById("orderHistoryDrawer").classList.add("open");
 
+    const cleanUserMobile = String(currentUser["Mobile Number"]).replace(/\D/g, "").slice(-10);
+
     try {
-      const res = await fetch(`${API_URL}?action=getOrders`);
+      const res = await fetch(`${API_URL}?action=getOrders&mobile=${cleanUserMobile}`);
       const orders = await res.json();
-      const userMobile = String(currentUser["Mobile Number"]).replace(/\D/g, "").slice(-10);
 
-      const userOrders = orders.filter(o => o.phone === userMobile);
-
-      if (!userOrders || userOrders.length === 0) {
-        wrap.innerHTML = `<p class="drawer-empty">No orders found for this account.</p>`;
+      if (!Array.isArray(orders) || orders.length === 0) {
+        wrap.innerHTML = `<p class="drawer-empty">No orders found for ${cleanUserMobile}. Place an order to see it here!</p>`;
         return;
       }
 
-      wrap.innerHTML = userOrders.reverse().map(ord => {
-        const itemTitle = ord.item || "Fitness Package";
+      wrap.innerHTML = orders.reverse().map(ord => {
+        const parsed = parseOrderString(ord.item);
         const dateStr = ord.date || "Recent";
         const totalAmount = Number(ord.amount) || 0;
         const statusStr = ord.status || "Pending Verification";
         const isConfirmed = statusStr.toLowerCase().includes("confirm");
 
-        // Match product details from allProducts for accurate MRP and Discount
-        const matchedProduct = allProducts.find(p => itemTitle.toLowerCase().includes((p["Product Name"] || "").toLowerCase()));
+        // Match product in allProducts catalog to get original MRP & discount
+        const matchedProduct = allProducts.find(p => (p["Product Name"] || "").trim().toLowerCase() === parsed.title.toLowerCase()) 
+                             || allProducts.find(p => (ord.item || "").toLowerCase().includes((p["Product Name"] || "").toLowerCase()));
+
         let mrpDisplay = "";
         let offBadge = "";
 
@@ -827,17 +862,23 @@
         }
 
         return `
-          <div class="order-box">
-            <div class="order-box-header">
+          <div class="order-item-card">
+            <div class="order-item-header">
               <span>📅 ${dateStr}</span>
-              <span class="order-tag ${isConfirmed ? 'confirmed' : ''}">● ${statusStr}</span>
+              <span class="order-status-badge ${isConfirmed ? 'confirmed' : ''}">● ${statusStr}</span>
             </div>
             
-            <div class="order-box-title">
-              📦 ${itemTitle}
+            <div class="order-item-title">
+              📦 ${parsed.title}
             </div>
 
-            <div class="order-box-details">
+            <div class="order-meta-tags">
+              ${parsed.weight ? `<span class="meta-tag">⚖️ ${parsed.weight}</span>` : ''}
+              ${parsed.flavour ? `<span class="meta-tag">👅 ${parsed.flavour}</span>` : ''}
+              ${parsed.qty ? `<span class="meta-tag">Qty: ${parsed.qty}</span>` : ''}
+            </div>
+
+            <div class="order-item-footer">
               <div>
                 <span style="font-size:11px; color:var(--steel); display:block;">Paid Amount</span>
                 <span style="font-size:16px; font-weight:800; color:var(--chalk);">
@@ -857,7 +898,7 @@
 
     } catch (err) {
       console.error(err);
-      wrap.innerHTML = `<p class="drawer-empty">Failed to load orders from sheet. Please try again.</p>`;
+      wrap.innerHTML = `<p class="drawer-empty">Failed to load orders. Please check your internet connection.</p>`;
     }
   }
 
