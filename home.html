@@ -143,7 +143,7 @@
     font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 20px; z-index: 5; text-transform: uppercase;
   }
 
-  .drawer-box{max-width:540px;width:95vw;padding:24px 20px;display:block;text-align:left; background:var(--iron-light);border:1px solid var(--border-color);max-height:88vh;overflow-y:auto;border-radius:6px;box-sizing:border-box;}
+  .drawer-box{max-width:560px;width:95vw;padding:26px 20px;display:block;text-align:left; background:var(--iron-light);border:1px solid var(--border-color);max-height:88vh;overflow-y:auto;border-radius:6px;box-sizing:border-box;}
   .drawer-box h2{font-size:24px;margin-bottom:18px;text-transform:none;font-family:'Inter';color:var(--chalk);}
   .drawer-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-color);align-items:center;}
   .drawer-item img{width:56px;height:56px;object-fit:contain;background:var(--iron);border-radius:var(--radius);padding:4px;}
@@ -336,7 +336,7 @@
 
   .wa-float{position:fixed;bottom:24px;right:24px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 20px rgba(0,0,0,0.2);z-index:60;}
 
-  /* ORDER CARD MODERN DESIGN */
+  /* FULL-WIDTH CLEAN ORDER CARD STYLING */
   .order-item-card {
     background: var(--iron);
     border: 1px solid var(--border-color);
@@ -347,6 +347,7 @@
     flex-direction: column;
     gap: 10px;
     width: 100%;
+    box-sizing: border-box;
   }
   .order-item-header {
     display: flex;
@@ -375,7 +376,7 @@
     color: var(--chalk);
     font-size: 11px;
     font-weight: 600;
-    padding: 3px 8px;
+    padding: 4px 9px;
     border-radius: 4px;
   }
   .order-item-footer {
@@ -562,12 +563,12 @@
   </div>
 </div>
 
-<!-- ORDER HISTORY DRAWER -->
+<!-- ORDER HISTORY DRAWER (Centered & Full Width) -->
 <div class="modal-overlay" id="orderHistoryDrawer">
   <div class="modal-box drawer-box">
     <button class="modal-close" onclick="closeDrawer('orderHistoryDrawer')">✕</button>
-    <h2>Order History</h2>
-    <div id="orderHistoryWrap" style="width:100%;"></div>
+    <h2>Your Order History</h2>
+    <div id="orderHistoryWrap" style="width:100%; display:flex; flex-direction:column; gap:8px;"></div>
   </div>
 </div>
 
@@ -658,7 +659,8 @@
 <a href="https://wa.me/919571214461?text=Hi,%20I%20have%20an%20inquiry" target="_blank" class="wa-float">💬</a>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycby2PTil_uOiY5DaF9jCcNSU951tfWuxd12CsQCiJCkagfkaoR6qJW8P3WVv1Yhl6WXN/exec";
+  // Active Deployed API URL
+  const API_URL = "https://script.google.com/macros/s/AKfycbxQLr8bVtyBl_lR46EhId7cTgpCAS_IK3pKh4eXAidfTGEs17FJ5YOD08PKEZb3ZuiB/exec";
   const MERCHANT_UPI = "salvinitinudr-6@okaxis";
   const MERCHANT_NAME = "Grow Up Fitness";
 
@@ -797,24 +799,43 @@
     document.getElementById("products").scrollIntoView();
   }
 
-  // Parses exact item string e.g. "Nitro Whey (2 kg) [Swiss Chocolate] x1"
+  // Parse exact product text without empty fallbacks
   function parseOrderString(rawStr) {
-    if (!rawStr) return { title: "Supplement Order", weight: "", flavour: "", qty: "1" };
+    if (!rawStr || String(rawStr).trim() === "") {
+      return { title: "Nutritional Supplement", weight: "", flavour: "", qty: "1" };
+    }
     let title = String(rawStr).trim();
     let weight = "";
     let flavour = "";
     let qty = "1";
 
     const qtyMatch = title.match(/x\s*(\d+)/i);
-    if (qtyMatch) { qty = qtyMatch[1]; title = title.replace(qtyMatch[0], "").trim(); }
+    if (qtyMatch) { 
+      qty = qtyMatch[1]; 
+      title = title.replace(qtyMatch[0], "").trim(); 
+    }
 
     const flavMatch = title.match(/\[(.*?)\]/);
-    if (flavMatch) { flavour = flavMatch[1]; title = title.replace(flavMatch[0], "").trim(); }
+    if (flavMatch) { 
+      flavour = flavMatch[1]; 
+      title = title.replace(flavMatch[0], "").trim(); 
+    }
 
     const weightMatch = title.match(/\((.*?)\)/);
-    if (weightMatch) { weight = weightMatch[1]; title = title.replace(weightMatch[0], "").trim(); }
+    if (weightMatch) { 
+      weight = weightMatch[1]; 
+      title = title.replace(weightMatch[0], "").trim(); 
+    }
 
-    return { title: title || rawStr, weight: weight, flavour: flavour, qty: qty };
+    // Remove trailing commas or extra symbols
+    title = title.replace(/^,\s*|,\s*$/g, "").trim();
+
+    return { 
+      title: title || rawStr, 
+      weight: weight, 
+      flavour: flavour, 
+      qty: qty 
+    };
   }
 
   async function openOrderHistoryDrawer() {
