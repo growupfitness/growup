@@ -143,7 +143,7 @@
     font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 20px; z-index: 5; text-transform: uppercase;
   }
 
-  .drawer-box{max-width:540px;width:95vw;padding:28px 20px;display:block;text-align:left; background:var(--iron-light);border:1px solid var(--border-color);max-height:88vh;overflow-y:auto;}
+  .drawer-box{max-width:520px;width:95vw;padding:24px 20px;display:block;text-align:left; background:var(--iron-light);border:1px solid var(--border-color);max-height:88vh;overflow-y:auto;}
   .drawer-box h2{font-size:24px;margin-bottom:18px;text-transform:none;font-family:'Inter';color:var(--chalk);}
   .drawer-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-color);align-items:center;}
   .drawer-item img{width:56px;height:56px;object-fit:contain;background:var(--iron);border-radius:var(--radius);padding:4px;}
@@ -336,53 +336,53 @@
 
   .wa-float{position:fixed;bottom:24px;right:24px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 20px rgba(0,0,0,0.2);z-index:60;}
 
-  /* DETAILED ORDER HISTORY CARD */
-  .history-card-box {
+  /* ORDER CARD MODERN DESIGN */
+  .order-box {
     background: var(--iron);
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: 8px;
     padding: 16px;
     margin-bottom: 14px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    width: 100%;
   }
-  .history-card-top {
+  .order-box-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 8px;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--steel);
   }
-  .history-card-title {
+  .order-box-title {
     font-size: 15px;
     font-weight: 700;
     color: var(--chalk);
     line-height: 1.4;
   }
-  .history-badge {
-    background: rgba(0, 114, 255, 0.12);
-    color: var(--ember);
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-weight: 700;
-    font-size: 11px;
-    text-transform: uppercase;
-  }
-  .history-badge.confirmed {
-    background: rgba(16, 185, 129, 0.15);
-    color: #10b981;
-  }
-  .history-card-details {
+  .order-box-details {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     margin-top: 4px;
     padding-top: 8px;
     border-top: 1px dashed var(--border-color);
+  }
+  .order-tag {
+    background: rgba(0, 114, 255, 0.1);
+    color: var(--ember);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .order-tag.confirmed {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
   }
 
   .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease, transform .7s ease;}
@@ -470,7 +470,7 @@
       <h3 id="lpTitle">Order History</h3>
       <p id="lpDesc">View all your previous purchases, items and status.</p>
     </div>
-    <div class="cat-card" onclick="document.getElementById('searchInput').focus();">
+    <div class="cat-card" onclick="document.getElementById('searchInput'].focus();">
       <div class="cat-plate">FLV</div>
       <h3>Shop by Flavour</h3>
       <p>Find your favorite taste like Swiss Chocolate, Strawberry, etc.</p>
@@ -549,9 +549,9 @@
 
 <!-- ORDER HISTORY DRAWER -->
 <div class="modal-overlay" id="orderHistoryDrawer">
-  <div class="modal-box drawer-box">
+  <div class="modal-box drawer-box" style="max-width:540px;">
     <button class="modal-close" onclick="closeDrawer('orderHistoryDrawer')">✕</button>
-    <h2>Your Order History</h2>
+    <h2>Order History</h2>
     <div id="orderHistoryWrap" style="width:100%;"></div>
   </div>
 </div>
@@ -668,7 +668,7 @@
     const savedTheme = localStorage.getItem("gufTheme") || "light";
     if (savedTheme === "dark") {
       html.setAttribute("data-theme", "dark");
-      btn.innerText = "☀️";
+      btn.innerText = "☀️️";
     } else {
       html.removeAttribute("data-theme");
       btn.innerText = "🌙";
@@ -797,10 +797,7 @@
       const orders = await res.json();
       const userMobile = String(currentUser["Mobile Number"]).replace(/\D/g, "").slice(-10);
 
-      const userOrders = orders.filter(o => {
-        const phone = String(o["Phone Number"] || o["Phone"] || o["Mobile Number"] || "").replace(/\D/g, "").slice(-10);
-        return phone === userMobile;
-      });
+      const userOrders = orders.filter(o => o.phone === userMobile);
 
       if (!userOrders || userOrders.length === 0) {
         wrap.innerHTML = `<p class="drawer-empty">No orders found for this account.</p>`;
@@ -808,24 +805,13 @@
       }
 
       wrap.innerHTML = userOrders.reverse().map(ord => {
-        // Robust extraction of Item Ordered column
-        let itemTitle = ord["Item Ordered"] || ord["ItemOrdered"] || ord["Item"] || ord["Product Name"] || "";
-        if (!itemTitle) {
-          // If keys have spaces/trim issue, search through all properties
-          for (let k in ord) {
-            if (k.toLowerCase().includes("item") || k.toLowerCase().includes("product")) {
-              if (ord[k]) { itemTitle = ord[k]; break; }
-            }
-          }
-        }
-        if (!itemTitle) itemTitle = "Fitness Nutrition Package";
-
-        const dateStr = ord["Order Date"] ? String(ord["Order Date"]) : "Recent";
-        const totalAmount = Number(ord["Total Amount"] || ord["Amount"] || 0);
-        const statusStr = ord["Order Status"] || ord["Status"] || "Pending Verification";
+        const itemTitle = ord.item || "Fitness Package";
+        const dateStr = ord.date || "Recent";
+        const totalAmount = Number(ord.amount) || 0;
+        const statusStr = ord.status || "Pending Verification";
         const isConfirmed = statusStr.toLowerCase().includes("confirm");
 
-        // Match with product database to fetch original MRP & discount
+        // Match product details from allProducts for accurate MRP and Discount
         const matchedProduct = allProducts.find(p => itemTitle.toLowerCase().includes((p["Product Name"] || "").toLowerCase()));
         let mrpDisplay = "";
         let offBadge = "";
@@ -841,17 +827,17 @@
         }
 
         return `
-          <div class="history-card-box">
-            <div class="history-card-top">
+          <div class="order-box">
+            <div class="order-box-header">
               <span>📅 ${dateStr}</span>
-              <span class="history-badge ${isConfirmed ? 'confirmed' : ''}">● ${statusStr}</span>
+              <span class="order-tag ${isConfirmed ? 'confirmed' : ''}">● ${statusStr}</span>
             </div>
             
-            <div class="history-card-title">
+            <div class="order-box-title">
               📦 ${itemTitle}
             </div>
 
-            <div class="history-card-details">
+            <div class="order-box-details">
               <div>
                 <span style="font-size:11px; color:var(--steel); display:block;">Paid Amount</span>
                 <span style="font-size:16px; font-weight:800; color:var(--chalk);">
@@ -860,7 +846,7 @@
               </div>
               
               ${matchedProduct ? `
-                <button class="btn-ghost" style="padding:6px 12px; font-size:11px;" onclick="reorderProduct('${matchedProduct["Product ID"] || matchedProduct["Product Name"]}')">
+                <button class="btn-ghost" style="padding:6px 14px; font-size:11px;" onclick="reorderProduct('${matchedProduct["Product ID"] || matchedProduct["Product Name"]}')">
                   ↻ Re-order
                 </button>
               ` : ''}
@@ -871,7 +857,7 @@
 
     } catch (err) {
       console.error(err);
-      wrap.innerHTML = `<p class="drawer-empty">Could not load orders. Please try again.</p>`;
+      wrap.innerHTML = `<p class="drawer-empty">Failed to load orders from sheet. Please try again.</p>`;
     }
   }
 
