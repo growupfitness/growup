@@ -57,7 +57,21 @@
   }
   .top-bar strong{color:var(--chalk);}
   .top-bar a{color:var(--ember);font-weight:700;}
-  .nav-logo-img{height:40px;width:auto;display:block;}
+
+  /* RESPONSIVE LOGO STYLING */
+  .logo-link{
+    display:flex;
+    align-items:center;
+    text-decoration:none;
+    cursor:pointer;
+  }
+  .nav-logo-img{
+    height:44px;
+    max-width:170px;
+    width:auto;
+    object-fit:contain;
+    display:block;
+  }
 
   header{
     position:sticky;top:0;z-index:50;
@@ -67,10 +81,8 @@
   }
   nav{
     display:flex;align-items:center;justify-content:space-between;
-    padding:14px 24px;max-width:1140px;margin:0 auto;gap:15px;
+    padding:12px 24px;max-width:1140px;margin:0 auto;gap:15px;
   }
-  .logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;}
-  .logo span{color:var(--ember);}
 
   .search-box{position:relative;max-width:240px;width:100%;}
   .search-box input{
@@ -336,7 +348,7 @@
 
   .wa-float{position:fixed;bottom:24px;right:24px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 20px rgba(0,0,0,0.2);z-index:60;}
 
-  /* FULL-WIDTH CLEAN ORDER CARD STYLING */
+  /* ORDER CARD MODERN DESIGN */
   .order-item-card {
     background: var(--iron);
     border: 1px solid var(--border-color);
@@ -415,6 +427,8 @@
   .reveal-stagger.in-view .prod-card:nth-child(4),.reveal-stagger.in-view .why>div:nth-child(4){transition-delay:.35s;}
 
   @media(max-width:860px){
+    .nav-logo-img{height:36px; max-width:140px;}
+    nav{padding:10px 16px; gap:10px;}
     .hero-video-content h1{font-size:46px;}
     .nav-links{display:none;}
     .cat-grid,.prod-grid,.why{grid-template-columns:repeat(2,1fr);}
@@ -431,8 +445,9 @@
 
 <header>
   <nav>
-    <a href="#"><img src="images/logo.png" alt="Grow-Up Fitness" class="nav-logo-img" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
-      <div class="logo" id="fallbackLogo" style="display:none;">GROW<span>UP</span> FITNESS</div>
+    <a href="#" class="logo-link" title="Grow Up Fitness">
+      <img src="https://github.com/growupfitness/growup/blob/main/growup-logoo.png?raw=true" alt="Grow Up Fitness" class="nav-logo-img" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
+      <div class="logo" id="fallbackLogo" style="display:none; font-size:24px;">GROW<span>UP</span> FITNESS</div>
     </a>
     <div class="search-box">
       <input type="text" id="searchInput" placeholder="Search supplement..." oninput="handleSearch(this.value)">
@@ -563,7 +578,7 @@
   </div>
 </div>
 
-<!-- ORDER HISTORY DRAWER (Centered & Full Width) -->
+<!-- ORDER HISTORY DRAWER -->
 <div class="modal-overlay" id="orderHistoryDrawer">
   <div class="modal-box drawer-box">
     <button class="modal-close" onclick="closeDrawer('orderHistoryDrawer')">✕</button>
@@ -644,7 +659,9 @@
 <footer id="contact">
   <div class="footer-grid">
     <div>
-      <div class="logo">GROW<span>UP</span> FITNESS</div>
+      <a href="#" class="logo-link">
+        <img src="https://github.com/growupfitness/growup/blob/main/growup-logoo.png?raw=true" alt="Grow Up Fitness" style="height:40px; width:auto; object-fit:contain; margin-bottom:12px;">
+      </a>
       <p style="color:var(--steel);font-size:14px;margin-top:14px;max-width:280px;">100% genuine and authentic supplements for people who train hard and expect results.</p>
     </div>
     <div><h5>SHOP</h5><a href="#categories">Explore</a><a href="#products">Best Sellers</a></div>
@@ -827,7 +844,6 @@
       title = title.replace(weightMatch[0], "").trim(); 
     }
 
-    // Remove trailing commas or extra symbols
     title = title.replace(/^,\s*|,\s*$/g, "").trim();
 
     return { 
