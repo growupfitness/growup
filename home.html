@@ -58,7 +58,7 @@
   .top-bar strong{color:var(--chalk);}
   .top-bar a{color:var(--ember);font-weight:700;}
 
-  /* RESPONSIVE LOGO STYLING */
+  /* SMART ADAPTIVE LOGO STYLING */
   .logo-link{
     display:flex;
     align-items:center;
@@ -67,10 +67,21 @@
   }
   .nav-logo-img{
     height:44px;
-    max-width:170px;
+    max-width:175px;
     width:auto;
     object-fit:contain;
     display:block;
+    /* Light mode me dark deep-blue & high contrast */
+    filter: brightness(0.28) saturate(3.2) contrast(1.35);
+    transition: filter 0.3s ease, transform 0.2s ease;
+  }
+  .nav-logo-img:hover{
+    transform: scale(1.02);
+  }
+
+  /* Dark mode me original vibrant cyan glowing look */
+  [data-theme="dark"] .nav-logo-img{
+    filter: drop-shadow(0 0 10px rgba(0, 160, 227, 0.35));
   }
 
   header{
@@ -348,7 +359,7 @@
 
   .wa-float{position:fixed;bottom:24px;right:24px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 20px rgba(0,0,0,0.2);z-index:60;}
 
-  /* ORDER CARD MODERN DESIGN */
+  /* DETAILED ORDER BOX WITH FLAVOUR & WEIGHT BADGES */
   .order-item-card {
     background: var(--iron);
     border: 1px solid var(--border-color);
@@ -660,7 +671,7 @@
   <div class="footer-grid">
     <div>
       <a href="#" class="logo-link">
-        <img src="https://github.com/growupfitness/growup/blob/main/growup-logoo.png?raw=true" alt="Grow Up Fitness" style="height:40px; width:auto; object-fit:contain; margin-bottom:12px;">
+        <img src="https://github.com/growupfitness/growup/blob/main/growup-logoo.png?raw=true" alt="Grow Up Fitness" class="nav-logo-img" style="margin-bottom:12px;">
       </a>
       <p style="color:var(--steel);font-size:14px;margin-top:14px;max-width:280px;">100% genuine and authentic supplements for people who train hard and expect results.</p>
     </div>
@@ -676,7 +687,6 @@
 <a href="https://wa.me/919571214461?text=Hi,%20I%20have%20an%20inquiry" target="_blank" class="wa-float">💬</a>
 
 <script>
-  // Active Deployed API URL
   const API_URL = "https://script.google.com/macros/s/AKfycbxQLr8bVtyBl_lR46EhId7cTgpCAS_IK3pKh4eXAidfTGEs17FJ5YOD08PKEZb3ZuiB/exec";
   const MERCHANT_UPI = "salvinitinudr-6@okaxis";
   const MERCHANT_NAME = "Grow Up Fitness";
@@ -816,7 +826,6 @@
     document.getElementById("products").scrollIntoView();
   }
 
-  // Parse exact product text without empty fallbacks
   function parseOrderString(rawStr) {
     if (!rawStr || String(rawStr).trim() === "") {
       return { title: "Nutritional Supplement", weight: "", flavour: "", qty: "1" };
@@ -882,7 +891,6 @@
         const statusStr = ord.status || "Pending Verification";
         const isConfirmed = statusStr.toLowerCase().includes("confirm");
 
-        // Match with catalog for original MRP & discount
         const matchedProduct = allProducts.find(p => (p["Product Name"] || "").trim().toLowerCase() === parsed.title.toLowerCase())
                              || allProducts.find(p => (ord.itemText || "").toLowerCase().includes((p["Product Name"] || "").toLowerCase()));
 
