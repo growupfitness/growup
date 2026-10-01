@@ -71,7 +71,6 @@
     width:auto;
     object-fit:contain;
     display:block;
-    /* Light mode me dark deep-blue & high contrast */
     filter: brightness(0.28) saturate(3.2) contrast(1.35);
     transition: filter 0.3s ease, transform 0.2s ease;
   }
@@ -79,7 +78,6 @@
     transform: scale(1.02);
   }
 
-  /* Dark mode me original vibrant cyan glowing look */
   [data-theme="dark"] .nav-logo-img{
     filter: drop-shadow(0 0 10px rgba(0, 160, 227, 0.35));
   }
@@ -95,6 +93,7 @@
     padding:12px 24px;max-width:1140px;margin:0 auto;gap:15px;
   }
 
+  /* SEARCH BOX & AUTOCOMPLETE SUGGESTIONS */
   .search-box{position:relative;max-width:240px;width:100%;}
   .search-box input{
     width:100%;padding:8px 12px 8px 32px;background:var(--iron-light);
@@ -102,7 +101,65 @@
     color:var(--chalk);outline:none;font-family:'Inter';
   }
   .search-box input:focus{border-color:var(--ember);}
-  .search-box::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;opacity:0.6;}
+  .search-box::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;opacity:0.6;pointer-events:none;}
+
+  .search-suggestions-dropdown{
+    position:absolute;
+    top:calc(100% + 8px);
+    left:0;
+    width:280px;
+    background:var(--iron-light);
+    border:1px solid var(--border-color);
+    border-radius:8px;
+    box-shadow:0 12px 30px rgba(0,0,0,0.18);
+    overflow:hidden;
+    z-index:120;
+    display:none;
+  }
+  .search-suggestions-dropdown.open{
+    display:block;
+  }
+  .suggestion-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 12px;
+    cursor:pointer;
+    border-bottom:1px solid var(--border-color);
+    transition:background 0.15s ease;
+  }
+  .suggestion-item:last-child{border-bottom:none;}
+  .suggestion-item:hover{
+    background:rgba(0,114,255,0.08);
+  }
+  .suggestion-item img{
+    width:36px;
+    height:36px;
+    object-fit:contain;
+    background:var(--iron);
+    border-radius:4px;
+    padding:2px;
+    flex-shrink:0;
+  }
+  .suggestion-text{
+    flex:1;
+    min-width:0;
+  }
+  .suggestion-title{
+    font-size:13px;
+    font-weight:700;
+    color:var(--chalk);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .suggestion-sub{
+    font-size:11px;
+    color:var(--steel);
+    display:flex;
+    justify-content:space-between;
+    margin-top:2px;
+  }
 
   .nav-links{display:flex;gap:28px;font-size:14px;font-weight:600;letter-spacing:0.5px;}
   .nav-links a{opacity:0.8;transition:opacity .2s;}
@@ -445,6 +502,8 @@
     .cat-grid,.prod-grid,.why{grid-template-columns:repeat(2,1fr);}
     .footer-grid{grid-template-columns:1fr;}
     .modal-box{grid-template-columns:1fr;}
+    .search-box{max-width:150px;}
+    .search-suggestions-dropdown{width:240px;}
   }
 </style>
 </head>
@@ -460,9 +519,12 @@
       <img src="https://github.com/growupfitness/growup/blob/main/growup-logoo.png?raw=true" alt="Grow Up Fitness" class="nav-logo-img" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
       <div class="logo" id="fallbackLogo" style="display:none; font-size:24px;">GROW<span>UP</span> FITNESS</div>
     </a>
+    
     <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Search supplement..." oninput="handleSearch(this.value)">
+      <input type="text" id="searchInput" placeholder="Search supplement..." oninput="handleSearch(this.value)" autocomplete="off">
+      <div class="search-suggestions-dropdown" id="searchSuggestions"></div>
     </div>
+
     <div class="nav-links">
       <a href="#categories">Explore</a>
       <a href="#products">Best Sellers</a>
@@ -826,6 +888,89 @@
     document.getElementById("products").scrollIntoView();
   }
 
+  // AUTOCOMPLETE SEARCH WITH LIVE SUGGESTIONS
+  function handleSearch(val) {
+    const query = val.toLowerCase().trim();
+    const suggestionsBox = document.getElementById("searchSuggestions");
+
+    if (!query) {
+      suggestionsBox.innerHTML = "";
+      suggestionsBox.classList.remove("open");
+      const uniqueMap = new Map();
+      allProducts.forEach(p => {
+        const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
+        if (!uniqueMap.has(key)) uniqueMap.set(key, p);
+      });
+      displayProducts = Array.from(uniqueMap.values());
+      renderProductsGrid();
+      return;
+    }
+
+    const matchedProducts = [];
+    const seen = new Set();
+
+    allProducts.forEach(p => {
+      const name = (p["Product Name"] || "").toLowerCase();
+      const brand = (p["Brand"] || "").toLowerCase();
+      const cat = (p["Category"] || "").toLowerCase();
+      const flavour = (p["Flavour"] || "").toLowerCase();
+
+      if (name.includes(query) || brand.includes(query) || cat.includes(query) || flavour.includes(query)) {
+        const uid = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
+        if (!seen.has(uid)) {
+          seen.add(uid);
+          matchedProducts.push(p);
+        }
+      }
+    });
+
+    displayProducts = matchedProducts;
+    renderProductsGrid();
+
+    // Show at least 5-6 top suggestions in dropdown
+    const topSuggestions = matchedProducts.slice(0, 6);
+    if (topSuggestions.length > 0) {
+      suggestionsBox.innerHTML = topSuggestions.map(p => {
+        const pIndex = allProducts.findIndex(item => item["Product Name"] === p["Product Name"] && item["Weight / Size"] === p["Weight / Size"]);
+        const img = p["Image 1"] || "";
+        return `
+          <div class="suggestion-item" onclick="selectSuggestion(${pIndex})">
+            ${img ? `<img src="${img}" onerror="this.style.display='none'">` : ''}
+            <div class="suggestion-text">
+              <div class="suggestion-title">${p["Product Name"]}</div>
+              <div class="suggestion-sub">
+                <span>${p["Brand"] || ""} · ${p["Weight / Size"] || ""}</span>
+                <strong style="color:var(--ember);">₹${p["Selling Price"] || ""}</strong>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+      suggestionsBox.classList.add("open");
+    } else {
+      suggestionsBox.innerHTML = `<div style="padding:12px; font-size:12px; color:var(--steel); text-align:center;">No matching supplements found</div>`;
+      suggestionsBox.classList.add("open");
+    }
+  }
+
+  function selectSuggestion(index) {
+    const suggestionsBox = document.getElementById("searchSuggestions");
+    suggestionsBox.classList.remove("open");
+    if (index >= 0 && index < allProducts.length) {
+      document.getElementById("searchInput").value = allProducts[index]["Product Name"];
+      openModal(index);
+    }
+  }
+
+  // Close suggestions when clicked outside
+  document.addEventListener("click", function(e) {
+    const box = document.querySelector(".search-box");
+    if (box && !box.contains(e.target)) {
+      const suggestionsBox = document.getElementById("searchSuggestions");
+      if (suggestionsBox) suggestionsBox.classList.remove("open");
+    }
+  });
+
   function parseOrderString(rawStr) {
     if (!rawStr || String(rawStr).trim() === "") {
       return { title: "Nutritional Supplement", weight: "", flavour: "", qty: "1" };
@@ -1008,23 +1153,6 @@
       card.addEventListener("click", () => openModal(index >= 0 ? index : 0));
       grid.appendChild(card);
     });
-  }
-
-  function handleSearch(val) {
-    const query = val.toLowerCase().trim();
-    const uniqueMap = new Map();
-    allProducts.filter(p => {
-      const name = (p["Product Name"] || "").toLowerCase();
-      const brand = (p["Brand"] || "").toLowerCase();
-      const cat = (p["Category"] || "").toLowerCase();
-      const flavour = (p["Flavour"] || "").toLowerCase();
-      return name.includes(query) || brand.includes(query) || cat.includes(query) || flavour.includes(query);
-    }).forEach(p => {
-      const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
-      if (!uniqueMap.has(key)) uniqueMap.set(key, p);
-    });
-    displayProducts = Array.from(uniqueMap.values());
-    renderProductsGrid();
   }
 
   function cardSlide(evt, btn, dir) {
