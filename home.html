@@ -84,15 +84,20 @@
     filter: drop-shadow(0 0 10px rgba(0, 160, 227, 0.35));
   }
 
+  /* STICKY FROZEN HEADER BAR */
   header{
-    position:sticky;top:0;z-index:50;
+    position:sticky;
+    top:0;
+    z-index:90;
     background:var(--iron);
-    backdrop-filter:blur(8px);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
     border-bottom:1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
   }
   nav{
     display:flex;align-items:center;justify-content:space-between;
-    padding:12px 20px;max-width:1140px;margin:0 auto;gap:12px;
+    padding:10px 20px;max-width:1140px;margin:0 auto;gap:12px;
     flex-wrap:wrap;
   }
   .nav-left{display:flex;align-items:center;gap:14px;}
@@ -139,6 +144,47 @@
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
   .suggestion-sub{font-size:10px;color:var(--steel);display:flex;justify-content:space-between;margin-top:2px;}
+
+  /* TOP STICKY CATEGORY PILLS BAR */
+  .top-pills-bar {
+    width: 100%;
+    background: var(--iron);
+    border-top: 1px solid var(--border-color);
+    padding: 8px 0;
+  }
+  .top-pills-container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .top-pills-container::-webkit-scrollbar { display: none; }
+  .cat-pill {
+    background: var(--iron-light);
+    border: 1px solid var(--border-color);
+    color: var(--chalk);
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+  .cat-pill:hover, .cat-pill.active {
+    background: var(--ember);
+    border-color: var(--ember);
+    color: #ffffff;
+    box-shadow: 0 3px 10px rgba(0, 114, 255, 0.3);
+  }
 
   .nav-links{display:flex;gap:24px;font-size:13px;font-weight:600;letter-spacing:0.5px;}
   .nav-links a{opacity:0.8;transition:opacity .2s;}
@@ -287,35 +333,6 @@
     font-weight: 800;
   }
 
-  /* CATEGORY FILTER PILLS */
-  .category-pills-wrap {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 4px 0 16px;
-    margin-bottom: 20px;
-    scrollbar-width: none;
-  }
-  .category-pills-wrap::-webkit-scrollbar { display: none; }
-  .cat-pill {
-    background: var(--iron-light);
-    border: 1px solid var(--border-color);
-    color: var(--chalk);
-    padding: 7px 15px;
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 20px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s ease;
-  }
-  .cat-pill:hover, .cat-pill.active {
-    background: var(--ember);
-    border-color: var(--ember);
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 114, 255, 0.25);
-  }
-
   /* AUTHENTICITY BADGE IN MODAL */
   .authenticity-badge-box {
     display: flex;
@@ -347,8 +364,8 @@
   .hero-video-content h1{font-size:62px;margin-bottom:10px;color:var(--chalk);}
   .hero-video-content p{color:var(--steel);font-size:15px;margin-bottom:24px;}
 
-  .section{padding:70px 20px;max-width:1140px;margin:0 auto;}
-  .section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px;flex-wrap:wrap;gap:14px;}
+  .section{padding:50px 20px;max-width:1140px;margin:0 auto;}
+  .section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:14px;}
   .section-head .tag{color:var(--ember);font-weight:700;font-size:12px;letter-spacing:1.5px;margin-bottom:6px;display:block;}
   .section-head h2{font-size:38px;}
   .section-head p{color:var(--steel);max-width:340px;font-size:13px;}
@@ -532,21 +549,25 @@
   .reveal{opacity:1;}
 
   @media(max-width:768px){
-    nav{padding:10px 14px; gap:8px;}
-    .nav-logo-img{height:36px; max-width:130px;}
+    nav{padding:8px 14px; gap:8px;}
+    .nav-logo-img{height:34px; max-width:125px;}
     .nav-links{display:none;}
 
-    .search-box{order:3; max-width:100%; width:100%; margin-top:4px;}
-    .search-box input{padding:9px 12px 9px 34px; font-size:13px;}
+    .search-box{order:3; max-width:100%; width:100%; margin-top:2px;}
+    .search-box input{padding:8px 12px 8px 34px; font-size:12px;}
     .search-suggestions-dropdown{width:100%; min-width:auto;}
+
+    .top-pills-bar{padding:6px 0;}
+    .top-pills-container{padding:0 12px; gap:6px;}
+    .cat-pill{padding:5px 12px; font-size:10.5px;}
 
     .hero-video-section{height:340px;}
     .hero-video-content h1{font-size:42px;}
     .hero-video-content p{font-size:13px;margin-bottom:18px;}
 
-    .section{padding:48px 14px;}
-    .section-head{margin-bottom:20px;}
-    .section-head h2{font-size:32px;}
+    .section{padding:36px 14px;}
+    .section-head{margin-bottom:16px;}
+    .section-head h2{font-size:30px;}
 
     .cat-grid{grid-template-columns:1fr; gap:12px;}
     .cat-card{padding:18px 14px;}
@@ -576,6 +597,7 @@
   <strong>100% Genuine &amp; Authentic Products</strong> &nbsp;·&nbsp; Call/WhatsApp: <a href="tel:9571214461">95712 14461</a>
 </div>
 
+<!-- STICKY FROZEN HEADER -->
 <header>
   <nav>
     <div class="nav-left">
@@ -606,6 +628,20 @@
       <div class="search-suggestions-dropdown" id="searchSuggestions"></div>
     </div>
   </nav>
+
+  <!-- FROZEN TOP CATEGORY PILLS BAR -->
+  <div class="top-pills-bar">
+    <div class="top-pills-container">
+      <button class="cat-pill active" onclick="filterByCategory('all', this)">⚡ All Supplements</button>
+      <button class="cat-pill" onclick="filterByCategory('protein', this)">💪 Proteins</button>
+      <button class="cat-pill" onclick="filterByCategory('fat loss protein', this)">🔥 Fat Loss Protein</button>
+      <button class="cat-pill" onclick="filterByCategory('pre-workout', this)">💥 Pre Workout</button>
+      <button class="cat-pill" onclick="filterByCategory('fat burner', this)">⚡ Fat Burner</button>
+      <button class="cat-pill" onclick="filterByCategory('vitamins and minerals', this)">💊 Vitamins &amp; Minerals</button>
+      <button class="cat-pill" onclick="filterByCategory('essentials', this)">🛡️ Essentials</button>
+      <button class="cat-pill" onclick="filterByCategory('breakfast and snacks', this)">🥣 Breakfast &amp; Snacks</button>
+    </div>
+  </div>
 </header>
 
 <section class="hero-video-section">
@@ -655,17 +691,6 @@
       <h2>Top Picks</h2>
     </div>
     <p id="activeFilterDesc">Live from our store sheet — updates automatically.</p>
-  </div>
-
-  <!-- 1-TAP CATEGORY FILTER PILLS -->
-  <div class="category-pills-wrap">
-    <button class="cat-pill active" onclick="filterByCategory('all', this)">⚡ All Supplements</button>
-    <button class="cat-pill" onclick="filterByCategory('whey', this)">💪 Whey Protein</button>
-    <button class="cat-pill" onclick="filterByCategory('isolate', this)">🔥 Isolate</button>
-    <button class="cat-pill" onclick="filterByCategory('creatine', this)">⚡ Creatine</button>
-    <button class="cat-pill" onclick="filterByCategory('pre-workout', this)">💥 Pre-Workout</button>
-    <button class="cat-pill" onclick="filterByCategory('gainer', this)">🏋️ Mass Gainer</button>
-    <button class="cat-pill" onclick="filterByCategory('gainer', this)">⚡ L-Carnitine</button>
   </div>
 
   <div class="prod-grid" id="prodGrid">
@@ -839,7 +864,8 @@
 <a href="https://wa.me/919571214461?text=Hi,%20I%20have%20an%20inquiry" target="_blank" class="wa-float">💬</a>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbxQLr8bVtyBl_lR46EhId7cTgpCAS_IK3pKh4eXAidfTGEs17FJ5YOD08PKEZb3ZuiB/exec";
+  // Updated Active Deployed API URL
+  const API_URL = "https://script.google.com/macros/s/AKfycbx-t9D0vWFWsNtD6GgHHr3SojREUR55Lvp02ZtlNNhXArxRy3VPzRGO5serEpixPZZN/exec";
   const MERCHANT_UPI = "salvinitinudr-6@okaxis";
   const MERCHANT_NAME = "Grow Up Fitness";
 
@@ -885,39 +911,50 @@
     }
   }
 
+  // Smart Cache-Busting & Auto-Retry Product Loader
   async function loadProducts() {
     const grid = document.getElementById("prodGrid");
     grid.innerHTML = `<p class="prod-empty">Loading products…</p>`;
-    try {
-      const response = await fetch(API_URL);
-      const data = await response.json();
-      
-      if (!Array.isArray(data) || data.length === 0) {
-        grid.innerHTML = `<p class="prod-empty">Sheet me koi products nahi mile.</p>`;
-        return;
-      }
 
-      allProducts = data;
-      
-      const uniqueMap = new Map();
-      allProducts.forEach(p => {
-        const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
-        if (!uniqueMap.has(key)) {
-          uniqueMap.set(key, p);
+    const fetchUrl = `${API_URL}?action=getProducts&_t=${new Date().getTime()}`;
+
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const response = await fetch(fetchUrl);
+        if (!response.ok) throw new Error("HTTP Error " + response.status);
+        
+        const data = await response.json();
+        
+        if (!Array.isArray(data) || data.length === 0) {
+          grid.innerHTML = `<p class="prod-empty">Sheet me koi products nahi mile.</p>`;
+          return;
         }
-      });
-      displayProducts = Array.from(uniqueMap.values());
 
-      renderProductsGrid();
-      
-      const savedMobile = localStorage.getItem("gufMobile");
-      const savedName = localStorage.getItem("gufName");
-      if (savedMobile && savedName) {
-        checkExistingLogin();
+        allProducts = data;
+        
+        const uniqueMap = new Map();
+        allProducts.forEach(p => {
+          const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
+          if (!uniqueMap.has(key)) {
+            uniqueMap.set(key, p);
+          }
+        });
+        displayProducts = Array.from(uniqueMap.values());
+
+        renderProductsGrid();
+        
+        const savedMobile = localStorage.getItem("gufMobile");
+        const savedName = localStorage.getItem("gufName");
+        if (savedMobile && savedName) {
+          checkExistingLogin();
+        }
+        return;
+      } catch (err) {
+        console.warn(`Attempt ${attempt} failed:`, err);
+        if (attempt === 2) {
+          grid.innerHTML = `<p class="prod-empty">Products load hone me dikkat aa rahi hai.<br><button onclick="loadProducts()" class="btn-primary" style="margin-top:10px; padding:6px 16px; font-size:12px;">Retry Now</button></p>`;
+        }
       }
-    } catch (err) {
-      grid.innerHTML = `<p class="prod-empty">Products load nahi ho paye. Connection check karein.</p>`;
-      console.error(err);
     }
   }
 
@@ -937,7 +974,7 @@
       displayProducts = Array.from(uniqueMap.values());
       if (desc) desc.innerText = "Live from our store sheet — updates automatically.";
     } else {
-      const q = keyword.toLowerCase();
+      const q = keyword.toLowerCase().trim();
       const matched = allProducts.filter(p => {
         const cat = (p["Category"] || "").toLowerCase();
         const name = (p["Product Name"] || "").toLowerCase();
@@ -954,13 +991,14 @@
     }
 
     renderProductsGrid();
+    document.getElementById("products").scrollIntoView({ behavior: 'smooth' });
   }
 
   /* BRAND MODAL LOGIC */
   async function loadBrands() {
     const brandGrid = document.getElementById("brandGrid");
     try {
-      const res = await fetch(API_URL + "?action=getBrands");
+      const res = await fetch(`${API_URL}?action=getBrands&_t=${new Date().getTime()}`);
       allBrands = await res.json();
       
       if (!allBrands || allBrands.length === 0) {
@@ -1231,7 +1269,7 @@
     const cleanUserMobile = String(currentUser["Mobile Number"]).replace(/\D/g, "").slice(-10);
 
     try {
-      const res = await fetch(`${API_URL}?action=getOrders&mobile=${cleanUserMobile}`);
+      const res = await fetch(`${API_URL}?action=getOrders&mobile=${cleanUserMobile}&_t=${new Date().getTime()}`);
       const orders = await res.json();
 
       if (!Array.isArray(orders) || orders.length === 0) {
@@ -1458,7 +1496,6 @@
       </div>
       ${hasDiscount ? `<div class="save-tag">${savePct}% OFF — you save ₹${mrp - sellingPrice}</div>` : "<div style='margin-bottom:12px;'></div>"}
       
-      <!-- 100% AUTHENTICITY BADGE -->
       <div class="authenticity-badge-box">
         <span style="font-size:16px;">🛡️</span>
         <span>100% Genuine &amp; Importer Verified with Scratch Authenticity Code</span>
@@ -1529,7 +1566,7 @@
       return;
     }
     try {
-      const res = await fetch(`${API_URL}?action=login&mobile=${mobile}&name=${encodeURIComponent(name)}`);
+      const res = await fetch(`${API_URL}?action=login&mobile=${mobile}&name=${encodeURIComponent(name)}&_t=${new Date().getTime()}`);
       const user = await res.json();
       if (!user.success) { errorEl.innerText = user.error || "Error"; errorEl.style.display = "block"; return; }
       handleLoginSuccess(user);
@@ -1574,7 +1611,7 @@
     const savedName = localStorage.getItem("gufName");
     if (!savedMobile || !savedName) return;
     try {
-      const res = await fetch(`${API_URL}?action=login&mobile=${savedMobile}&name=${encodeURIComponent(savedName)}`);
+      const res = await fetch(`${API_URL}?action=login&mobile=${savedMobile}&name=${encodeURIComponent(savedName)}&_t=${new Date().getTime()}`);
       const user = await res.json();
       if (user.success) handleLoginSuccess(user);
     } catch (err) { console.error(err); }
