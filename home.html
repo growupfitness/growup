@@ -206,6 +206,58 @@
   .drawer-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--border-color);}
   .drawer-total{display:flex;justify-content:space-between;font-size:16px;font-weight:800;margin-bottom:14px;color:var(--chalk);}
 
+  /* PROFESSIONAL BRAND CARDS */
+  .brand-card-item {
+    background: var(--iron-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 85px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  }
+  .brand-card-item:hover {
+    border-color: var(--ember);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 114, 255, 0.12);
+  }
+  .brand-logo-img {
+    height: 38px;
+    max-width: 100px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .brand-card-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--chalk);
+    line-height: 1.2;
+    margin: 0;
+  }
+  .brand-card-item.all-brands {
+    grid-column: 1 / -1;
+    background: rgba(0, 114, 255, 0.06);
+    border: 1.5px dashed var(--ember);
+    color: var(--ember);
+    min-height: 48px;
+    padding: 10px;
+    flex-direction: row;
+    gap: 8px;
+  }
+  .brand-card-item.all-brands h4 {
+    font-size: 14px;
+    font-weight: 800;
+    margin: 0;
+  }
+
   .hero-video-section{
     position:relative;width:100%;height:440px;overflow:hidden;
     display:flex;align-items:center;justify-content:center;text-align:center;
@@ -402,9 +454,6 @@
   .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease, transform .6s ease;}
   .reveal.in-view{opacity:1;transform:translateY(0);}
 
-  /* ========================================================
-     MOBILE RESPONSIVE BREAKPOINT (<768px)
-     ======================================================== */
   @media(max-width:768px){
     nav{
       padding:10px 14px;
@@ -416,7 +465,6 @@
     }
     .nav-links{display:none;}
 
-    /* Full-width 2nd line search box on mobile */
     .search-box{
       order:3;
       max-width:100%;
@@ -443,7 +491,6 @@
     .cat-grid{grid-template-columns:1fr; gap:12px;}
     .cat-card{padding:18px 14px;}
 
-    /* 2 products per row perfectly aligned without cutoffs */
     .prod-grid{
       grid-template-columns:repeat(2, 1fr);
       gap:10px;
@@ -575,6 +622,7 @@
   </div>
 </div>
 
+<!-- PROFESSIONAL BRAND MODAL -->
 <div class="modal-overlay" id="brandModal">
   <div class="modal-box" style="display:block; max-width:620px; padding:24px;">
     <button class="modal-close" onclick="closeBrandModal()">✕</button>
@@ -741,7 +789,7 @@
     const savedTheme = localStorage.getItem("gufTheme") || "light";
     if (savedTheme === "dark") {
       html.setAttribute("data-theme", "dark");
-      btn.innerText = "☀️️";
+      btn.innerText = "☀";
     } else {
       html.removeAttribute("data-theme");
       btn.innerText = "🌙";
@@ -799,32 +847,38 @@
   }
 
   async function loadBrands() {
+    const brandGrid = document.getElementById("brandGrid");
     try {
       const res = await fetch(API_URL + "?action=getBrands");
       allBrands = await res.json();
-      const brandGrid = document.getElementById("brandGrid");
       
-      if(!allBrands || allBrands.length === 0) {
-        brandGrid.innerHTML = `<p style="color:var(--steel);">No brands found in sheet.</p>`;
+      if (!allBrands || allBrands.length === 0) {
+        brandGrid.innerHTML = `<p style="color:var(--steel); grid-column:1/-1; text-align:center;">No brands found in sheet.</p>`;
         return;
       }
 
       let brandsHTML = `
         <div class="brand-card-item all-brands" onclick="showAllProductsFromModal()">
-          <h4>🌟 Show All Brands (View All)</h4>
+          <span style="font-size:16px;">🌟</span>
+          <h4>Show All Brands (View All)</h4>
         </div>
       `;
 
-      brandsHTML += allBrands.map(b => `
-        <div class="brand-card-item" onclick="filterByBrand('${b["Brand Name"]}')">
-          ${b["Logo URL"] ? `<img src="${b["Logo URL"]}" style="width:100px; height:46px; object-fit:contain; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;" onerror="this.style.display='none'">` : ''}
-          <h4 style="font-size:14px; font-family:'Inter', sans-serif; font-weight:700; color:var(--chalk);">${b["Brand Name"]}</h4>
-        </div>
-      `).join("");
+      brandsHTML += allBrands.map(b => {
+        const brandName = b["Brand Name"] || "Brand";
+        const logoUrl = b["Logo URL"] ? b["Logo URL"].trim() : "";
+
+        return `
+          <div class="brand-card-item" onclick="filterByBrand('${escapeQuotes(brandName)}')">
+            ${logoUrl ? `<img src="${logoUrl}" class="brand-logo-img" onerror="this.style.display='none'">` : ''}
+            <span class="brand-card-name">${brandName}</span>
+          </div>
+        `;
+      }).join("");
 
       brandGrid.innerHTML = brandsHTML;
     } catch(e) {
-      document.getElementById("brandGrid").innerHTML = `<p style="color:var(--steel);">Brands load nahi ho payi.</p>`;
+      brandGrid.innerHTML = `<p style="color:var(--steel); grid-column:1/-1; text-align:center;">Brands load nahi ho payi.</p>`;
     }
   }
 
