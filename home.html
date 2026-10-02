@@ -206,7 +206,7 @@
   .drawer-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--border-color);}
   .drawer-total{display:flex;justify-content:space-between;font-size:16px;font-weight:800;margin-bottom:14px;color:var(--chalk);}
 
-  /* PROFESSIONAL BRAND & FLAVOUR CARDS */
+  /* BRAND & FLAVOUR CARDS */
   .brand-card-item {
     background: var(--iron-light);
     border: 1px solid var(--border-color);
@@ -258,7 +258,6 @@
     margin: 0;
   }
 
-  /* FLAVOUR CARDS */
   .flavour-card-item {
     background: var(--iron);
     border: 1px solid var(--border-color);
@@ -278,20 +277,58 @@
     background: rgba(0, 114, 255, 0.08);
     transform: translateY(-2px);
   }
-  .flavour-card-item span.flv-icon {
-    font-size: 18px;
-  }
-  .flavour-card-item span.flv-name {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--chalk);
-  }
+  .flavour-card-item span.flv-icon {font-size: 18px;}
+  .flavour-card-item span.flv-name {font-size: 13px; font-weight: 700; color: var(--chalk);}
   .flavour-card-item.all-flv {
     grid-column: 1 / -1;
     background: rgba(0, 114, 255, 0.06);
     border: 1.5px dashed var(--ember);
     color: var(--ember);
     font-weight: 800;
+  }
+
+  /* CATEGORY FILTER PILLS */
+  .category-pills-wrap {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 0 16px;
+    margin-bottom: 20px;
+    scrollbar-width: none;
+  }
+  .category-pills-wrap::-webkit-scrollbar { display: none; }
+  .cat-pill {
+    background: var(--iron-light);
+    border: 1px solid var(--border-color);
+    color: var(--chalk);
+    padding: 7px 15px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+  .cat-pill:hover, .cat-pill.active {
+    background: var(--ember);
+    border-color: var(--ember);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 114, 255, 0.25);
+  }
+
+  /* AUTHENTICITY BADGE IN MODAL */
+  .authenticity-badge-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-top: 14px;
+    color: #10b981;
+    font-size: 12px;
+    font-weight: 600;
   }
 
   .hero-video-section{
@@ -311,7 +348,7 @@
   .hero-video-content p{color:var(--steel);font-size:15px;margin-bottom:24px;}
 
   .section{padding:70px 20px;max-width:1140px;margin:0 auto;}
-  .section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:36px;flex-wrap:wrap;gap:14px;}
+  .section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px;flex-wrap:wrap;gap:14px;}
   .section-head .tag{color:var(--ember);font-weight:700;font-size:12px;letter-spacing:1.5px;margin-bottom:6px;display:block;}
   .section-head h2{font-size:38px;}
   .section-head p{color:var(--steel);max-width:340px;font-size:13px;}
@@ -330,20 +367,21 @@
   .cat-card h3{font-size:22px;margin-bottom:6px;}
   .cat-card p{color:var(--steel);font-size:13px;line-height:1.4;}
 
-  .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;width:100%;}
   .prod-card{
     background:var(--iron-light);border:1px solid var(--border-color);
     border-radius:var(--radius);overflow:hidden;cursor:pointer;position:relative;
     transition:border-color .25s ease, transform .25s ease, box-shadow .25s ease;
     display:flex;flex-direction:column;
+    opacity: 1 !important;
   }
   .prod-card:hover{border-color:var(--ember);transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,0.08);}
-  .prod-card.out-of-stock{opacity:0.75;}
+  .prod-card.out-of-stock{opacity:0.75 !important;}
   .prod-card.out-of-stock img{filter:grayscale(60%);}
 
   .prod-img{height:180px;position:relative;background:var(--iron);overflow:hidden;}
   .prod-img .slide-track{display:flex;height:100%;transition:transform .3s ease;}
-  .prod-img .slide-track img{width:100%;height:180px;object-fit:contain;background:var(--iron);flex-shrink:0;padding:10px;transition:transform .4s ease;}
+  .prod-img .slide-track img{width:100%;height:180px;object-fit:contain;background:var(--iron);flex-shrink:0;padding:10px;transition:transform .4s ease;opacity:1 !important;}
   .prod-card:hover .prod-img img{transform:scale(1.04);}
   .prod-img .dots{position:absolute;bottom:6px;left:0;right:0;display:flex;justify-content:center;gap:4px;}
   .prod-img .dots span{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.4);}
@@ -387,8 +425,8 @@
   .modal-info .sub{color:var(--steel);font-size:13px;margin-bottom:16px;}
   .modal-info .modal-price{font-size:26px;font-weight:800;margin-bottom:3px;color:var(--chalk);}
   .modal-info .modal-mrp{text-decoration:line-through;color:var(--steel);font-size:15px;margin-right:8px;}
-  .modal-info .save-tag{color:#10b981;font-size:12px;font-weight:700;margin-bottom:18px;}
-  .modal-actions{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;}
+  .modal-info .save-tag{color:#10b981;font-size:12px;font-weight:700;margin-bottom:14px;}
+  .modal-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
 
   .variant-selector{margin:12px 0;}
   .variant-selector label{display:block;font-size:11px;font-weight:600;color:var(--steel);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px;}
@@ -486,9 +524,12 @@
     background: rgba(16, 185, 129, 0.15);
     color: #10b981;
   }
+  .order-status-badge.dispatched {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+  }
 
-  .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease, transform .6s ease;}
-  .reveal.in-view{opacity:1;transform:translateY(0);}
+  .reveal{opacity:1;}
 
   @media(max-width:768px){
     nav{padding:10px 14px; gap:8px;}
@@ -504,7 +545,7 @@
     .hero-video-content p{font-size:13px;margin-bottom:18px;}
 
     .section{padding:48px 14px;}
-    .section-head{margin-bottom:24px;}
+    .section-head{margin-bottom:20px;}
     .section-head h2{font-size:32px;}
 
     .cat-grid{grid-template-columns:1fr; gap:12px;}
@@ -615,6 +656,17 @@
     </div>
     <p id="activeFilterDesc">Live from our store sheet — updates automatically.</p>
   </div>
+
+  <!-- 1-TAP CATEGORY FILTER PILLS -->
+  <div class="category-pills-wrap">
+    <button class="cat-pill active" onclick="filterByCategory('all', this)">⚡ All Supplements</button>
+    <button class="cat-pill" onclick="filterByCategory('whey', this)">💪 Whey Protein</button>
+    <button class="cat-pill" onclick="filterByCategory('isolate', this)">🔥 Isolate</button>
+    <button class="cat-pill" onclick="filterByCategory('creatine', this)">⚡ Creatine</button>
+    <button class="cat-pill" onclick="filterByCategory('pre-workout', this)">💥 Pre-Workout</button>
+    <button class="cat-pill" onclick="filterByCategory('gainer', this)">🏋️ Mass Gainer</button>
+  </div>
+
   <div class="prod-grid" id="prodGrid">
     <p class="prod-empty">Loading products…</p>
   </div>
@@ -868,6 +920,41 @@
     }
   }
 
+  /* 1-TAP CATEGORY FILTER */
+  function filterByCategory(keyword, btnEl) {
+    document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+
+    const desc = document.getElementById("activeFilterDesc");
+
+    if (keyword === 'all') {
+      const uniqueMap = new Map();
+      allProducts.forEach(p => {
+        const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
+        if (!uniqueMap.has(key)) uniqueMap.set(key, p);
+      });
+      displayProducts = Array.from(uniqueMap.values());
+      if (desc) desc.innerText = "Live from our store sheet — updates automatically.";
+    } else {
+      const q = keyword.toLowerCase();
+      const matched = allProducts.filter(p => {
+        const cat = (p["Category"] || "").toLowerCase();
+        const name = (p["Product Name"] || "").toLowerCase();
+        return cat.includes(q) || name.includes(q);
+      });
+
+      const uniqueMap = new Map();
+      matched.forEach(p => {
+        const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
+        if (!uniqueMap.has(key)) uniqueMap.set(key, p);
+      });
+      displayProducts = Array.from(uniqueMap.values());
+      if (desc) desc.innerText = `Showing all products for category: "${btnEl ? btnEl.innerText.replace(/^[^\w\s]+/, '').trim() : keyword}"`;
+    }
+
+    renderProductsGrid();
+  }
+
   /* BRAND MODAL LOGIC */
   async function loadBrands() {
     const brandGrid = document.getElementById("brandGrid");
@@ -927,7 +1014,6 @@
     const flvGrid = document.getElementById("flavourGrid");
     document.getElementById("flavourModal").classList.add("open");
 
-    // Extract unique non-empty flavours from allProducts
     const flavourMap = new Map();
     allProducts.forEach(p => {
       const f = (p["Flavour"] || "").trim();
@@ -953,7 +1039,6 @@
       </div>
     `;
 
-    // Smart flavour icon mapping
     function getFlavourIcon(name) {
       const n = name.toLowerCase();
       if (n.includes("chocolate") || n.includes("choco")) return "🍫";
@@ -987,11 +1072,8 @@
 
   function filterByFlavour(flavourName) {
     const q = flavourName.trim().toLowerCase();
-    
-    // Filter matching flavour
     const matched = allProducts.filter(p => (p["Flavour"] || "").trim().toLowerCase() === q);
     
-    // Unique map for display
     const uniqueMap = new Map();
     matched.forEach(p => {
       const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
@@ -1068,7 +1150,7 @@
         const img = p["Image 1"] || "";
         return `
           <div class="suggestion-item" onclick="selectSuggestion(${pIndex})">
-            ${img ? `<img src="${img}" onerror="this.style.display='none'">` : ''}
+            ${img ? `<img src="${img}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' fill=\'%2364748b\' viewBox=\'0 0 24 24\'><path d=\'M21 16.5l-4.5-4.5-3 3-4.5-4.5L3 16.5V21h18v-4.5zM3 3h18v10.5l-6-6-4.5 4.5-3-3L3 13.5V3z\'/></svg>'">` : ''}
             <div class="suggestion-text">
               <div class="suggestion-title">${p["Product Name"]}</div>
               <div class="suggestion-sub">
@@ -1162,6 +1244,7 @@
         const totalAmount = Number(ord.amount) || 0;
         const statusStr = ord.status || "Pending Verification";
         const isConfirmed = statusStr.toLowerCase().includes("confirm");
+        const isDispatched = statusStr.toLowerCase().includes("dispatch") || statusStr.toLowerCase().includes("track");
 
         const matchedProduct = allProducts.find(p => (p["Product Name"] || "").trim().toLowerCase() === parsed.title.toLowerCase())
                              || allProducts.find(p => (ord.itemText || "").toLowerCase().includes((p["Product Name"] || "").toLowerCase()));
@@ -1183,7 +1266,7 @@
           <div class="order-item-card">
             <div class="order-item-header">
               <span>📅 ${dateStr}</span>
-              <span class="order-status-badge ${isConfirmed ? 'confirmed' : ''}">● ${statusStr}</span>
+              <span class="order-status-badge ${isConfirmed ? 'confirmed' : (isDispatched ? 'dispatched' : '')}">● ${statusStr}</span>
             </div>
             
             <div class="order-item-title">
@@ -1249,7 +1332,7 @@
         ? `<span style="text-decoration:line-through;color:var(--steel);font-size:11px;margin-right:4px;">₹${mrp}</span><span class="price">₹${sellingPrice}</span>`
         : `<span class="price">₹${sellingPrice}</span>`;
 
-      const slidesHTML = images.map(img => `<img src="${img}" onerror="this.style.opacity=0">`).join("");
+      const slidesHTML = images.map(img => `<img src="${img}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'180\' height=\'180\' fill=\'%2364748b\' viewBox=\'0 0 24 24\'><path d=\'M21 16.5l-4.5-4.5-3 3-4.5-4.5L3 16.5V21h18v-4.5zM3 3h18v10.5l-6-6-4.5 4.5-3-3L3 13.5V3z\'/></svg>'">`).join("");
       const dotsHTML = images.map((img, i) => `<span class="${i === 0 ? 'active' : ''}"></span>`).join("");
       const pid = p["Product ID"] || p["Product Name"];
       const isWishlisted = wishlist.includes(pid);
@@ -1312,6 +1395,11 @@
     document.getElementById("productModal").classList.add("open");
   }
 
+  function shareProductOnWhatsApp(productName, price, weight, flavour) {
+    const text = encodeURIComponent(`Check out ${productName} (${weight}) - ${flavour} at ₹${price} on Grow Up Fitness!\nVisit: ${window.location.origin}`);
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+  }
+
   function updateModalContent(allVariants, selectedVar) {
     currentSelectedVariant = selectedVar;
     modalImages = getImages(selectedVar);
@@ -1367,9 +1455,15 @@
       <div class="modal-price" style="margin-top:14px;">
         ${hasDiscount ? `<span class="modal-mrp">₹${mrp}</span>` : ""}₹${sellingPrice}
       </div>
-      ${hasDiscount ? `<div class="save-tag">${savePct}% OFF — you save ₹${mrp - sellingPrice}</div>` : "<div style='margin-bottom:20px;'></div>"}
+      ${hasDiscount ? `<div class="save-tag">${savePct}% OFF — you save ₹${mrp - sellingPrice}</div>` : "<div style='margin-bottom:12px;'></div>"}
       
-      ${isOut ? `<div style="background:rgba(100,116,139,0.15); color:var(--steel); padding:10px; text-align:center; font-weight:700; border-radius:var(--radius); margin-bottom:12px; font-size:12px;">🚫 Currently Out of Stock</div>` : ""}
+      <!-- 100% AUTHENTICITY BADGE -->
+      <div class="authenticity-badge-box">
+        <span style="font-size:16px;">🛡️</span>
+        <span>100% Genuine &amp; Importer Verified with Scratch Authenticity Code</span>
+      </div>
+
+      ${isOut ? `<div style="background:rgba(100,116,139,0.15); color:var(--steel); padding:10px; text-align:center; font-weight:700; border-radius:var(--radius); margin:12px 0; font-size:12px;">🚫 Currently Out of Stock</div>` : ""}
 
       <div class="modal-actions">
         ${isOut ? `
@@ -1378,6 +1472,9 @@
           <button class="btn-primary" onclick="addToCart('${pid}'); closeModal();">Add to Cart</button>
           <button class="btn-ghost" onclick="toggleWishlist('${pid}')">${wishlist.includes(pid) ? '♥ Wishlisted' : '♡ Wishlist'}</button>
         `}
+        <button class="btn-ghost" onclick="shareProductOnWhatsApp('${escapeQuotes(selectedVar["Product Name"])}', '${sellingPrice}', '${escapeQuotes(selectedVar["Weight / Size"] || "")}', '${escapeQuotes(selectedVar["Flavour"] || "")}')" style="display:flex; align-items:center; gap:6px;">
+          <span>📲</span> Share with Gym Bro
+        </button>
         <a href="https://wa.me/919571214461?text=Hi,%20I'm%20interested%20in%20${encodeURIComponent(selectedVar["Product Name"] + " " + (selectedVar["Weight / Size"] || "") + " - " + (selectedVar["Flavour"] || ""))}" target="_blank" class="btn-ghost" style="padding-top:12px; text-align:center;">Order on WhatsApp</a>
       </div>
     `;
@@ -1704,17 +1801,6 @@
     tempOrderData = null;
     alert("Order completed! Thank you for shopping with Grow Up Fitness.");
   }
-
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("in-view");
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
-
-  document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
 
   ["cartDrawer", "wishlistDrawer", "loginModal", "checkoutModal", "proofModal", "productModal", "brandModal", "flavourModal", "orderHistoryDrawer"].forEach(id => {
     const el = document.getElementById(id);
