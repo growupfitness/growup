@@ -206,7 +206,7 @@
   .drawer-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--border-color);}
   .drawer-total{display:flex;justify-content:space-between;font-size:16px;font-weight:800;margin-bottom:14px;color:var(--chalk);}
 
-  /* PROFESSIONAL BRAND CARDS */
+  /* PROFESSIONAL BRAND & FLAVOUR CARDS */
   .brand-card-item {
     background: var(--iron-light);
     border: 1px solid var(--border-color);
@@ -256,6 +256,42 @@
     font-size: 14px;
     font-weight: 800;
     margin: 0;
+  }
+
+  /* FLAVOUR CARDS */
+  .flavour-card-item {
+    background: var(--iron);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 14px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 52px;
+  }
+  .flavour-card-item:hover {
+    border-color: var(--ember);
+    background: rgba(0, 114, 255, 0.08);
+    transform: translateY(-2px);
+  }
+  .flavour-card-item span.flv-icon {
+    font-size: 18px;
+  }
+  .flavour-card-item span.flv-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--chalk);
+  }
+  .flavour-card-item.all-flv {
+    grid-column: 1 / -1;
+    background: rgba(0, 114, 255, 0.06);
+    border: 1.5px dashed var(--ember);
+    color: var(--ember);
+    font-weight: 800;
   }
 
   .hero-video-section{
@@ -455,30 +491,13 @@
   .reveal.in-view{opacity:1;transform:translateY(0);}
 
   @media(max-width:768px){
-    nav{
-      padding:10px 14px;
-      gap:8px;
-    }
-    .nav-logo-img{
-      height:36px;
-      max-width:130px;
-    }
+    nav{padding:10px 14px; gap:8px;}
+    .nav-logo-img{height:36px; max-width:130px;}
     .nav-links{display:none;}
 
-    .search-box{
-      order:3;
-      max-width:100%;
-      width:100%;
-      margin-top:4px;
-    }
-    .search-box input{
-      padding:9px 12px 9px 34px;
-      font-size:13px;
-    }
-    .search-suggestions-dropdown{
-      width:100%;
-      min-width:auto;
-    }
+    .search-box{order:3; max-width:100%; width:100%; margin-top:4px;}
+    .search-box input{padding:9px 12px 9px 34px; font-size:13px;}
+    .search-suggestions-dropdown{width:100%; min-width:auto;}
 
     .hero-video-section{height:340px;}
     .hero-video-content h1{font-size:42px;}
@@ -491,22 +510,14 @@
     .cat-grid{grid-template-columns:1fr; gap:12px;}
     .cat-card{padding:18px 14px;}
 
-    .prod-grid{
-      grid-template-columns:repeat(2, 1fr);
-      gap:10px;
-    }
+    .prod-grid{grid-template-columns:repeat(2, 1fr); gap:10px;}
     .prod-card{border-radius:6px;}
     .prod-img{height:140px;}
     .prod-img .slide-track img{height:140px;padding:6px;}
     .prod-body{padding:10px;}
     .prod-body h4{font-size:13px;margin:2px 0;}
     .prod-price{flex-direction:column;align-items:flex-start;gap:6px;}
-    .prod-price button{
-      width:100%;
-      text-align:center;
-      padding:6px 0;
-      font-size:11px;
-    }
+    .prod-price button{width:100%; text-align:center; padding:6px 0; font-size:11px;}
 
     .modal-box{grid-template-columns:1fr;}
     .modal-gallery .slide-track img{height:260px;}
@@ -588,7 +599,7 @@
       <h3 id="lpTitle">Order History</h3>
       <p id="lpDesc">View all your previous purchases, items and status.</p>
     </div>
-    <div class="cat-card" onclick="document.getElementById('searchInput').focus();">
+    <div class="cat-card" onclick="openFlavourModal()">
       <div class="cat-plate">FLV</div>
       <h3>Shop by Flavour</h3>
       <p>Find your favorite taste like Swiss Chocolate, Strawberry, etc.</p>
@@ -602,7 +613,7 @@
       <span class="tag">02 — BEST SELLERS</span>
       <h2>Top Picks</h2>
     </div>
-    <p>Live from our store sheet — updates automatically.</p>
+    <p id="activeFilterDesc">Live from our store sheet — updates automatically.</p>
   </div>
   <div class="prod-grid" id="prodGrid">
     <p class="prod-empty">Loading products…</p>
@@ -629,6 +640,17 @@
     <h2 style="font-size:24px; margin-bottom:20px; font-family:'Inter'; font-weight:700; color:var(--chalk);">Select Brand</h2>
     <div id="brandGrid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
       <p style="color:var(--steel);">Loading brands...</p>
+    </div>
+  </div>
+</div>
+
+<!-- PROFESSIONAL FLAVOUR MODAL -->
+<div class="modal-overlay" id="flavourModal">
+  <div class="modal-box" style="display:block; max-width:620px; padding:24px;">
+    <button class="modal-close" onclick="closeFlavourModal()">✕</button>
+    <h2 style="font-size:24px; margin-bottom:20px; font-family:'Inter'; font-weight:700; color:var(--chalk);">Select Flavour</h2>
+    <div id="flavourGrid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+      <p style="color:var(--steel);">Loading flavours...</p>
     </div>
   </div>
 </div>
@@ -846,6 +868,7 @@
     }
   }
 
+  /* BRAND MODAL LOGIC */
   async function loadBrands() {
     const brandGrid = document.getElementById("brandGrid");
     try {
@@ -894,7 +917,95 @@
     displayProducts = allProducts.filter(p => (p["Brand"] || "").trim().toLowerCase() === brandName.trim().toLowerCase());
     renderProductsGrid();
     closeBrandModal();
-    document.getElementById("products").scrollIntoView();
+    const desc = document.getElementById("activeFilterDesc");
+    if (desc) desc.innerText = `Showing products for brand: "${brandName}"`;
+    document.getElementById("products").scrollIntoView({ behavior: 'smooth' });
+  }
+
+  /* FLAVOUR MODAL LOGIC */
+  function openFlavourModal() {
+    const flvGrid = document.getElementById("flavourGrid");
+    document.getElementById("flavourModal").classList.add("open");
+
+    // Extract unique non-empty flavours from allProducts
+    const flavourMap = new Map();
+    allProducts.forEach(p => {
+      const f = (p["Flavour"] || "").trim();
+      if (f) {
+        const key = f.toLowerCase();
+        if (!flavourMap.has(key)) {
+          flavourMap.set(key, f);
+        }
+      }
+    });
+
+    const uniqueFlavours = Array.from(flavourMap.values());
+
+    if (uniqueFlavours.length === 0) {
+      flvGrid.innerHTML = `<p style="color:var(--steel); grid-column:1/-1; text-align:center;">Koi flavours nahi mile sheet me.</p>`;
+      return;
+    }
+
+    let flvHTML = `
+      <div class="flavour-card-item all-flv" onclick="showAllProductsFromModal()">
+        <span>🌟</span>
+        <span class="flv-name">Show All Flavours (View All)</span>
+      </div>
+    `;
+
+    // Smart flavour icon mapping
+    function getFlavourIcon(name) {
+      const n = name.toLowerCase();
+      if (n.includes("chocolate") || n.includes("choco")) return "🍫";
+      if (n.includes("mango") || n.includes("alphonso")) return "🥭";
+      if (n.includes("coffee") || n.includes("latte") || n.includes("cafe")) return "☕";
+      if (n.includes("strawberry") || n.includes("berry")) return "🍓";
+      if (n.includes("vanilla")) return "🍦";
+      if (n.includes("banana")) return "🍌";
+      if (n.includes("kulfi") || n.includes("kesar") || n.includes("saffron")) return "🍨";
+      if (n.includes("unflavor") || n.includes("raw")) return "🥛";
+      if (n.includes("cookies") || n.includes("cream")) return "🍪";
+      if (n.includes("watermelon") || n.includes("melon")) return "🍉";
+      if (n.includes("apple")) return "🍏";
+      if (n.includes("orange") || n.includes("citrus")) return "🍊";
+      return "👅";
+    }
+
+    flvHTML += uniqueFlavours.map(flv => `
+      <div class="flavour-card-item" onclick="filterByFlavour('${escapeQuotes(flv)}')">
+        <span class="flv-icon">${getFlavourIcon(flv)}</span>
+        <span class="flv-name">${flv}</span>
+      </div>
+    `).join("");
+
+    flvGrid.innerHTML = flvHTML;
+  }
+
+  function closeFlavourModal() {
+    document.getElementById("flavourModal").classList.remove("open");
+  }
+
+  function filterByFlavour(flavourName) {
+    const q = flavourName.trim().toLowerCase();
+    
+    // Filter matching flavour
+    const matched = allProducts.filter(p => (p["Flavour"] || "").trim().toLowerCase() === q);
+    
+    // Unique map for display
+    const uniqueMap = new Map();
+    matched.forEach(p => {
+      const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
+      if (!uniqueMap.has(key)) uniqueMap.set(key, p);
+    });
+    
+    displayProducts = Array.from(uniqueMap.values());
+    renderProductsGrid();
+    closeFlavourModal();
+
+    const desc = document.getElementById("activeFilterDesc");
+    if (desc) desc.innerText = `Showing products for flavour: "${flavourName}"`;
+
+    document.getElementById("products").scrollIntoView({ behavior: 'smooth' });
   }
 
   function showAllProductsFromModal() {
@@ -906,7 +1017,10 @@
     displayProducts = Array.from(uniqueMap.values());
     renderProductsGrid();
     closeBrandModal();
-    document.getElementById("products").scrollIntoView();
+    closeFlavourModal();
+    const desc = document.getElementById("activeFilterDesc");
+    if (desc) desc.innerText = "Live from our store sheet — updates automatically.";
+    document.getElementById("products").scrollIntoView({ behavior: 'smooth' });
   }
 
   function handleSearch(val) {
@@ -1602,7 +1716,7 @@
 
   document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
 
-  ["cartDrawer", "wishlistDrawer", "loginModal", "checkoutModal", "proofModal", "productModal", "brandModal", "orderHistoryDrawer"].forEach(id => {
+  ["cartDrawer", "wishlistDrawer", "loginModal", "checkoutModal", "proofModal", "productModal", "brandModal", "flavourModal", "orderHistoryDrawer"].forEach(id => {
     const el = document.getElementById(id);
     if(el) {
       el.addEventListener("click", (e) => {
