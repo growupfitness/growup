@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Grow Up Fitness — Pro Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-dark:#0a0c10;
+    --card-bg:#12161f;
+    --card-inner:#181e2b;
+    --steel:#8b949e;
+    --chalk:#f0f6fc;
+    --ember:#00A0E3;
+    --gold:#d4af37;
+    --gold-dim:rgba(212, 175, 55, 0.15);
+    --border-color:rgba(255, 255, 255, 0.08);
+    --border-gold:rgba(212, 175, 55, 0.4);
+    --radius:8px;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html, body{
+    scroll-behavior:smooth;
+    width:100%;
+    overflow-x:hidden;
+    background:var(--bg-dark);
+    color:var(--chalk);
+    font-family:'Inter',sans-serif;
+  }
+  ::-webkit-scrollbar{width:6px;}
+  ::-webkit-scrollbar-track{background:var(--bg-dark);}
+  ::-webkit-scrollbar-thumb{background:#30363d;border-radius:4px;}
+  h1,h2,h3,.display{
+    font-family:'Bebas Neue',sans-serif;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    line-height:0.95;
+  }
+  a{text-decoration:none;color:inherit;}
+
+  .top-bar{
+    background:#07080a;color:var(--steel);font-size:11px;
+    text-align:center;padding:7px 10px;letter-spacing:0.4px;
+    border-bottom:1px solid var(--border-color);
+  }
+  .top-bar strong{color:#ffffff;}
+  .top-bar a{color:var(--ember);font-weight:700;}
+
+  /* HEADER & TOP BAR */
+  header{
+    position:sticky;
+    top:0;
+    z-index:90;
+    background:rgba(10, 12, 16, 0.92);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border-color);
+  }
+  nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 20px;max-width:1200px;margin:0 auto;gap:12px;
+    flex-wrap:wrap;
+  }
+  .nav-left{display:flex;align-items:center;gap:14px;}
+  .nav-right{display:flex;align-items:center;gap:8px;}
+  .nav-logo-img{
+    height:40px;max-width:160px;width:auto;object-fit:contain;display:block;
+    filter: drop-shadow(0 0 10px rgba(0, 160, 227, 0.35));
+  }
+
+  .search-box{position:relative;max-width:240px;width:100%;}
+  .search-box input{
+    width:100%;padding:8px 12px 8px 32px;background:#161b22;
+    border:1px solid var(--border-color);border-radius:20px;font-size:12px;
+    color:#fff;outline:none;font-family:'Inter';
+  }
+  .search-box input:focus{border-color:var(--ember);}
+  .search-box::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;opacity:0.6;pointer-events:none;}
+
+  .search-suggestions-dropdown{
+    position:absolute;top:calc(100% + 6px);left:0;width:100%;min-width:260px;
+    background:#161b22;border:1px solid var(--border-color);border-radius:8px;
+    box-shadow:0 12px 30px rgba(0,0,0,0.5);overflow:hidden;z-index:120;display:none;
+  }
+  .search-suggestions-dropdown.open{display:block;}
+  .suggestion-item{
+    display:flex;align-items:center;gap:10px;padding:9px 12px;
+    cursor:pointer;border-bottom:1px solid var(--border-color);
+  }
+  .suggestion-item:last-child{border-bottom:none;}
+  .suggestion-item:hover{background:rgba(0,160,227,0.12);}
+  .suggestion-item img{width:32px;height:32px;object-fit:contain;background:#0d1117;border-radius:4px;padding:2px;}
+  .suggestion-text{flex:1;min-width:0;}
+  .suggestion-title{font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .suggestion-sub{font-size:10px;color:var(--steel);display:flex;justify-content:space-between;margin-top:2px;}
+
+  .top-pills-bar{width:100%;background:#0d1117;border-top:1px solid var(--border-color);padding:8px 0;}
+  .top-pills-container{
+    max-width:1200px;margin:0 auto;padding:0 20px;display:flex;gap:8px;
+    overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  }
+  .top-pills-container::-webkit-scrollbar{display:none;}
+  .cat-pill{
+    background:#161b22;border:1px solid var(--border-color);color:#c9d1d9;
+    padding:6px 14px;font-size:11px;font-weight:700;border-radius:20px;
+    cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px;flex-shrink:0;
+  }
+  .cat-pill:hover, .cat-pill.active{
+    background:var(--ember);border-color:var(--ember);color:#ffffff;
+    box-shadow:0 3px 12px rgba(0, 160, 227, 0.4);
+  }
+
+  .nav-links{display:flex;gap:24px;font-size:13px;font-weight:600;}
+  .nav-links a{opacity:0.8;transition:opacity .2s;}
+  .nav-links a:hover{opacity:1;color:var(--ember);}
+  .login-btn{
+    border:1px solid var(--border-color);padding:7px 14px;font-weight:700;
+    font-size:12px;border-radius:4px;cursor:pointer;background:none;color:#fff;font-family:'Inter';
+  }
+  .login-btn:hover{border-color:var(--ember);color:var(--ember);}
+  .auth-area{display:flex;align-items:center;gap:10px;}
+  .user-chip{font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px;}
+  .user-chip .logout-link{color:var(--steel);cursor:pointer;font-size:11px;text-decoration:underline;}
+
+  .icon-btn{
+    position:relative;background:none;border:1px solid var(--border-color);
+    color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-size:14px;
+  }
+  .icon-btn:hover{border-color:var(--ember);color:var(--ember);}
+  .badge{
+    position:absolute;top:-5px;right:-5px;background:var(--ember);color:#fff;
+    font-size:9px;font-weight:800;width:17px;height:17px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  /* BOLT HARDCORE HERO BANNER */
+  .bolt-hero{
+    padding:40px 20px 24px;
+    text-align:center;
+    background:radial-gradient(circle at center, rgba(0, 160, 227, 0.1) 0%, rgba(10, 12, 16, 1) 75%);
+    border-bottom:1px solid var(--border-color);
+  }
+  .bolt-hero h1{font-size:60px;color:#fff;margin-bottom:6px;letter-spacing:2px;}
+  .bolt-hero h1 span{color:var(--gold);}
+  .bolt-hero p{color:var(--steel);font-size:14px;max-width:580px;margin:0 auto 16px;text-transform:uppercase;letter-spacing:1px;}
+
+  /* SECTION & GRID */
+  .section{padding:40px 20px;max-width:1200px;margin:0 auto;}
+  .section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:14px;}
+  .section-head .tag{color:var(--gold);font-weight:800;font-size:12px;letter-spacing:2px;margin-bottom:4px;display:block;}
+  .section-head h2{font-size:42px;}
+  .section-head p{color:var(--steel);font-size:13px;}
+
+  /* -------------------------------------------------------------
+     BOLT ULTRA-CARD STYLE (MATRIX GRID INTEGRATION)
+     ------------------------------------------------------------- */
+  .bolt-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:18px;
+    width:100%;
+  }
+  .bolt-card{
+    background:var(--card-bg);
+    border:1px solid var(--border-color);
+    border-radius:10px;
+    overflow:hidden;
+    cursor:pointer;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    transition:transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .bolt-card:hover{
+    border-color:var(--border-gold);
+    transform:translateY(-4px);
+    box-shadow:0 14px 35px rgba(0,0,0,0.4), 0 0 15px rgba(212, 175, 55, 0.15);
+  }
+  .bolt-card.highlight-cyan:hover{
+    border-color:rgba(0, 160, 227, 0.5);
+    box-shadow:0 14px 35px rgba(0,0,0,0.4), 0 0 15px rgba(0, 160, 227, 0.2);
+  }
+
+  .bolt-card-img-wrap{
+    height:200px;
+    position:relative;
+    background:#0d1117;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:14px;
+    border-bottom:1px solid var(--border-color);
+  }
+  .bolt-card-img{
+    max-height:100%;
+    max-width:100%;
+    object-fit:contain;
+    transition:transform 0.3s ease;
+  }
+  .bolt-card:hover .bolt-card-img{
+    transform:scale(1.06);
+  }
+  .card-heart{
+    position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.6);
+    border:1px solid rgba(255,255,255,0.1);color:#fff;width:28px;height:28px;
+    border-radius:50%;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;
+  }
+  .card-heart.wishlisted{color:var(--gold);}
+  .discount-tag{
+    position:absolute;top:8px;left:8px;background:#e11d48;color:#fff;
+    font-size:9px;font-weight:900;padding:3px 7px;border-radius:4px;text-transform:uppercase;
+  }
+
+  .bolt-card-body{
+    padding:16px 14px;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .bolt-brand-label{
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:1px;
+    color:var(--gold);
+    text-transform:uppercase;
+  }
+  .bolt-title{
+    font-size:16px;
+    font-weight:800;
+    color:#ffffff;
+    margin:3px 0 10px;
+    line-height:1.2;
+    text-transform:uppercase;
+  }
+
+  /* 4-BOX NUTRITION MATRIX */
+  .nutrition-matrix{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    background:var(--card-inner);
+    border:1px solid var(--border-color);
+    border-radius:6px;
+    padding:8px 4px;
+    margin-bottom:12px;
+    text-align:center;
+    gap:2px;
+  }
+  .matrix-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .matrix-val{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:18px;
+    color:#ffffff;
+    line-height:1;
+    letter-spacing:0.5px;
+  }
+  .matrix-lbl{
+    font-size:8px;
+    font-weight:700;
+    color:var(--steel);
+    text-transform:uppercase;
+    margin-top:2px;
+  }
+
+  /* PILL TRUST TAGS */
+  .bolt-badges-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px;
+    margin-bottom:14px;
+  }
+  .bolt-badge{
+    background:#161b22;
+    border:1px solid rgba(255,255,255,0.08);
+    font-size:9px;
+    font-weight:700;
+    color:#8b949e;
+    padding:3px 6px;
+    border-radius:3px;
+    text-transform:uppercase;
+  }
+
+  .bolt-price-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-top:10px;
+    border-top:1px dashed var(--border-color);
+  }
+  .bolt-price-val{
+    font-size:18px;
+    font-weight:900;
+    color:#ffffff;
+  }
+  .bolt-mrp-val{
+    font-size:12px;
+    color:var(--steel);
+    text-decoration:line-through;
+    margin-left:4px;
+  }
+  .bolt-btn-view{
+    background:var(--gold);
+    color:#000;
+    border:none;
+    padding:7px 12px;
+    font-size:11px;
+    font-weight:800;
+    border-radius:4px;
+    cursor:pointer;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    transition:background 0.2s;
+  }
+  .bolt-btn-view:hover{background:#eed202;}
+
+  /* MODALS & DRAWERS */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:center;justify-content:center;padding:16px;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:#12161f;max-width:880px;width:100%;max-height:90vh;overflow-y:auto;border-radius:10px;position:relative;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border-color);}
+  .modal-close{position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.6);color:#fff;border:none;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;z-index:3;}
+  .modal-gallery{background:#0d1117;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .modal-gallery img{max-height:360px;max-width:100%;object-fit:contain;}
+  .modal-info{padding:28px 24px;}
+  .btn-primary{background:var(--gold);color:#000;padding:12px 20px;font-weight:800;font-size:13px;border-radius:4px;border:none;cursor:pointer;text-transform:uppercase;}
+  .btn-ghost{border:1px solid var(--border-color);color:#fff;padding:12px 18px;font-weight:700;font-size:12px;border-radius:4px;background:none;cursor:pointer;}
+  .drawer-box{max-width:520px;width:94vw;padding:22px 18px;display:block;background:#12161f;border:1px solid var(--border-color);max-height:86vh;overflow-y:auto;border-radius:8px;}
+
+  @media(max-width:768px){
+    nav{padding:8px 14px; gap:8px;}
+    .nav-logo-img{height:34px; max-width:130px;}
+    .nav-links{display:none;}
+    .search-box{order:3; max-width:100%; width:100%; margin-top:2px;}
+    .bolt-hero h1{font-size:42px;}
+    .bolt-grid{grid-template-columns:repeat(2, 1fr); gap:10px;}
+    .bolt-card-img-wrap{height:150px; padding:8px;}
+    .bolt-card-body{padding:10px 8px;}
+    .bolt-title{font-size:13px; margin:2px 0 6px;}
+    .nutrition-matrix{padding:6px 2px; margin-bottom:8px;}
+    .matrix-val{font-size:15px;}
+    .matrix-lbl{font-size:7px;}
+    .bolt-badges-row{display:none;}
+    .bolt-price-row{flex-direction:column; align-items:flex-start; gap:6px;}
+    .bolt-btn-view{width:100%; text-align:center;}
+    .modal-box{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <strong>100% Genuine &amp; Importer Certified Supplements</strong> &nbsp;·&nbsp; Call/WhatsApp: <a href="tel:9571214461">95712 14461</a>
+</div>
+
+<header>
+  <nav>
+    <div class="nav-left">
+      <a href="home.html" class="logo-link">
+        <img src="https://github.com/growupfitness/growup/blob/main/growup-logoo.png?raw=true" alt="Grow Up Fitness" class="nav-logo-img">
+      </a>
+    </div>
+
+    <div class="nav-links">
+      <a href="home.html">Classic View</a>
+      <a href="#products">Bolt Store</a>
+      <a href="tel:9571214461">Call Store</a>
+    </div>
+
+    <div class="nav-right">
+      <button class="icon-btn" onclick="openWishlistDrawer()" title="Wishlist">♡<span class="badge" id="wishlistBadge" style="display:none;">0</span></button>
+      <button class="icon-btn" onclick="openCartDrawer()" title="Cart">🛒<span class="badge" id="cartBadge" style="display:none;">0</span></button>
+      <div class="auth-area" id="authArea">
+        <button class="login-btn" onclick="openLoginModal()">Login</button>
+      </div>
+    </div>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search supplements..." oninput="handleSearch(this.value)" autocomplete="off">
+      <div class="search-suggestions-dropdown" id="searchSuggestions"></div>
+    </div>
+  </nav>
+
+  <div class="top-pills-bar">
+    <div class="top-pills-container">
+      <button class="cat-pill active" onclick="filterByCategory('all', this)">⚡ All Supplements</button>
+      <button class="cat-pill" onclick="filterByCategory('protein', this)">💪 Proteins</button>
+      <button class="cat-pill" onclick="filterByCategory('fat loss protein', this)">🔥 Fat Loss Protein</button>
+      <button class="cat-pill" onclick="filterByCategory('pre-workout', this)">💥 Pre Workout</button>
+      <button class="cat-pill" onclick="filterByCategory('fat burner', this)">⚡ Fat Burner</button>
+      <button class="cat-pill" onclick="filterByCategory('vitamins and minerals', this)">💊 Vitamins &amp; Minerals</button>
+      <button class="cat-pill" onclick="filterByCategory('essentials', this)">🛡️ Essentials</button>
+      <button class="cat-pill" onclick="filterByCategory('breakfast and snacks', this)">🥣 Breakfast &amp; Snacks</button>
+    </div>
+  </div>
+</header>
+
+<div class="bolt-hero">
+  <h1>FUEL YOUR <span>STRENGTH</span></h1>
+  <p>BUILD YOUR BEST • LAB TESTED NUTRITION MATRIX</p>
+</div>
+
+<section class="section" id="products">
+  <div class="section-head">
+    <div>
+      <span class="tag">VERIFIED MACROS AT A GLANCE</span>
+      <h2>NUTRITION MATRIX STORE</h2>
+    </div>
+    <p id="activeFilterDesc">Live product stats fetched directly from store database.</p>
+  </div>
+
+  <div class="bolt-grid" id="boltGrid">
+    <p style="color:var(--steel); grid-column:1/-1; text-align:center; padding:40px 0;">Loading Nutrition Matrix...</p>
+  </div>
+</section>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-gallery">
+      <img id="modalImg" src="">
+    </div>
+    <div class="modal-info" id="modalInfo"></div>
+  </div>
+</div>
+
+<!-- CART DRAWER -->
+<div class="modal-overlay" id="cartDrawer">
+  <div class="modal-box drawer-box">
+    <button class="modal-close" onclick="closeDrawer('cartDrawer')">✕</button>
+    <h2>Your Cart</h2>
+    <div id="cartItemsWrap"></div>
+  </div>
+</div>
+
+<!-- WISHLIST DRAWER -->
+<div class="modal-overlay" id="wishlistDrawer">
+  <div class="modal-box drawer-box">
+    <button class="modal-close" onclick="closeDrawer('wishlistDrawer')">✕</button>
+    <h2>Your Wishlist</h2>
+    <div id="wishlistItemsWrap"></div>
+  </div>
+</div>
+
+<script>
+  // Dedicated Apps Script URL
+  const API_URL = "https://script.google.com/macros/s/AKfycbx-t9D0vWFWsNtD6GgHHr3SojREUR55Lvp02ZtlNNhXArxRy3VPzRGO5serEpixPZZN/exec";
+
+  let allProducts = [];
+  let displayProducts = [];
+  let cart = [];
+  let wishlist = [];
+  let currentUser = null;
+
+  async function loadProducts() {
+    const grid = document.getElementById("boltGrid");
+    grid.innerHTML = `<p style="color:var(--steel); grid-column:1/-1; text-align:center; padding:40px 0;">Loading Nutrition Matrix...</p>`;
+
+    const fetchUrl = `${API_URL}?action=getProducts&_t=${new Date().getTime()}`;
+
+    try {
+      const response = await fetch(fetchUrl);
+      const data = await response.json();
+
+      if (!Array.isArray(data) || data.length === 0) {
+        grid.innerHTML = `<p style="color:var(--steel); grid-column:1/-1; text-align:center;">Sheet me koi products nahi mile.</p>`;
+        return;
+      }
+
+      allProducts = data;
+      
+      const uniqueMap = new Map();
+      allProducts.forEach(p => {
+        const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
+        if (!uniqueMap.has(key)) uniqueMap.set(key, p);
+      });
+      displayProducts = Array.from(uniqueMap.values());
+
+      renderBoltCards();
+    } catch (err) {
+      console.error(err);
+      grid.innerHTML = `<p style="color:var(--steel); grid-column:1/-1; text-align:center;">Products load nahi ho paye. <br><button onclick="loadProducts()" class="btn-primary" style="margin-top:10px;">Retry</button></p>`;
+    }
+  }
+
+  function renderBoltCards() {
+    const grid = document.getElementById("boltGrid");
+    if (displayProducts.length === 0) {
+      grid.innerHTML = `<p style="color:var(--steel); grid-column:1/-1; text-align:center; padding:40px 0;">No products found.</p>`;
+      return;
+    }
+
+    grid.innerHTML = "";
+    displayProducts.forEach((p, idx) => {
+      const mrp = Number(p["MRP"]) || 0;
+      const selling = Number(p["Selling Price"]) || 0;
+      const hasDiscount = mrp > selling;
+      const offPct = hasDiscount ? Math.round(((mrp - selling) / mrp) * 100) : 0;
+      const pid = p["Product ID"] || p["Product Name"];
+      const isWishlisted = wishlist.includes(pid);
+
+      // Sheet se naye nutrition columns nikalna (Agar blank ho toh default smart fallback)
+      const cal = p["Calories"] ? String(p["Calories"]).replace(/[^0-9]/g, "") : (p["Category"] && p["Category"].toLowerCase().includes("protein") ? "125" : "-");
+      const pro = p["Protein"] ? String(p["Protein"]).replace(/[^0-9]/g, "") : (p["Category"] && p["Category"].toLowerCase().includes("protein") ? "25" : "-");
+      const bcaa = p["BCAA"] ? String(p["BCAA"]).replace(/[^0-9]/g, "") : (p["Category"] && p["Category"].toLowerCase().includes("protein") ? "6" : "-");
+      const srv = p["Servings"] ? String(p["Servings"]).replace(/[^0-9]/g, "") : "30";
+
+      const card = document.createElement("div");
+      card.className = `bolt-card ${idx % 2 === 0 ? 'highlight-cyan' : ''}`;
+      card.innerHTML = `
+        <div class="bolt-card-img-wrap">
+          ${hasDiscount ? `<span class="discount-tag">-${offPct}% OFF</span>` : ''}
+          <button class="card-heart ${isWishlisted ? 'wishlisted' : ''}" onclick="event.stopPropagation(); toggleWishlist('${pid}')">${isWishlisted ? '♥' : '♡'}</button>
+          <img src="${p["Image 1"] || ""}" class="bolt-card-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'180\' height=\'180\' fill=\'%238b949e\' viewBox=\'0 0 24 24\'><path d=\'M21 16.5l-4.5-4.5-3 3-4.5-4.5L3 16.5V21h18v-4.5z\'/></svg>'">
+        </div>
+
+        <div class="bolt-card-body">
+          <div>
+            <span class="bolt-brand-label">${p["Brand"] || "PREMIUM"}</span>
+            <div class="bolt-title">${p["Product Name"] || ""}</div>
+            
+            <!-- 4-MATRIX NUTRITION BOX -->
+            <div class="nutrition-matrix">
+              <div class="matrix-item">
+                <span class="matrix-val">${cal || '-'}</span>
+                <span class="matrix-lbl">CAL</span>
+              </div>
+              <div class="matrix-item">
+                <span class="matrix-val" style="color:var(--gold);">${pro ? pro + 'G' : '-'}</span>
+                <span class="matrix-lbl">PROTEIN</span>
+              </div>
+              <div class="matrix-item">
+                <span class="matrix-val">${bcaa ? bcaa + 'G' : '-'}</span>
+                <span class="matrix-lbl">BCAA</span>
+              </div>
+              <div class="matrix-item">
+                <span class="matrix-val">${srv || '-'}</span>
+                <span class="matrix-lbl">SERVINGS</span>
+              </div>
+            </div>
+
+            <!-- TRUST PILLS -->
+            <div class="bolt-badges-row">
+              <span class="bolt-badge">🛡️ Banned Tested</span>
+              <span class="bolt-badge">🚫 Zero Sugar</span>
+            </div>
+          </div>
+
+          <div class="bolt-price-row">
+            <div>
+              <span class="bolt-price-val">₹${selling}</span>
+              ${hasDiscount ? `<span class="bolt-mrp-val">₹${mrp}</span>` : ''}
+            </div>
+            <button class="bolt-btn-view" onclick="openProductModal('${pid}')">Options</button>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function filterByCategory(keyword, btnEl) {
+    document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+
+    const desc = document.getElementById("activeFilterDesc");
+
+    if (keyword === 'all') {
+      const uniqueMap = new Map();
+      allProducts.forEach(p => {
+        const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
+        if (!uniqueMap.has(key)) uniqueMap.set(key, p);
+      });
+      displayProducts = Array.from(uniqueMap.values());
+      if (desc) desc.innerText = "Live product stats fetched directly from store database.";
+    } else {
+      const q = keyword.toLowerCase().trim();
+      const matched = allProducts.filter(p => {
+        const cat = (p["Category"] || "").toLowerCase();
+        const name = (p["Product Name"] || "").toLowerCase();
+        return cat.includes(q) || name.includes(q);
+      });
+
+      const uniqueMap = new Map();
+      matched.forEach(p => {
+        const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
+        if (!uniqueMap.has(key)) uniqueMap.set(key, p);
+      });
+      displayProducts = Array.from(uniqueMap.values());
+      if (desc) desc.innerText = `Showing all products for category: "${btnEl ? btnEl.innerText.replace(/^[^\w\s]+/, '').trim() : keyword}"`;
+    }
+
+    renderBoltCards();
+    document.getElementById("products").scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function openProductModal(pid) {
+    const p = allProducts.find(item => (item["Product ID"] || item["Product Name"]) === pid);
+    if (!p) return;
+
+    document.getElementById("modalImg").src = p["Image 1"] || "";
+    document.getElementById("modalInfo").innerHTML = `
+      <span style="color:var(--gold); font-size:12px; font-weight:800; letter-spacing:1px; text-transform:uppercase;">${p["Brand"] || ""}</span>
+      <h2 style="font-size:28px; margin:6px 0 10px; color:#fff;">${p["Product Name"]}</h2>
+      <p style="color:var(--steel); font-size:14px; margin-bottom:16px;">${p["Weight / Size"] || ""} · ${p["Flavour"] || ""}</p>
+      
+      <div style="font-size:26px; font-weight:900; margin-bottom:20px; color:#fff;">₹${p["Selling Price"]}</div>
+      
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn-primary" onclick="addToCart('${pid}'); closeModal();">Add to Cart</button>
+        <a href="https://wa.me/919571214461?text=Hi,%20I%20want%20to%20order%20${encodeURIComponent(p["Product Name"])}" target="_blank" class="btn-ghost" style="padding-top:12px; text-align:center;">Order on WhatsApp</a>
+      </div>
+    `;
+    document.getElementById("productModal").classList.add("open");
+  }
+
+  function closeModal() { document.getElementById("productModal").classList.remove("open"); }
+  function closeDrawer(id) { document.getElementById(id).classList.remove("open"); }
+  function openCartDrawer() { renderCartDrawer(); document.getElementById("cartDrawer").classList.add("open"); }
+  function openWishlistDrawer() { renderWishlistDrawer(); document.getElementById("wishlistDrawer").classList.add("open"); }
+
+  function addToCart(pid) {
+    const item = cart.find(i => i.id === pid);
+    if (item) item.qty += 1; else cart.push({ id: pid, qty: 1 });
+    renderCartBadge();
+  }
+  function toggleWishlist(pid) {
+    if (wishlist.includes(pid)) wishlist = wishlist.filter(id => id !== pid);
+    else wishlist.push(pid);
+    renderWishlistBadge(); renderBoltCards();
+  }
+  function renderCartBadge() {
+    const badge = document.getElementById("cartBadge");
+    const count = cart.reduce((s, i) => s + i.qty, 0);
+    badge.innerText = count; badge.style.display = count > 0 ? "flex" : "none";
+  }
+  function renderWishlistBadge() {
+    const badge = document.getElementById("wishlistBadge");
+    badge.innerText = wishlist.length; badge.style.display = wishlist.length > 0 ? "flex" : "none";
+  }
+
+  function renderCartDrawer() {
+    const wrap = document.getElementById("cartItemsWrap");
+    if (cart.length === 0) { wrap.innerHTML = `<p style="color:var(--steel); text-align:center; padding:30px 0;">Cart is empty.</p>`; return; }
+    let total = 0;
+    wrap.innerHTML = cart.map(item => {
+      const p = allProducts.find(pr => (pr["Product ID"] || pr["Product Name"]) === item.id);
+      if (!p) return "";
+      const price = Number(p["Selling Price"]) || 0;
+      total += price * item.qty;
+      return `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border-color);">
+          <div>
+            <h5 style="color:#fff; font-size:14px;">${p["Product Name"]}</h5>
+            <span style="color:var(--steel); font-size:12px;">₹${price} × ${item.qty}</span>
+          </div>
+          <span style="color:#ef4444; font-size:12px; cursor:pointer;" onclick="cart = cart.filter(i=>i.id !== '${item.id}'); renderCartBadge(); renderCartDrawer();">Remove</span>
+        </div>
+      `;
+    }).join("") + `
+      <div style="margin-top:20px; text-align:right;">
+        <h3 style="color:#fff; font-size:20px;">Total: ₹${total}</h3>
+        <a href="https://wa.me/919571214461?text=Hi,%20I%20want%20to%20checkout%20cart%20Total%20₹${total}" target="_blank" class="btn-primary" style="display:inline-block; margin-top:10px;">Order on WhatsApp</a>
+      </div>
+    `;
+  }
+
+  function renderWishlistDrawer() {
+    const wrap = document.getElementById("wishlistItemsWrap");
+    if (wishlist.length === 0) { wrap.innerHTML = `<p style="color:var(--steel); text-align:center; padding:30px 0;">Wishlist is empty.</p>`; return; }
+    wrap.innerHTML = wishlist.map(id => {
+      const p = allProducts.find(pr => (pr["Product ID"] || pr["Product Name"]) === id);
+      if (!p) return "";
+      return `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border-color);">
+          <span style="color:#fff; font-size:14px;">${p["Product Name"]}</span>
+          <button class="btn-primary" style="padding:6px 12px; font-size:11px;" onclick="addToCart('${id}'); closeDrawer('wishlistDrawer');">Add Cart</button>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function handleSearch(val) {
+    const query = val.toLowerCase().trim();
+    if (!query) {
+      displayProducts = allProducts;
+    } else {
+      displayProducts = allProducts.filter(p => (p["Product Name"] || "").toLowerCase().includes(query) || (p["Brand"] || "").toLowerCase().includes(query));
+    }
+    renderBoltCards();
+  }
+
+  loadProducts();
+</script>
+</body>
+</html>
