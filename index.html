@@ -54,7 +54,6 @@
 
   *{margin:0;padding:0;box-sizing:border-box; transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;}
   
-  /* CRITICAL: STICKY HEADER FIX */
   html, body{
     scroll-behavior:smooth;
     width:100%;
@@ -105,18 +104,34 @@
     filter: drop-shadow(0 0 10px rgba(0, 160, 227, 0.35));
   }
 
-  /* FROZEN STICKY HEADER BAR */
+  /* SMART HIDE & SHOW HEADER (FIXED WITH TRANSITION) */
   header{
-    position: -webkit-sticky;
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 999;
     background: var(--iron);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-color);
     box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    transition: transform 0.35s ease, opacity 0.35s ease;
+    transform: translateY(0);
+    opacity: 1;
   }
+
+  header.header-hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* PADDING FIX FOR FIXED HEADER */
+  body {
+    padding-top: 145px;
+  }
+
   nav{
     display:flex;align-items:center;justify-content:space-between;
     padding:10px 20px;max-width:1140px;margin:0 auto;gap:12px;
@@ -167,7 +182,7 @@
   }
   .suggestion-sub{font-size:10px;color:var(--steel);display:flex;justify-content:space-between;margin-top:2px;}
 
-  /* TOP STICKY CATEGORY PILLS BAR */
+  /* TOP CATEGORY PILLS BAR */
   .top-pills-bar {
     width: 100%;
     background: var(--iron);
@@ -222,13 +237,21 @@
   .user-chip{font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px;}
   .user-chip .logout-link{color:var(--steel);font-weight:500;cursor:pointer;font-size:11px;text-decoration:underline;}
 
+  /* FIXED & PROPERLY LAYERED WELCOME TOAST */
   .welcome-toast{
-    position:fixed;top:80px;right:16px;z-index:300;
-    background:var(--iron-light);border:1px solid var(--ember);
-    padding:14px 18px;border-radius:8px;
-    max-width:calc(100vw - 32px);width:290px;
-    transform:translateX(120%);transition:transform .35s ease;
-    box-shadow:0 10px 30px rgba(0,0,0,0.18);
+    position:fixed;
+    top:20px;
+    right:16px;
+    z-index:99999;
+    background:var(--iron-light);
+    border:1.5px solid var(--ember);
+    padding:14px 18px;
+    border-radius:8px;
+    max-width:calc(100vw - 32px);
+    width:290px;
+    transform:translateX(120%);
+    transition:transform .35s ease;
+    box-shadow:0 12px 35px rgba(0,0,0,0.25);
   }
   .welcome-toast.show{transform:translateX(0);}
   .welcome-toast .title{font-family:'Bebas Neue';font-size:18px;color:var(--ember);letter-spacing:1px;}
@@ -261,12 +284,12 @@
   }
 
   /* MODAL BOXES & DRAWERS */
-  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:1000;align-items:center;justify-content:center;padding:16px;}
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10000;align-items:center;justify-content:center;padding:16px;}
   .modal-overlay.open{display:flex;}
   .modal-box{background:var(--iron-light);max-width:880px;width:100%;max-height:90vh;overflow-y:auto;border-radius:8px;position:relative;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border-color);}
   .modal-close{position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.5);color:#fff;border:none;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;z-index:10;}
 
-  /* CRITICAL: PROPER STYLED LOGIN MODAL */
+  /* PROPER STYLED LOGIN MODAL */
   .login-box {
     max-width: 420px;
     width: 92vw;
@@ -529,7 +552,7 @@
   .btn-ghost{border:1px solid var(--border-color);color:var(--chalk);padding:12px 20px;font-weight:700;font-size:12px;border-radius:var(--radius);background:none;cursor:pointer;}
   .btn-ghost:hover{background:var(--border-color);border-color:var(--chalk);}
 
-  .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:200;align-items:center;justify-content:center;}
+  .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:20000;align-items:center;justify-content:center;}
   .lightbox.open{display:flex;}
   .lightbox img{max-width:92vw;max-height:92vh;object-fit:contain;}
 
@@ -620,6 +643,7 @@
   }
 
   @media(max-width:768px){
+    body { padding-top: 140px; }
     nav{padding:8px 14px; gap:8px;}
     .nav-logo-img{height:34px; max-width:125px;}
     .nav-links{display:none;}
@@ -664,12 +688,12 @@
 </head>
 <body>
 
-<div class="top-bar">
-  <strong>100% Genuine &amp; Authentic Products</strong> &nbsp;·&nbsp; Call/WhatsApp: <a href="tel:9571214461">95712 14461</a>
-</div>
+<!-- SMART AUTO-HIDE HEADER BAR -->
+<header id="mainHeader">
+  <div class="top-bar">
+    <strong>100% Genuine &amp; Authentic Products</strong> &nbsp;·&nbsp; Call/WhatsApp: <a href="tel:9571214461">95712 14461</a>
+  </div>
 
-<!-- STICKY FROZEN HEADER -->
-<header>
   <nav>
     <div class="nav-left">
       <a href="#" class="logo-link" title="Grow Up Fitness">
@@ -700,7 +724,7 @@
     </div>
   </nav>
 
-  <!-- FROZEN TOP CATEGORY PILLS BAR -->
+  <!-- CATEGORY PILLS BAR -->
   <div class="top-pills-bar">
     <div class="top-pills-container">
       <button class="cat-pill active" onclick="filterByCategory('all', this)">⚡ All Supplements</button>
@@ -805,6 +829,7 @@
   </div>
 </div>
 
+<!-- WELCOME POPUP TOAST -->
 <div class="welcome-toast" id="welcomeToast">
   <div class="title" id="toastTitle">Welcome!</div>
   <p id="toastMsg"></p>
@@ -955,6 +980,44 @@
   let currentSelectedVariant = null;
   let tempOrderData = null;
   let isCheckingOut = false;
+
+  /* SMART AUTO-HIDE & RE-APPEAR ON UP-SCROLL LOGIC */
+  let lastScrollY = window.pageYOffset || document.documentElement.scrollTop;
+  let headerHideTimer = null;
+  const headerEl = document.getElementById("mainHeader");
+
+  window.addEventListener("scroll", function() {
+    const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+    // Page ke top par hamesha visible rahe
+    if (currentScrollY <= 80) {
+      if (headerEl) headerEl.classList.remove("header-hidden");
+      if (headerHideTimer) clearTimeout(headerHideTimer);
+      lastScrollY = currentScrollY;
+      return;
+    }
+
+    // Niche scroll karte waqt -> Hide Header
+    if (currentScrollY > lastScrollY && (currentScrollY - lastScrollY > 6)) {
+      if (headerEl) headerEl.classList.add("header-hidden");
+      if (headerHideTimer) clearTimeout(headerHideTimer);
+    } 
+    // Thoda sa bhi upar scroll karte waqt -> Show Header
+    else if (currentScrollY < lastScrollY && (lastScrollY - currentScrollY > 6)) {
+      if (headerEl) headerEl.classList.remove("header-hidden");
+      
+      // Auto-hide after 3 seconds of inactivity
+      if (headerHideTimer) clearTimeout(headerHideTimer);
+      headerHideTimer = setTimeout(() => {
+        const checkScroll = window.pageYOffset || document.documentElement.scrollTop;
+        if (checkScroll > 120 && headerEl) {
+          headerEl.classList.add("header-hidden");
+        }
+      }, 3000);
+    }
+
+    lastScrollY = currentScrollY;
+  }, { passive: true });
 
   function getImages(p) {
     return [p["Image 1"], p["Image 2"], p["Image 3"]].filter(img => img && img.trim() !== "");
