@@ -104,7 +104,7 @@
     filter: drop-shadow(0 0 10px rgba(0, 160, 227, 0.35));
   }
 
-  /* SMART HIDE & SHOW HEADER (FIXED WITH TRANSITION) */
+  /* SMART HIDE & SHOW HEADER */
   header{
     position: fixed;
     top: 0;
@@ -236,6 +236,20 @@
   .user-chip{font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px;}
   .user-chip .logout-link{color:var(--steel);font-weight:500;cursor:pointer;font-size:11px;text-decoration:underline;}
 
+  /* WALLET CHIP IN HEADER */
+  .wallet-chip {
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: #f59e0b;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    display: none;
+    align-items: center;
+    gap: 4px;
+  }
+
   /* WELCOME TOAST POPUP */
   .welcome-toast{
     position:fixed;
@@ -288,7 +302,7 @@
   .modal-box{background:var(--iron-light);max-width:880px;width:100%;max-height:90vh;overflow-y:auto;border-radius:8px;position:relative;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border-color);}
   .modal-close{position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.5);color:#fff;border:none;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;z-index:10;}
 
-  /* PROPER STYLED LOGIN MODAL */
+  /* PROPER STYLED LOGIN & CHECKOUT BOX */
   .login-box {
     max-width: 420px;
     width: 92vw;
@@ -352,6 +366,28 @@
   .drawer-empty{color:var(--steel);font-size:14px;text-align:center;padding:36px 0;}
   .drawer-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--border-color);}
   .drawer-total{display:flex;justify-content:space-between;font-size:16px;font-weight:800;margin-bottom:14px;color:var(--chalk);}
+
+  /* REWARD REDEMPTION UI IN CHECKOUT */
+  .rewards-checkout-box {
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px dashed #f59e0b;
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .rewards-checkout-box label {
+    font-size: 12px;
+    color: var(--chalk);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
   /* BRAND & FLAVOUR CARDS */
   .brand-card-item {
@@ -708,6 +744,7 @@
     </div>
 
     <div class="nav-right">
+      <div class="wallet-chip" id="walletBadge">🪙 0 Pts</div>
       <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle Theme">🌙</button>
       <button class="icon-btn" onclick="openWishlistDrawer()" title="Wishlist">♡<span class="badge" id="wishlistBadge" style="display:none;">0</span></button>
       <button class="icon-btn" onclick="openCartDrawer()" title="Cart">🛒<span class="badge" id="cartBadge" style="display:none;">0</span></button>
@@ -729,7 +766,7 @@
       <button class="cat-pill" onclick="filterByCategory('fat loss protein', this)">🔥 Fat Loss Protein</button>
       <button class="cat-pill" onclick="filterByCategory('pre-workout', this)">💥 Pre Workout</button>
       <button class="cat-pill" onclick="filterByCategory('fat burner', this)">⚡ Fat Burner</button>
-      <button class="cat-pill" onclick="filterByCategory('Gainer', this)">💪 Gainer</button>
+      <button class="cat-pill" onclick="filterByCategory('Mass Gainer', this)">💪 Gainer</button>
       <button class="cat-pill" onclick="filterByCategory('vitamins and minerals', this)">💊 Vitamins &amp; Minerals</button>
       <button class="cat-pill" onclick="filterByCategory('essentials', this)">🛡️ Essentials</button>
       <button class="cat-pill" onclick="filterByCategory('breakfast and snacks', this)">🥣 Breakfast &amp; Snacks</button>
@@ -873,7 +910,7 @@
   </div>
 </div>
 
-<!-- CHECKOUT MODAL -->
+<!-- CHECKOUT MODAL WITH REWARD POINTS -->
 <div class="modal-overlay" id="checkoutModal">
   <div class="login-box" style="max-width:485px;">
     <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
@@ -897,7 +934,21 @@
       <input type="text" id="chkState" placeholder="State *">
     </div>
 
-    <button class="btn-primary" onclick="launchUPIPayment()" style="width:100%; margin-top:6px;">Proceed to Pay via UPI</button>
+    <!-- REWARD POINTS TOGGLE BOX -->
+    <div class="rewards-checkout-box" id="rewardRedeemWrap" style="display:none;">
+      <label>
+        <input type="checkbox" id="useRewardsCheck" onchange="toggleRewardDiscount()">
+        <span>Use <strong id="availPointsCount">0</strong> Reward Points</span>
+      </label>
+      <span style="font-size:12px; font-weight:800; color:#f59e0b;" id="rewardSaveText">-₹0</span>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin:10px 0 14px; font-size:15px; font-weight:800;">
+      <span>Payable Amount:</span>
+      <span style="color:var(--ember); font-size:18px;" id="checkoutPayableText">₹0</span>
+    </div>
+
+    <button class="btn-primary" onclick="launchUPIPayment()" style="width:100%; margin-top:2px;">Proceed to Pay via UPI</button>
   </div>
 </div>
 
@@ -978,8 +1029,10 @@
   let currentSelectedVariant = null;
   let tempOrderData = null;
   let isCheckingOut = false;
+  let currentUser = null;
+  let currentCartTotal = 0;
+  let appliedRewardDiscount = 0;
 
-  // ROBUST HELPER: Har product ka pakka Unique Identifier banayein
   function getProductKey(p) {
     if (!p) return "";
     if (p["Product ID"] && String(p["Product ID"]).trim() !== "") {
@@ -991,7 +1044,6 @@
     return `${name}__${wt}__${flv}`;
   }
 
-  // ROBUST HELPER: Kisi bhi ID / Key se sahi product dhoondein
   function findProductByKey(key) {
     if (!key) return null;
     const cleanKey = String(key).trim();
@@ -1707,7 +1759,6 @@
   }
   function closeLightbox() { document.getElementById("imageLightbox").classList.remove("open"); }
 
-  let currentUser = null;
   function openLoginModal() { document.getElementById("loginModal").classList.add("open"); }
   function closeLoginModal() { document.getElementById("loginModal").classList.remove("open"); document.getElementById("loginError").style.display = "none"; }
 
@@ -1735,8 +1786,10 @@
     localStorage.setItem("gufName", user["User Name"]);
     try { cart = JSON.parse(user["Cart Items"] || "[]"); } catch (e) { cart = []; }
     try { wishlist = JSON.parse(user["Wishlist"] || "[]"); } catch (e) { wishlist = []; }
+    
     renderCartBadge();
     renderWishlistBadge();
+    renderWalletBadge();
     renderProductsGrid();
 
     document.getElementById("lpTitle").innerText = "Order History";
@@ -1752,13 +1805,24 @@
     setTimeout(() => toast.classList.remove("show"), 4000);
   }
 
+  function renderWalletBadge() {
+    const wb = document.getElementById("walletBadge");
+    if (currentUser && currentUser["Reward Points"] !== undefined) {
+      const pts = Number(currentUser["Reward Points"]) || 0;
+      wb.innerText = `🪙 ${pts} Pts`;
+      wb.style.display = "flex";
+    } else {
+      wb.style.display = "none";
+    }
+  }
+
   function logout() {
     currentUser = null; cart = []; wishlist = [];
     localStorage.removeItem("gufMobile"); localStorage.removeItem("gufName");
     document.getElementById("authArea").innerHTML = `<button class="login-btn" onclick="openLoginModal()">Login</button>`;
     document.getElementById("lpTitle").innerText = "Order History";
     document.getElementById("lpDesc").innerText = "Login to view all your previous orders directly from Google Sheet.";
-    renderCartBadge(); renderWishlistBadge(); renderProductsGrid();
+    renderCartBadge(); renderWishlistBadge(); renderWalletBadge(); renderProductsGrid();
   }
 
   async function checkExistingLogin() {
@@ -1813,7 +1877,6 @@
     renderWishlistDrawer();
   }
 
-  // WISHLIST SE CART ME MOVE KARNA (Auto-remove from wishlist)
   function moveWishlistToCart(pKey) {
     addToCart(pKey);
     wishlist = wishlist.filter(id => String(id).trim() !== String(pKey).trim());
@@ -1911,6 +1974,8 @@
       return;
     }
 
+    currentCartTotal = total;
+
     const waMsg = encodeURIComponent("Hi, I'd like to order:\n" + cart.map(i => {
       const p = findProductByKey(i.id);
       return p ? `- ${p["Product Name"]} (${p["Weight / Size"] || ""}) [${p["Flavour"] || ""}] x${i.qty}` : "";
@@ -2000,8 +2065,46 @@
     document.getElementById("chkFirstName").value = currentUser["User Name"] ? currentUser["User Name"].split(' ')[0] : "";
     document.getElementById("chkLastName").value = currentUser["User Name"] ? currentUser["User Name"].split(' ').slice(1).join(' ') : "";
     document.getElementById("chkPhone").value = currentUser["Mobile Number"] || "";
+
+    // REWARD POINTS SETUP IN CHECKOUT
+    const pointsWrap = document.getElementById("rewardRedeemWrap");
+    const chkBox = document.getElementById("useRewardsCheck");
+    chkBox.checked = false;
+    appliedRewardDiscount = 0;
+
+    const userPoints = Number(currentUser["Reward Points"]) || 0;
+    if (userPoints > 0) {
+      document.getElementById("availPointsCount").innerText = userPoints;
+      document.getElementById("rewardSaveText").innerText = `-₹0`;
+      pointsWrap.style.display = "flex";
+    } else {
+      pointsWrap.style.display = "none";
+    }
+
+    updatePayableTotalDisplay();
     document.getElementById("checkoutModal").classList.add("open");
   }
+
+  function toggleRewardDiscount() {
+    const chkBox = document.getElementById("useRewardsCheck");
+    const userPoints = Number(currentUser["Reward Points"]) || 0;
+
+    if (chkBox.checked && userPoints > 0) {
+      // Points ko redeem karein (1 Point = ₹1)
+      appliedRewardDiscount = Math.min(userPoints, currentCartTotal);
+      document.getElementById("rewardSaveText").innerText = `-₹${appliedRewardDiscount}`;
+    } else {
+      appliedRewardDiscount = 0;
+      document.getElementById("rewardSaveText").innerText = `-₹0`;
+    }
+    updatePayableTotalDisplay();
+  }
+
+  function updatePayableTotalDisplay() {
+    const finalAmount = Math.max(0, currentCartTotal - appliedRewardDiscount);
+    document.getElementById("checkoutPayableText").innerText = `₹${finalAmount}`;
+  }
+
   function closeCheckoutModal() { document.getElementById("checkoutModal").classList.remove("open"); }
   function closeProofModal() { document.getElementById("proofModal").classList.remove("open"); }
 
@@ -2024,11 +2127,7 @@
 
     isCheckingOut = true;
 
-    let total = 0;
-    cart.forEach(item => {
-      const p = findProductByKey(item.id);
-      if(p) total += (Number(p["Selling Price"]) || 0) * item.qty;
-    });
+    const finalPayable = Math.max(0, currentCartTotal - appliedRewardDiscount);
 
     let itemsCombined = cart.map(item => {
       const p = findProductByKey(item.id);
@@ -2048,8 +2147,9 @@
           city: city,
           state: state,
           pincode: pincode,
-          amount: total,
+          amount: finalPayable,
           items: itemsCombined,
+          pointsUsed: appliedRewardDiscount,
           fileName: "Sent via WhatsApp"
         })
       });
@@ -2057,10 +2157,10 @@
       console.error("Order save error:", err);
     }
 
-    const waText = encodeURIComponent(`Hi Grow Up Fitness, I have placed an order for ₹${total}.\nName: ${firstName} ${lastName}\nPhone: ${phone}\nPincode: ${pincode}\nAddress: ${address}, ${city}, ${state}\nHere is my payment screenshot:`);
+    const waText = encodeURIComponent(`Hi Grow Up Fitness, I have placed an order for ₹${finalPayable} (Points used: ${appliedRewardDiscount}).\nName: ${firstName} ${lastName}\nPhone: ${phone}\nPincode: ${pincode}\nAddress: ${address}, ${city}, ${state}\nHere is my payment screenshot:`);
     document.getElementById("whatsappProofBtn").href = `https://wa.me/919571214461?text=${waText}`;
 
-    const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent("Order by " + firstName)}`;
+    const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${finalPayable}&cu=INR&tn=${encodeURIComponent("Order by " + firstName)}`;
     window.location.href = upiLink;
 
     closeCheckoutModal();
