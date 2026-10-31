@@ -1809,7 +1809,7 @@
     const wb = document.getElementById("walletBadge");
     if (currentUser && currentUser["Reward Points"] !== undefined) {
       const pts = Number(currentUser["Reward Points"]) || 0;
-      wb.innerText = `🪙 ${pts} Pts`;
+      wb.innerText = `🪙 Wallet: ₹${pts}`;
       wb.style.display = "flex";
     } else {
       wb.style.display = "none";
