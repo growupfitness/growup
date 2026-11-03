@@ -6,20 +6,26 @@
 <title>Grow Up Fitness — Fuel The Grind</title>
 
 <!-- BROWSER FAVICON & HOMESCREEN APP SHORTCUT ICONS -->
-<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/growupfitness/growup/main/growup-logoo.png">
-<link rel="shortcut icon" href="https://raw.githubusercontent.com/growupfitness/growup/main/growup-logoo.png">
-<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/growupfitness/growup/main/growup-logoo.png">
+<link rel="icon" type="image/png" href="https://growupfitness.vercel.app/growup-logo-square.png">
+<link rel="shortcut icon" href="https://growupfitness.vercel.app/growup-logo-square.png">
+<link rel="apple-touch-icon" href="https://growupfitness.vercel.app/growup-logo-square.png">
 
 <!-- WHATSAPP, INSTAGRAM & FACEBOOK LINK PREVIEW (OPEN GRAPH) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://growupfitness.vercel.app/">
 <meta property="og:title" content="Grow Up Fitness — Fuel The Grind">
-<meta property="og:description" content="100% Genuine & Importer Certified Supplements. Lab-tested protein, pre-workouts and recovery fuel. Order directly via UPI & WhatsApp.">
-<meta property="og:image" content="https://raw.githubusercontent.com/growupfitness/growup/main/growup-logoo.png">
-<meta property="og:image:secure_url" content="https://raw.githubusercontent.com/growupfitness/growup/main/growup-logoo.png">
+<meta property="og:description" content="100% Genuine &amp; Importer Certified Supplements. Lab-tested protein, pre-workouts and recovery fuel. Order directly via UPI &amp; WhatsApp.">
+<meta property="og:image" content="https://growupfitness.vercel.app/growup-logo-square.png">
+<meta property="og:image:secure_url" content="https://growupfitness.vercel.app/growup-logo-square.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="600">
-<meta property="og:image:height" content="315">
-<meta property="og:url" content="https://growupfitness.vercel.app/">
-<meta property="og:type" content="website">
+<meta property="og:image:height" content="600">
+
+<!-- TWITTER / APP PREVIEW TAGS -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Grow Up Fitness — Fuel The Grind">
+<meta name="twitter:description" content="100% Genuine &amp; Importer Certified Supplements.">
+<meta name="twitter:image" content="https://growupfitness.vercel.app/growup-logo-square.png">
 
 <!-- MOBILE WEB APP META -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -665,16 +671,12 @@
     font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
-    background: rgba(0, 114, 255, 0.12);
-    color: var(--ember);
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
   }
   .order-status-badge.confirmed {
     background: rgba(16, 185, 129, 0.15);
     color: #10b981;
-  }
-  .order-status-badge.dispatched {
-    background: rgba(245, 158, 11, 0.15);
-    color: #f59e0b;
   }
 
   @media(max-width:768px){
@@ -744,7 +746,7 @@
     </div>
 
     <div class="nav-right">
-      <div class="wallet-chip" id="walletBadge">🪙 0 Pts</div>
+      <div class="wallet-chip" id="walletBadge">🪙 Wallet: ₹0</div>
       <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle Theme">🌙</button>
       <button class="icon-btn" onclick="openWishlistDrawer()" title="Wishlist">♡<span class="badge" id="wishlistBadge" style="display:none;">0</span></button>
       <button class="icon-btn" onclick="openCartDrawer()" title="Cart">🛒<span class="badge" id="cartBadge" style="display:none;">0</span></button>
@@ -1027,7 +1029,6 @@
   let wishlist = [];
   let allBrands = [];
   let currentSelectedVariant = null;
-  let tempOrderData = null;
   let isCheckingOut = false;
   let currentUser = null;
   let currentCartTotal = 0;
@@ -1485,9 +1486,8 @@
         const parsed = parseOrderString(ord.itemText);
         const dateStr = ord.date || "Recent";
         const totalAmount = Number(ord.amount) || 0;
-        const statusStr = ord.status || "Pending Verification";
+        const statusStr = ord.status || "Pending Order";
         const isConfirmed = statusStr.toLowerCase().includes("confirm");
-        const isDispatched = statusStr.toLowerCase().includes("dispatch") || statusStr.toLowerCase().includes("track");
 
         const matchedProduct = allProducts.find(p => (p["Product Name"] || "").trim().toLowerCase() === parsed.title.toLowerCase())
                              || allProducts.find(p => (ord.itemText || "").toLowerCase().includes((p["Product Name"] || "").toLowerCase()));
@@ -1511,7 +1511,7 @@
           <div class="order-item-card">
             <div class="order-item-header">
               <span>📅 ${dateStr}</span>
-              <span class="order-status-badge ${isConfirmed ? 'confirmed' : (isDispatched ? 'dispatched' : '')}">● ${statusStr}</span>
+              <span class="order-status-badge ${isConfirmed ? 'confirmed' : ''}">● ${statusStr}</span>
             </div>
             
             <div class="order-item-title">
@@ -1581,7 +1581,7 @@
       const dotsHTML = images.map((img, i) => `<span class="${i === 0 ? 'active' : ''}"></span>`).join("");
       
       const pKey = getProductKey(p);
-      const isWishlisted = wishlist.includes(pKey);
+      const isWishlisted = Array.isArray(wishlist) && wishlist.some(id => String(id).trim() === pKey);
 
       const card = document.createElement("div");
       card.className = `prod-card ${isOut ? 'out-of-stock' : ''}`;
@@ -1666,6 +1666,7 @@
     const pKey = getProductKey(selectedVar);
     const stockStatus = String(selectedVar["Stock Status"] || "").trim().toLowerCase();
     const isOut = stockStatus === "out of stock";
+    const isWishlisted = Array.isArray(wishlist) && wishlist.some(id => String(id).trim() === pKey);
 
     const uniqueWeights = [...new Set(allVariants.map(v => v["Weight / Size"]).filter(Boolean))];
     const weightsHTML = uniqueWeights.map(w => {
@@ -1715,7 +1716,7 @@
           <button class="btn-primary disabled" disabled style="width:100%;">Sold Out (Out of Stock)</button>
         ` : `
           <button class="btn-primary" onclick="addToCart('${escapeQuotes(pKey)}'); closeModal();">Add to Cart</button>
-          <button class="btn-ghost" onclick="toggleWishlist('${escapeQuotes(pKey)}')">${wishlist.includes(pKey) ? '♥ Wishlisted' : '♡ Wishlist'}</button>
+          <button class="btn-ghost" onclick="toggleWishlist('${escapeQuotes(pKey)}')">${isWishlisted ? '♥ Wishlisted' : '♡ Wishlist'}</button>
         `}
         <button class="btn-ghost" onclick="shareProductOnWhatsApp('${escapeQuotes(selectedVar["Product Name"])}', '${sellingPrice}', '${escapeQuotes(selectedVar["Weight / Size"] || "")}', '${escapeQuotes(selectedVar["Flavour"] || "")}')" style="display:flex; align-items:center; gap:6px;">
           <span>📲</span> Share with Gym Bro
@@ -1785,7 +1786,10 @@
     localStorage.setItem("gufMobile", user["Mobile Number"]);
     localStorage.setItem("gufName", user["User Name"]);
     try { cart = JSON.parse(user["Cart Items"] || "[]"); } catch (e) { cart = []; }
-    try { wishlist = JSON.parse(user["Wishlist"] || "[]"); } catch (e) { wishlist = []; }
+    try { 
+      var parsedWish = JSON.parse(user["Wishlist"] || "[]"); 
+      wishlist = Array.isArray(parsedWish) ? parsedWish.filter(function(x){ return x && String(x).trim() !== ""; }) : [];
+    } catch (e) { wishlist = []; }
     
     renderCartBadge();
     renderWishlistBadge();
@@ -1863,14 +1867,24 @@
     renderCartDrawer();
   }
 
+  // BULLETPROOF WISHLIST REMOVAL & BADGE UPDATE FIX
   function toggleWishlist(pKey) {
     if (!currentUser) { openLoginModal(); return; }
     const cleanKey = String(pKey).trim();
-    if (wishlist.includes(cleanKey)) {
-      wishlist = wishlist.filter(id => String(id).trim() !== cleanKey);
+    
+    // Clean array filtering
+    if (!Array.isArray(wishlist)) wishlist = [];
+    
+    const exists = wishlist.some(id => String(id).trim() === cleanKey);
+    if (exists) {
+      wishlist = wishlist.filter(id => id && String(id).trim() !== cleanKey);
     } else {
       wishlist.push(cleanKey);
     }
+
+    // Clean any empty strings
+    wishlist = wishlist.filter(id => id && String(id).trim() !== "");
+
     syncWishlist(); 
     renderWishlistBadge(); 
     renderProductsGrid();
@@ -1878,8 +1892,12 @@
   }
 
   function moveWishlistToCart(pKey) {
-    addToCart(pKey);
-    wishlist = wishlist.filter(id => String(id).trim() !== String(pKey).trim());
+    const cleanKey = String(pKey).trim();
+    addToCart(cleanKey);
+    
+    if (!Array.isArray(wishlist)) wishlist = [];
+    wishlist = wishlist.filter(id => id && String(id).trim() !== cleanKey);
+    
     syncWishlist();
     renderWishlistBadge();
     renderProductsGrid();
@@ -1898,20 +1916,26 @@
   async function syncWishlist() {
     if (!currentUser) return;
     try {
+      if (!Array.isArray(wishlist)) wishlist = [];
+      wishlist = wishlist.filter(id => id && String(id).trim() !== "");
       await fetch(`${API_URL}?action=updateWishlist&mobile=${currentUser["Mobile Number"]}&data=${encodeURIComponent(JSON.stringify(wishlist))}`);
     } catch(e) { console.error("Wishlist sync err", e); }
   }
 
   function renderCartBadge() {
     const badge = document.getElementById("cartBadge");
-    const count = cart.reduce((s, i) => s + (Number(i.qty) || 1), 0);
+    const count = Array.isArray(cart) ? cart.reduce((s, i) => s + (Number(i.qty) || 1), 0) : 0;
     badge.innerText = count; 
     badge.style.display = count > 0 ? "flex" : "none";
   }
 
   function renderWishlistBadge() {
     const badge = document.getElementById("wishlistBadge");
-    const count = wishlist.length;
+    if (!Array.isArray(wishlist)) wishlist = [];
+    // Only count genuine non-empty items
+    const validItems = wishlist.filter(id => id && String(id).trim() !== "");
+    const count = validItems.length;
+    
     badge.innerText = count; 
     badge.style.display = count > 0 ? "flex" : "none";
   }
@@ -1970,8 +1994,8 @@
     }).join("");
 
     if (itemsFoundCount === 0) {
-      wrap.innerHTML = `<p class="drawer-empty">Your cart is empty.</p>`;
-      return;
+      wrap.innerHTML = `<p class="drawer-empty">Your cart is empty.</p>`; 
+      return; 
     }
 
     currentCartTotal = total;
@@ -1992,8 +2016,14 @@
 
   function renderWishlistDrawer() {
     const wrap = document.getElementById("wishlistItemsWrap");
-    if (!wishlist || wishlist.length === 0) { 
+    if (!Array.isArray(wishlist)) wishlist = [];
+    
+    // Filter out empty or whitespace items
+    wishlist = wishlist.filter(id => id && String(id).trim() !== "");
+    
+    if (wishlist.length === 0) { 
       wrap.innerHTML = `<p class="drawer-empty">Your wishlist is empty.</p>`; 
+      renderWishlistBadge();
       return; 
     }
 
@@ -2066,7 +2096,6 @@
     document.getElementById("chkLastName").value = currentUser["User Name"] ? currentUser["User Name"].split(' ').slice(1).join(' ') : "";
     document.getElementById("chkPhone").value = currentUser["Mobile Number"] || "";
 
-    // REWARD POINTS SETUP IN CHECKOUT
     const pointsWrap = document.getElementById("rewardRedeemWrap");
     const chkBox = document.getElementById("useRewardsCheck");
     chkBox.checked = false;
@@ -2090,7 +2119,6 @@
     const userPoints = Number(currentUser["Reward Points"]) || 0;
 
     if (chkBox.checked && userPoints > 0) {
-      // Points ko redeem karein (1 Point = ₹1)
       appliedRewardDiscount = Math.min(userPoints, currentCartTotal);
       document.getElementById("rewardSaveText").innerText = `-₹${appliedRewardDiscount}`;
     } else {
@@ -2174,7 +2202,6 @@
     syncCart();
     renderCartBadge();
     closeProofModal();
-    tempOrderData = null;
     alert("Order completed! Thank you for shopping with Grow Up Fitness.");
   }
 
