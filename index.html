@@ -293,33 +293,75 @@
   }
   .card-heart.wishlisted{color:var(--ember);}
 
-  .badge-discount {
-    position: absolute; top: 8px; left: 8px; background: var(--ember); color: #fff;
-    font-size: 8px; font-weight: 800; padding: 3px 6px; border-radius: 20px; z-index: 5; text-transform: uppercase;
-  }
-  .badge-outstock {
-    position: absolute; top: 8px; left: 8px; background: #64748b; color: #fff;
-    font-size: 8px; font-weight: 800; padding: 3px 6px; border-radius: 20px; z-index: 5; text-transform: uppercase;
+  /* TOP-LEFT CARD BADGES CONTAINER (NO OVERLAP WITH PRICE) */
+  .card-badges-container {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+    z-index: 5;
+    pointer-events: none;
   }
 
-  /* BEST SELLER BADGE ON CARD */
-  .badge-bestseller {
-    position: absolute;
-    bottom: 8px;
-    left: 8px;
-    background: linear-gradient(135deg, #f59e0b, #ef4444);
+  .badge-discount {
+    background: var(--ember);
     color: #fff;
     font-size: 8.5px;
     font-weight: 800;
-    padding: 3px 8px;
-    border-radius: 12px;
-    z-index: 5;
+    padding: 3px 7px;
+    border-radius: 20px;
     text-transform: uppercase;
-    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+    box-shadow: 0 2px 6px rgba(0, 114, 255, 0.25);
+  }
+  .badge-outstock {
+    background: #64748b;
+    color: #fff;
+    font-size: 8.5px;
+    font-weight: 800;
+    padding: 3px 7px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+
+  /* REPOSITIONED BEST SELLER BADGE */
+  .badge-bestseller {
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: #fff;
+    font-size: 8px;
+    font-weight: 800;
+    padding: 3px 7px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.35);
     letter-spacing: 0.3px;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 3px;
+  }
+
+  /* RESET / SHOW ALL PRODUCTS BUTTON */
+  .reset-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--iron-light);
+    border: 1px solid var(--border-color);
+    color: var(--chalk);
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: all 0.2s ease;
+  }
+  .reset-filter-btn:hover {
+    border-color: var(--ember);
+    color: var(--ember);
+    background: rgba(0, 114, 255, 0.08);
   }
 
   /* MODAL BOXES & DRAWERS */
@@ -530,7 +572,7 @@
   .section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:14px;}
   .section-head .tag{color:var(--ember);font-weight:700;font-size:12px;letter-spacing:1.5px;margin-bottom:6px;display:block;}
   .section-head h2{font-size:38px;}
-  .section-head p{color:var(--steel);max-width:340px;font-size:13px;}
+  .section-head p{color:var(--steel);max-width:440px;font-size:13px;line-height:1.4;}
 
   .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
   .cat-card{
@@ -573,7 +615,9 @@
   .prod-body .cat-label{font-size:10px;color:var(--ember);letter-spacing:0.8px;font-weight:700;}
   .prod-body h4{font-size:15px;margin:4px 0 4px;font-family:'Inter';font-weight:700;text-transform:none;color:var(--chalk);line-height:1.25;}
   .prod-price{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:6px;}
-  .prod-price .price{font-weight:800;font-size:15px;color:var(--chalk);}
+  .prod-price .price-wrap{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;}
+  .prod-price .price{font-weight:800;font-size:16px;color:var(--chalk);}
+  .prod-price .mrp-crossed{text-decoration:line-through;color:var(--steel);font-size:12px;font-weight:500;}
   .prod-price button{
     background:none;border:1px solid var(--ember);color:var(--ember);
     padding:6px 10px;font-size:11px;font-weight:700;border-radius:var(--radius);
@@ -784,7 +828,7 @@
 
   <div class="top-pills-bar">
     <div class="top-pills-container">
-      <button class="cat-pill active" onclick="filterByCategory('all', this)">⚡ All Supplements</button>
+      <button class="cat-pill active" id="pillAll" onclick="filterByCategory('all', this)">⚡ All Supplements</button>
       <button class="cat-pill" onclick="filterByCategory('protein', this)">💪 Proteins</button>
       <button class="cat-pill" onclick="filterByCategory('fat loss protein', this)">🔥 Fat Loss Protein</button>
       <button class="cat-pill" onclick="filterByCategory('pre-workout', this)">💥 Pre Workout</button>
@@ -843,7 +887,10 @@
       <span class="tag">02 — BEST SELLERS</span>
       <h2>Top Picks</h2>
     </div>
-    <p id="activeFilterDesc">Live from our store sheet — updates automatically.</p>
+    <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
+      <p id="activeFilterDesc" style="margin:0;">Live from our store sheet — updates automatically.</p>
+      <button class="reset-filter-btn" id="btnResetFilter" style="display:none;" onclick="resetToAllProducts()">✕ View All Products</button>
+    </div>
   </div>
 
   <div class="prod-grid" id="prodGrid">
@@ -1074,7 +1121,6 @@
         || allProducts.find(p => String(p["Product Name"] || "").trim() === cleanKey);
   }
 
-  // Check if product is marked as Best Seller in sheet
   function isProductBestSeller(p) {
     if (!p) return false;
     const val = String(p["Best Seller"] || p["Bestseller"] || p["BestSeller"] || "").trim().toLowerCase();
@@ -1088,14 +1134,10 @@
   }
 
   function handleNavBestSellers() {
-    // Top category pills me active status hatayein
     document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
 
-    // Filter products marked as Best Seller
     const bestSellers = allProducts.filter(p => isProductBestSeller(p));
-
     const uniqueMap = new Map();
-    // Agar sheet me kisi ko mark nahi kiya toh fallback ke liye top 6 items dikhayein
     const sourceList = bestSellers.length > 0 ? bestSellers : allProducts.slice(0, 8);
 
     sourceList.forEach(p => {
@@ -1107,10 +1149,20 @@
     renderProductsGrid();
 
     const desc = document.getElementById("activeFilterDesc");
-    if (desc) desc.innerText = "🔥 Showing Grow Up Fitness Best Sellers (Top Rated by 5000+ Lifters)";
+    if (desc) desc.innerText = "🔥 Showing Best Sellers (Top Rated)";
+
+    const resetBtn = document.getElementById("btnResetFilter");
+    if (resetBtn) resetBtn.style.display = "inline-flex";
 
     const sec = document.getElementById("products");
     if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function resetToAllProducts() {
+    const pill = document.getElementById("pillAll");
+    filterByCategory('all', pill);
+    const resetBtn = document.getElementById("btnResetFilter");
+    if (resetBtn) resetBtn.style.display = "none";
   }
 
   /* SMART AUTO-HIDE HEADER */
@@ -1231,6 +1283,7 @@
     if (btnEl) btnEl.classList.add('active');
 
     const desc = document.getElementById("activeFilterDesc");
+    const resetBtn = document.getElementById("btnResetFilter");
 
     if (keyword === 'all') {
       const uniqueMap = new Map();
@@ -1240,6 +1293,7 @@
       });
       displayProducts = Array.from(uniqueMap.values());
       if (desc) desc.innerText = "Live from our store sheet — updates automatically.";
+      if (resetBtn) resetBtn.style.display = "none";
     } else {
       const q = keyword.toLowerCase().trim();
       const matched = allProducts.filter(p => {
@@ -1254,11 +1308,11 @@
         if (!uniqueMap.has(key)) uniqueMap.set(key, p);
       });
       displayProducts = Array.from(uniqueMap.values());
-      if (desc) desc.innerText = `Showing all products for category: "${btnEl ? btnEl.innerText.replace(/^[^\w\s]+/, '').trim() : keyword}"`;
+      if (desc) desc.innerText = `Category: "${btnEl ? btnEl.innerText.replace(/^[^\w\s]+/, '').trim() : keyword}"`;
+      if (resetBtn) resetBtn.style.display = "inline-flex";
     }
 
     renderProductsGrid();
-    document.getElementById("products").scrollIntoView({ behavior: 'smooth' });
   }
 
   async function loadBrands() {
@@ -1310,7 +1364,9 @@
     renderProductsGrid();
     closeBrandModal();
     const desc = document.getElementById("activeFilterDesc");
-    if (desc) desc.innerText = `Showing products for brand: "${brandName}"`;
+    if (desc) desc.innerText = `Brand: "${brandName}"`;
+    const resetBtn = document.getElementById("btnResetFilter");
+    if (resetBtn) resetBtn.style.display = "inline-flex";
     document.getElementById("products").scrollIntoView({ behavior: 'smooth' });
   }
 
@@ -1389,23 +1445,17 @@
     closeFlavourModal();
 
     const desc = document.getElementById("activeFilterDesc");
-    if (desc) desc.innerText = `Showing products for flavour: "${flavourName}"`;
+    if (desc) desc.innerText = `Flavour: "${flavourName}"`;
+    const resetBtn = document.getElementById("btnResetFilter");
+    if (resetBtn) resetBtn.style.display = "inline-flex";
 
     document.getElementById("products").scrollIntoView({ behavior: 'smooth' });
   }
 
   function showAllProductsFromModal() {
-    const uniqueMap = new Map();
-    allProducts.forEach(p => {
-      const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
-      if (!uniqueMap.has(key)) uniqueMap.set(key, p);
-    });
-    displayProducts = Array.from(uniqueMap.values());
-    renderProductsGrid();
+    resetToAllProducts();
     closeBrandModal();
     closeFlavourModal();
-    const desc = document.getElementById("activeFilterDesc");
-    if (desc) desc.innerText = "Live from our store sheet — updates automatically.";
     document.getElementById("products").scrollIntoView({ behavior: 'smooth' });
   }
 
@@ -1416,13 +1466,7 @@
     if (!query) {
       suggestionsBox.innerHTML = "";
       suggestionsBox.classList.remove("open");
-      const uniqueMap = new Map();
-      allProducts.forEach(p => {
-        const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
-        if (!uniqueMap.has(key)) uniqueMap.set(key, p);
-      });
-      displayProducts = Array.from(uniqueMap.values());
-      renderProductsGrid();
+      resetToAllProducts();
       return;
     }
 
@@ -1446,6 +1490,11 @@
 
     displayProducts = matchedProducts;
     renderProductsGrid();
+
+    const desc = document.getElementById("activeFilterDesc");
+    if (desc) desc.innerText = `Search results for: "${val}"`;
+    const resetBtn = document.getElementById("btnResetFilter");
+    if (resetBtn) resetBtn.style.display = "inline-flex";
 
     const topSuggestions = matchedProducts.slice(0, 6);
     if (topSuggestions.length > 0) {
@@ -1614,6 +1663,7 @@
     openCartDrawer();
   }
 
+  /* ACCURATE PRICE & BADGE RENDERING */
   function renderProductsGrid() {
     const grid = document.getElementById("prodGrid");
     if (displayProducts.length === 0) {
@@ -1625,18 +1675,27 @@
     displayProducts.forEach((p) => {
       const index = allProducts.findIndex(item => item["Product Name"] === p["Product Name"] && item["Weight / Size"] === p["Weight / Size"]);
       const images = getImages(p);
-      const mrp = Number(p["MRP"]) || 0;
-      const sellingPrice = Number(p["Selling Price"]) || 0;
-      const hasDiscount = mrp > sellingPrice;
+      
+      // Parse clean numerical values
+      const rawMrp = String(p["MRP"] || "").replace(/[^0-9.]/g, "");
+      const rawSp = String(p["Selling Price"] || "").replace(/[^0-9.]/g, "");
+      const mrp = Number(rawMrp) || 0;
+      const sellingPrice = Number(rawSp) || 0;
+
+      const hasDiscount = mrp > sellingPrice && sellingPrice > 0;
       const offPct = hasDiscount ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0;
       
       const stockStatus = String(p["Stock Status"] || "").trim().toLowerCase();
       const isOut = stockStatus === "out of stock";
       const isBest = isProductBestSeller(p);
 
-      const priceHTML = hasDiscount
-        ? `<span style="text-decoration:line-through;color:var(--steel);font-size:11px;margin-right:4px;">₹${mrp}</span><span class="price">₹${sellingPrice}</span>`
-        : `<span class="price">₹${sellingPrice}</span>`;
+      // Clean HTML without overlapping elements
+      const priceHTML = `
+        <div class="price-wrap">
+          ${hasDiscount ? `<span class="mrp-crossed">₹${mrp}</span>` : ""}
+          <span class="price">₹${sellingPrice}</span>
+        </div>
+      `;
 
       const slidesHTML = images.map(img => `<img src="${img}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'180\' height=\'180\' fill=\'%2364748b\' viewBox=\'0 0 24 24\'><path d=\'M21 16.5l-4.5-4.5-3 3-4.5-4.5L3 16.5V21h18v-4.5zM3 3h18v10.5l-6-6-4.5 4.5-3-3L3 13.5V3z\'/></svg>'">`).join("");
       const dotsHTML = images.map((img, i) => `<span class="${i === 0 ? 'active' : ''}"></span>`).join("");
@@ -1647,8 +1706,10 @@
       const card = document.createElement("div");
       card.className = `prod-card ${isOut ? 'out-of-stock' : ''}`;
       card.innerHTML = `
-        ${isOut ? `<div class="badge-outstock">Out of Stock</div>` : (hasDiscount ? `<div class="badge-discount">-${offPct}% OFF</div>` : "")}
-        ${isBest ? `<div class="badge-bestseller">🔥 Best Seller · 100+ Sold</div>` : ""}
+        <div class="card-badges-container">
+          ${isOut ? `<div class="badge-outstock">Out of Stock</div>` : (hasDiscount ? `<div class="badge-discount">-${offPct}% OFF</div>` : "")}
+          ${isBest ? `<div class="badge-bestseller">🔥 Best Seller</div>` : ""}
+        </div>
         <button class="card-heart ${isWishlisted ? 'wishlisted' : ''}" onclick="event.stopPropagation(); toggleWishlist('${escapeQuotes(pKey)}')">${isWishlisted ? '♥' : '♡'}</button>
         <div class="prod-img" data-slide="0" data-total="${images.length}">
           <div class="slide-track">${slidesHTML}</div>
@@ -1665,7 +1726,7 @@
             <p style="color:var(--chalk);font-size:12px;font-weight:600;margin-bottom:6px;">${p["Weight / Size"] || ""}</p>
           </div>
           <div class="prod-price">
-            <span>${priceHTML}</span>
+            ${priceHTML}
             <button class="${isOut ? 'disabled' : ''}">${isOut ? 'Sold Out' : 'View Options'}</button>
           </div>
         </div>
@@ -1720,9 +1781,11 @@
     const dotsWrap = document.getElementById("modalDots");
     dotsWrap.innerHTML = modalImages.map((img, i) => `<span class="${i === 0 ? 'active' : ''}" onclick="modalGoTo(${i})"></span>`).join("");
 
-    const mrp = Number(selectedVar["MRP"]) || 0;
-    const sellingPrice = Number(selectedVar["Selling Price"]) || 0;
-    const hasDiscount = mrp > sellingPrice;
+    const rawMrp = String(selectedVar["MRP"] || "").replace(/[^0-9.]/g, "");
+    const rawSp = String(selectedVar["Selling Price"] || "").replace(/[^0-9.]/g, "");
+    const mrp = Number(rawMrp) || 0;
+    const sellingPrice = Number(rawSp) || 0;
+    const hasDiscount = mrp > sellingPrice && sellingPrice > 0;
     const savePct = hasDiscount ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0;
     
     const pKey = getProductKey(selectedVar);
