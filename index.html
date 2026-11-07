@@ -229,7 +229,7 @@
   }
 
   .nav-links{display:flex;gap:24px;font-size:13px;font-weight:600;letter-spacing:0.5px;}
-  .nav-links a{opacity:0.8;transition:opacity .2s;}
+  .nav-links a{opacity:0.8;transition:opacity .2s;cursor:pointer;}
   .nav-links a:hover{opacity:1;color:var(--ember);}
   
   .login-btn{
@@ -300,6 +300,26 @@
   .badge-outstock {
     position: absolute; top: 8px; left: 8px; background: #64748b; color: #fff;
     font-size: 8px; font-weight: 800; padding: 3px 6px; border-radius: 20px; z-index: 5; text-transform: uppercase;
+  }
+
+  /* BEST SELLER BADGE ON CARD */
+  .badge-bestseller {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: #fff;
+    font-size: 8.5px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 12px;
+    z-index: 5;
+    text-transform: uppercase;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
   }
 
   /* MODAL BOXES & DRAWERS */
@@ -738,9 +758,10 @@
       </a>
     </div>
 
+    <!-- DYNAMIC NAV LINKS -->
     <div class="nav-links">
-      <a href="#categories">Explore</a>
-      <a href="#products">Best Sellers</a>
+      <a onclick="handleNavExplore()">Explore</a>
+      <a onclick="handleNavBestSellers()">Best Sellers</a>
       <a href="#why">Why Us</a>
       <a href="#contact">Contact</a>
     </div>
@@ -785,7 +806,7 @@
   <div class="hero-video-content">
     <h1>FUEL THE GRIND</h1>
     <p>Lab-tested protein, pre-workouts and recovery fuel for elite performance.</p>
-    <a href="#products" class="btn-primary">Shop Best Sellers</a>
+    <a onclick="handleNavBestSellers()" class="btn-primary" style="cursor:pointer;">Shop Best Sellers</a>
   </div>
 </section>
 
@@ -1005,7 +1026,7 @@
       </a>
       <p style="color:var(--steel);font-size:13px;margin-top:12px;max-width:280px;">100% genuine and authentic supplements for people who train hard and expect results.</p>
     </div>
-    <div><h5>SHOP</h5><a href="#categories">Explore</a><a href="#products">Best Sellers</a></div>
+    <div><h5>SHOP</h5><a href="#categories">Explore</a><a onclick="handleNavBestSellers()" style="cursor:pointer;">Best Sellers</a></div>
     <div><h5>CONTACT</h5><a href="tel:9571214461">📞 95712 14461</a><a href="https://wa.me/919571214461" target="_blank">WhatsApp Us</a></div>
   </div>
   <div class="footer-bottom">
@@ -1051,6 +1072,45 @@
     return allProducts.find(p => getProductKey(p) === cleanKey)
         || allProducts.find(p => String(p["Product ID"] || "").trim() === cleanKey)
         || allProducts.find(p => String(p["Product Name"] || "").trim() === cleanKey);
+  }
+
+  // Check if product is marked as Best Seller in sheet
+  function isProductBestSeller(p) {
+    if (!p) return false;
+    const val = String(p["Best Seller"] || p["Bestseller"] || p["BestSeller"] || "").trim().toLowerCase();
+    return val === "true" || val === "yes" || val === "1";
+  }
+
+  /* NAV ACTIONS FOR HEADER LINKS */
+  function handleNavExplore() {
+    const el = document.getElementById("categories");
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function handleNavBestSellers() {
+    // Top category pills me active status hatayein
+    document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
+
+    // Filter products marked as Best Seller
+    const bestSellers = allProducts.filter(p => isProductBestSeller(p));
+
+    const uniqueMap = new Map();
+    // Agar sheet me kisi ko mark nahi kiya toh fallback ke liye top 6 items dikhayein
+    const sourceList = bestSellers.length > 0 ? bestSellers : allProducts.slice(0, 8);
+
+    sourceList.forEach(p => {
+      const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
+      if (!uniqueMap.has(key)) uniqueMap.set(key, p);
+    });
+
+    displayProducts = Array.from(uniqueMap.values());
+    renderProductsGrid();
+
+    const desc = document.getElementById("activeFilterDesc");
+    if (desc) desc.innerText = "🔥 Showing Grow Up Fitness Best Sellers (Top Rated by 5000+ Lifters)";
+
+    const sec = document.getElementById("products");
+    if (sec) sec.scrollIntoView({ behavior: 'smooth' });
   }
 
   /* SMART AUTO-HIDE HEADER */
@@ -1572,6 +1632,7 @@
       
       const stockStatus = String(p["Stock Status"] || "").trim().toLowerCase();
       const isOut = stockStatus === "out of stock";
+      const isBest = isProductBestSeller(p);
 
       const priceHTML = hasDiscount
         ? `<span style="text-decoration:line-through;color:var(--steel);font-size:11px;margin-right:4px;">₹${mrp}</span><span class="price">₹${sellingPrice}</span>`
@@ -1587,6 +1648,7 @@
       card.className = `prod-card ${isOut ? 'out-of-stock' : ''}`;
       card.innerHTML = `
         ${isOut ? `<div class="badge-outstock">Out of Stock</div>` : (hasDiscount ? `<div class="badge-discount">-${offPct}% OFF</div>` : "")}
+        ${isBest ? `<div class="badge-bestseller">🔥 Best Seller · 100+ Sold</div>` : ""}
         <button class="card-heart ${isWishlisted ? 'wishlisted' : ''}" onclick="event.stopPropagation(); toggleWishlist('${escapeQuotes(pKey)}')">${isWishlisted ? '♥' : '♡'}</button>
         <div class="prod-img" data-slide="0" data-total="${images.length}">
           <div class="slide-track">${slidesHTML}</div>
@@ -1867,12 +1929,10 @@
     renderCartDrawer();
   }
 
-  // BULLETPROOF WISHLIST REMOVAL & BADGE UPDATE FIX
   function toggleWishlist(pKey) {
     if (!currentUser) { openLoginModal(); return; }
     const cleanKey = String(pKey).trim();
     
-    // Clean array filtering
     if (!Array.isArray(wishlist)) wishlist = [];
     
     const exists = wishlist.some(id => String(id).trim() === cleanKey);
@@ -1882,7 +1942,6 @@
       wishlist.push(cleanKey);
     }
 
-    // Clean any empty strings
     wishlist = wishlist.filter(id => id && String(id).trim() !== "");
 
     syncWishlist(); 
@@ -1932,7 +1991,6 @@
   function renderWishlistBadge() {
     const badge = document.getElementById("wishlistBadge");
     if (!Array.isArray(wishlist)) wishlist = [];
-    // Only count genuine non-empty items
     const validItems = wishlist.filter(id => id && String(id).trim() !== "");
     const count = validItems.length;
     
@@ -2018,7 +2076,6 @@
     const wrap = document.getElementById("wishlistItemsWrap");
     if (!Array.isArray(wishlist)) wishlist = [];
     
-    // Filter out empty or whitespace items
     wishlist = wishlist.filter(id => id && String(id).trim() !== "");
     
     if (wishlist.length === 0) { 
