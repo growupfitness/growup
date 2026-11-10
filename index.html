@@ -293,7 +293,6 @@
   }
   .card-heart.wishlisted{color:var(--ember);}
 
-  /* TOP-LEFT CARD BADGES CONTAINER (NO OVERLAP WITH PRICE) */
   .card-badges-container {
     position: absolute;
     top: 8px;
@@ -326,7 +325,6 @@
     text-transform: uppercase;
   }
 
-  /* REPOSITIONED BEST SELLER BADGE */
   .badge-bestseller {
     background: linear-gradient(135deg, #f59e0b, #ef4444);
     color: #fff;
@@ -342,7 +340,6 @@
     gap: 3px;
   }
 
-  /* RESET / SHOW ALL PRODUCTS BUTTON */
   .reset-filter-btn {
     display: inline-flex;
     align-items: center;
@@ -364,13 +361,52 @@
     background: rgba(0, 114, 255, 0.08);
   }
 
+  /* REQUEST PRODUCT FORM BOX */
+  .request-form-card {
+    background: var(--iron-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 24px;
+    margin-top: 30px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    grid-column: 1 / -1;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    text-align: left;
+  }
+  .request-form-card h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--chalk);
+  }
+  .request-form-card p {
+    font-size: 13px;
+    color: var(--steel);
+    margin-bottom: 16px;
+  }
+  .request-form-card input {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--iron);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    color: var(--chalk);
+    font-size: 13px;
+    margin-bottom: 10px;
+    outline: none;
+  }
+  .request-form-card input:focus { border-color: var(--ember); }
+
   /* MODAL BOXES & DRAWERS */
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10000;align-items:center;justify-content:center;padding:16px;}
   .modal-overlay.open{display:flex;}
   .modal-box{background:var(--iron-light);max-width:880px;width:100%;max-height:90vh;overflow-y:auto;border-radius:8px;position:relative;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border-color);}
   .modal-close{position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.5);color:#fff;border:none;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;z-index:10;}
 
-  /* PROPER STYLED LOGIN & CHECKOUT BOX */
   .login-box {
     max-width: 420px;
     width: 92vw;
@@ -802,7 +838,6 @@
       </a>
     </div>
 
-    <!-- DYNAMIC NAV LINKS -->
     <div class="nav-links">
       <a onclick="handleNavExplore()">Explore</a>
       <a onclick="handleNavBestSellers()">Best Sellers</a>
@@ -884,8 +919,8 @@
 <section class="section reveal" id="products">
   <div class="section-head">
     <div>
-      <span class="tag">02 — BEST SELLERS</span>
-      <h2>Top Picks</h2>
+      <span class="tag">02 — STORE PRODUCTS</span>
+      <h2 id="sectionTitleHeading">Top Picks</h2>
     </div>
     <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
       <p id="activeFilterDesc" style="margin:0;">Live from our store sheet — updates automatically.</p>
@@ -1127,7 +1162,6 @@
     return val === "true" || val === "yes" || val === "1";
   }
 
-  /* NAV ACTIONS FOR HEADER LINKS */
   function handleNavExplore() {
     const el = document.getElementById("categories");
     if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -1146,7 +1180,7 @@
     });
 
     displayProducts = Array.from(uniqueMap.values());
-    renderProductsGrid();
+    renderProductsGrid(false, "");
 
     const desc = document.getElementById("activeFilterDesc");
     if (desc) desc.innerText = "🔥 Showing Best Sellers (Top Rated)";
@@ -1165,7 +1199,6 @@
     if (resetBtn) resetBtn.style.display = "none";
   }
 
-  /* SMART AUTO-HIDE HEADER */
   let lastScrollY = window.pageYOffset || document.documentElement.scrollTop;
   let headerHideTimer = null;
   const headerEl = document.getElementById("mainHeader");
@@ -1259,7 +1292,7 @@
         });
         displayProducts = Array.from(uniqueMap.values());
 
-        renderProductsGrid();
+        renderProductsGrid(false, "");
         renderCartBadge();
         renderWishlistBadge();
         
@@ -1294,6 +1327,7 @@
       displayProducts = Array.from(uniqueMap.values());
       if (desc) desc.innerText = "Live from our store sheet — updates automatically.";
       if (resetBtn) resetBtn.style.display = "none";
+      renderProductsGrid(false, "");
     } else {
       const q = keyword.toLowerCase().trim();
       const matched = allProducts.filter(p => {
@@ -1310,9 +1344,13 @@
       displayProducts = Array.from(uniqueMap.values());
       if (desc) desc.innerText = `Category: "${btnEl ? btnEl.innerText.replace(/^[^\w\s]+/, '').trim() : keyword}"`;
       if (resetBtn) resetBtn.style.display = "inline-flex";
+      
+      if (displayProducts.length === 0) {
+        renderProductsGrid(true, keyword);
+      } else {
+        renderProductsGrid(false, "");
+      }
     }
-
-    renderProductsGrid();
   }
 
   async function loadBrands() {
@@ -1360,13 +1398,28 @@
   }
 
   function filterByBrand(brandName) {
-    displayProducts = allProducts.filter(p => (p["Brand"] || "").trim().toLowerCase() === brandName.trim().toLowerCase());
-    renderProductsGrid();
+    const matched = allProducts.filter(p => (p["Brand"] || "").trim().toLowerCase() === brandName.trim().toLowerCase());
+    
+    const uniqueMap = new Map();
+    matched.forEach(p => {
+      const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
+      if (!uniqueMap.has(key)) uniqueMap.set(key, p);
+    });
+
+    displayProducts = Array.from(uniqueMap.values());
     closeBrandModal();
+
     const desc = document.getElementById("activeFilterDesc");
     if (desc) desc.innerText = `Brand: "${brandName}"`;
     const resetBtn = document.getElementById("btnResetFilter");
     if (resetBtn) resetBtn.style.display = "inline-flex";
+
+    if (displayProducts.length === 0) {
+      renderProductsGrid(true, brandName);
+    } else {
+      renderProductsGrid(false, "");
+    }
+
     document.getElementById("products").scrollIntoView({ behavior: 'smooth' });
   }
 
@@ -1441,13 +1494,18 @@
     });
     
     displayProducts = Array.from(uniqueMap.values());
-    renderProductsGrid();
     closeFlavourModal();
 
     const desc = document.getElementById("activeFilterDesc");
     if (desc) desc.innerText = `Flavour: "${flavourName}"`;
     const resetBtn = document.getElementById("btnResetFilter");
     if (resetBtn) resetBtn.style.display = "inline-flex";
+
+    if (displayProducts.length === 0) {
+      renderProductsGrid(true, flavourName);
+    } else {
+      renderProductsGrid(false, "");
+    }
 
     document.getElementById("products").scrollIntoView({ behavior: 'smooth' });
   }
@@ -1489,12 +1547,17 @@
     });
 
     displayProducts = matchedProducts;
-    renderProductsGrid();
-
+    
     const desc = document.getElementById("activeFilterDesc");
     if (desc) desc.innerText = `Search results for: "${val}"`;
     const resetBtn = document.getElementById("btnResetFilter");
     if (resetBtn) resetBtn.style.display = "inline-flex";
+
+    if (displayProducts.length === 0) {
+      renderProductsGrid(true, val);
+    } else {
+      renderProductsGrid(false, "");
+    }
 
     const topSuggestions = matchedProducts.slice(0, 6);
     if (topSuggestions.length > 0) {
@@ -1663,20 +1726,82 @@
     openCartDrawer();
   }
 
-  /* ACCURATE PRICE & BADGE RENDERING */
-  function renderProductsGrid() {
+  /* RENDER PRODUCTS OR NO PRODUCT FOUND WITH BEST SELLERS & FORM */
+  function renderProductsGrid(isEmpty = false, queryName = "") {
     const grid = document.getElementById("prodGrid");
-    if (displayProducts.length === 0) {
-      grid.innerHTML = `<p class="prod-empty">No products found.</p>`;
+    const heading = document.getElementById("sectionTitleHeading");
+
+    if (isEmpty) {
+      if (heading) heading.innerText = "No Products Found";
+      
+      // Best sellers nikalein fallback ke liye
+      const bestSellers = allProducts.filter(p => isProductBestSeller(p));
+      const sourceList = bestSellers.length > 0 ? bestSellers : allProducts.slice(0, 4);
+
+      let bestSellersHTML = "";
+      sourceList.forEach(p => {
+        const index = allProducts.findIndex(item => item["Product Name"] === p["Product Name"] && item["Weight / Size"] === p["Weight / Size"]);
+        const images = getImages(p);
+        const rawMrp = String(p["MRP"] || "").replace(/[^0-9.]/g, "");
+        const rawSp = String(p["Selling Price"] || "").replace(/[^0-9.]/g, "");
+        const mrp = Number(rawMrp) || 0;
+        const sellingPrice = Number(rawSp) || 0;
+        const hasDiscount = mrp > sellingPrice && sellingPrice > 0;
+        const offPct = hasDiscount ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0;
+        const pKey = getProductKey(p);
+        const isWishlisted = Array.isArray(wishlist) && wishlist.some(id => String(id).trim() === pKey);
+
+        const priceHTML = `<div class="price-wrap">${hasDiscount ? `<span class="mrp-crossed">₹${mrp}</span>` : ""}<span class="price">₹${sellingPrice}</span></div>`;
+        const slidesHTML = images.map(img => `<img src="${img}">`).join("");
+
+        bestSellersHTML += `
+          <div class="prod-card" onclick="openModal(${index})">
+            <div class="card-badges-container">
+              ${hasDiscount ? `<div class="badge-discount">-${offPct}% OFF</div>` : ""}
+              <div class="badge-bestseller">🔥 Best Seller</div>
+            </div>
+            <button class="card-heart ${isWishlisted ? 'wishlisted' : ''}" onclick="event.stopPropagation(); toggleWishlist('${escapeQuotes(pKey)}')">${isWishlisted ? '♥' : '♡'}</button>
+            <div class="prod-img"><div class="slide-track">${slidesHTML}</div></div>
+            <div class="prod-body">
+              <div>
+                <span class="cat-label">${p["Brand"] || ""} · ${p["Category"] || ""}</span>
+                <h4>${p["Product Name"] || ""}</h4>
+                <p style="color:var(--chalk);font-size:12px;font-weight:600;margin-bottom:6px;">${p["Weight / Size"] || ""}</p>
+              </div>
+              <div class="prod-price">${priceHTML}<button>View Options</button></div>
+            </div>
+          </div>
+        `;
+      });
+
+      grid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 20px 0;">
+          <h3 style="font-size: 20px; color: var(--chalk); margin-bottom: 6px;">❌ No products found for "${queryName}"</h3>
+          <p style="color: var(--steel); font-size: 13px;">Don't worry! Check out our store best sellers below or request what you need.</p>
+        </div>
+
+        <div style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; width: 100%;">
+          ${bestSellersHTML}
+        </div>
+
+        <div class="request-form-card">
+          <h3>🔍 Looking for something specific?</h3>
+          <p>Tell us what supplement or brand you need, and we will arrange it for you instantly!</p>
+          <input type="text" id="reqName" placeholder="Your Name *">
+          <input type="tel" id="reqPhone" placeholder="Mobile Number (10 digits) *" maxlength="10">
+          <input type="text" id="reqItem" placeholder="Product / Brand Name you are looking for *" value="${queryName}">
+          <button class="btn-primary" onclick="submitProductRequest()" style="width:100%; margin-top:6px;">Send Request via WhatsApp & Sheet</button>
+        </div>
+      `;
       return;
     }
+
+    if (heading) heading.innerText = "Top Picks";
 
     grid.innerHTML = "";
     displayProducts.forEach((p) => {
       const index = allProducts.findIndex(item => item["Product Name"] === p["Product Name"] && item["Weight / Size"] === p["Weight / Size"]);
       const images = getImages(p);
-      
-      // Parse clean numerical values
       const rawMrp = String(p["MRP"] || "").replace(/[^0-9.]/g, "");
       const rawSp = String(p["Selling Price"] || "").replace(/[^0-9.]/g, "");
       const mrp = Number(rawMrp) || 0;
@@ -1689,14 +1814,7 @@
       const isOut = stockStatus === "out of stock";
       const isBest = isProductBestSeller(p);
 
-      // Clean HTML without overlapping elements
-      const priceHTML = `
-        <div class="price-wrap">
-          ${hasDiscount ? `<span class="mrp-crossed">₹${mrp}</span>` : ""}
-          <span class="price">₹${sellingPrice}</span>
-        </div>
-      `;
-
+      const priceHTML = `<div class="price-wrap">${hasDiscount ? `<span class="mrp-crossed">₹${mrp}</span>` : ""}<span class="price">₹${sellingPrice}</span></div>`;
       const slidesHTML = images.map(img => `<img src="${img}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'180\' height=\'180\' fill=\'%2364748b\' viewBox=\'0 0 24 24\'><path d=\'M21 16.5l-4.5-4.5-3 3-4.5-4.5L3 16.5V21h18v-4.5zM3 3h18v10.5l-6-6-4.5 4.5-3-3L3 13.5V3z\'/></svg>'">`).join("");
       const dotsHTML = images.map((img, i) => `<span class="${i === 0 ? 'active' : ''}"></span>`).join("");
       
@@ -1734,6 +1852,35 @@
       card.addEventListener("click", () => openModal(index >= 0 ? index : 0));
       grid.appendChild(card);
     });
+  }
+
+  async function submitProductRequest() {
+    const name = document.getElementById("reqName").value.trim();
+    const phone = document.getElementById("reqPhone").value.trim();
+    const item = document.getElementById("reqItem").value.trim();
+
+    if (!name || !phone || !item || phone.length !== 10) {
+      alert("Please enter your name, valid 10-digit mobile number, and requested product.");
+      return;
+    }
+
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "saveRequest",
+          name: name,
+          phone: phone,
+          requestedItem: item
+        })
+      });
+    } catch(e) {
+      console.error(e);
+    }
+
+    const waText = encodeURIComponent(`Hi Grow Up Fitness, I am looking for this product/brand:\n\n📦 Requested Item: ${item}\n👤 Name: ${name}\n📞 Phone: ${phone}\n\nPlease arrange this for me!`);
+    window.open(`https://wa.me/919571214461?text=${waText}`, '_blank');
+    alert("Request submitted successfully! We have also notified you on WhatsApp.");
   }
 
   function cardSlide(evt, btn, dir) {
@@ -1919,7 +2066,7 @@
     renderCartBadge();
     renderWishlistBadge();
     renderWalletBadge();
-    renderProductsGrid();
+    renderProductsGrid(false, "");
 
     document.getElementById("lpTitle").innerText = "Order History";
     document.getElementById("lpDesc").innerText = "Click to view your past purchases and items.";
@@ -1951,7 +2098,7 @@
     document.getElementById("authArea").innerHTML = `<button class="login-btn" onclick="openLoginModal()">Login</button>`;
     document.getElementById("lpTitle").innerText = "Order History";
     document.getElementById("lpDesc").innerText = "Login to view all your previous orders directly from Google Sheet.";
-    renderCartBadge(); renderWishlistBadge(); renderWalletBadge(); renderProductsGrid();
+    renderCartBadge(); renderWishlistBadge(); renderWalletBadge(); renderProductsGrid(false, "");
   }
 
   async function checkExistingLogin() {
@@ -1965,7 +2112,6 @@
     } catch (err) { console.error(err); }
   }
 
-  /* CART & WISHLIST SYNCHRONIZATION */
   function addToCart(pKey) {
     if (!currentUser) { openLoginModal(); return; }
     const cleanKey = String(pKey).trim();
@@ -2009,7 +2155,7 @@
 
     syncWishlist(); 
     renderWishlistBadge(); 
-    renderProductsGrid();
+    renderProductsGrid(false, "");
     renderWishlistDrawer();
   }
 
@@ -2022,7 +2168,7 @@
     
     syncWishlist();
     renderWishlistBadge();
-    renderProductsGrid();
+    renderProductsGrid(false, "");
     renderWishlistDrawer();
     closeDrawer('wishlistDrawer');
     openCartDrawer();
