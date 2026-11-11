@@ -1291,8 +1291,8 @@
         const data = await response.json();
         if (data && data[0] && data[0].Status === "Success") {
           const details = data[0].PostOffice[0];
-          if(cityInput) cityInput.value = details.District || details.Block || "";
-          if(stateInput) stateInput.value = details.State || "";
+          const locStr = `${details.District || details.Block || ""}, ${details.State || ""}`;
+          if(cityInput) cityInput.value = locStr;
           if(statusEl) { statusEl.innerText = "✅ Location auto-filled!"; statusEl.style.color = "#10b981"; }
         } else {
           if(statusEl) { statusEl.innerText = "❌ Invalid Pincode"; statusEl.style.color = "#ef4444"; }
@@ -1379,7 +1379,7 @@
     openCartDrawer();
   }
 
-  /* RENDER PRODUCTS OR NO PRODUCT FOUND WITH FULL DETAILED FORM */
+  /* RENDER PRODUCTS OR NO PRODUCT FOUND WITH FETCHED BRANDS & DROPDOWN */
   function renderProductsGrid(isEmpty = false, queryName = "") {
     const grid = document.getElementById("prodGrid");
     const heading = document.getElementById("sectionTitleHeading");
@@ -1426,9 +1426,14 @@
         `;
       });
 
-      // Build unique brand list for dropdown
-      const uniqueBrands = [...new Set(allProducts.map(p => (p["Brand"] || "").trim()).filter(Boolean))];
-      const brandOptionsHTML = uniqueBrands.map(b => `<option value="${b}">${b}</option>`).join("");
+      // Extract brands dynamically from allBrands or unique product brands
+      let brandOptionsHTML = "";
+      if (Array.isArray(allBrands) && allBrands.length > 0) {
+        brandOptionsHTML = allBrands.map(b => `<option value="${b["Brand Name"] || ""}">${b["Brand Name"] || ""}</option>`).join("");
+      } else {
+        const uniqueBrands = [...new Set(allProducts.map(p => (p["Brand"] || "").trim()).filter(Boolean))];
+        brandOptionsHTML = uniqueBrands.map(b => `<option value="${b}">${b}</option>`).join("");
+      }
 
       grid.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 15px 0;">
@@ -1447,8 +1452,8 @@
           <div class="form-grid">
             <input type="text" id="reqName" placeholder="Full Name *">
             <input type="tel" id="reqPhone" placeholder="Mobile Number (10 digits) *" maxlength="10">
-            <input type="text" id="reqPincode" placeholder="Pincode (6 digits) *" maxlength="6" oninput="lookupPincode(this.value, 'reqCity', 'reqState', 'reqPinStatus')">
-            <input type="text" id="reqCity" placeholder="City / State *" readonly style="background:var(--iron-light);">
+            <input type="text" id="reqPincode" placeholder="Pincode (6 digits) *" maxlength="6" oninput="lookupPincode(this.value, 'reqCity', '', 'reqPinStatus')">
+            <input type="text" id="reqCity" placeholder="City & State *" readonly style="background:var(--iron-light);">
           </div>
           <div id="reqPinStatus" style="font-size:11px; margin-bottom:8px; display:none;"></div>
 
@@ -1464,7 +1469,7 @@
               </select>
             </div>
             <div>
-              <label style="font-size:11px; font-weight:700; color:var(--steel); display:block; margin-bottom:4px;">Product / Category:</label>
+              <label style="font-size:11px; font-weight:700; color:var(--steel); display:block; margin-bottom:4px;">Product Category:</label>
               <select id="reqCategory">
                 <option value="Whey Protein">Whey Protein</option>
                 <option value="Mass Gainer">Mass Gainer</option>
@@ -1479,7 +1484,16 @@
 
           <input type="text" id="reqSpecific" placeholder="Specific Item / Flavour / Size requirement (e.g., Chocolate 2kg)">
           
-          <input type="text" id="reqLastBought" placeholder="Last time kahan se buy kra tha? (Optional)">
+          <label style="font-size:11px; font-weight:700; color:var(--steel); display:block; margin-bottom:4px;">Last time kahan se buy kra tha?</label>
+          <select id="reqLastBought" style="width:100%; padding:12px 14px; background:var(--iron); border:1px solid var(--border-color); border-radius:var(--radius); color:var(--chalk); font-size:13px; margin-bottom:12px;">
+            <option value="First Time Buying">First Time Buying</option>
+            <option value="Amazon">Amazon</option>
+            <option value="Flipkart">Flipkart</option>
+            <option value="Local Supplement Store">Local Supplement Store</option>
+            <option value="Official Website">Official Website</option>
+            <option value="Gym / Trainer">Gym / Trainer</option>
+            <option value="Other">Other</option>
+          </select>
 
           <button class="btn-primary" onclick="submitDetailedProductRequest()" style="width:100%; margin-top:6px;">🚀 Submit Request (Send to WhatsApp & Sheet)</button>
         </div>
@@ -1582,7 +1596,7 @@
       console.error(e);
     }
 
-    const waText = encodeURIComponent(`Hi Grow Up Fitness, I have submitted a product request:\n\n👤 Name: ${name}\n📞 Phone: ${phone}\n📍 Location: Pincode ${pincode} (${cityState})\n🏷️ Brand: ${brand}\n📦 Requirement: ${requirement}\n🛒 Last Bought From: ${lastBought || 'N/A'}\n\nPlease arrange this for me!`);
+    const waText = encodeURIComponent(`Hi Grow Up Fitness, I have submitted a product request:\n\n👤 Name: ${name}\n📞 Phone: ${phone}\n📍 Location: Pincode ${pincode} (${cityState})\n🏷️ Brand: ${brand}\n📦 Requirement: ${requirement}\n🛒 Last Bought From: ${lastBought}\n\nPlease arrange this for me!`);
     window.open(`https://wa.me/919571214461?text=${waText}`, '_blank');
     alert("Request submitted successfully! We have also notified you on WhatsApp.");
   }
