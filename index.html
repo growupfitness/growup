@@ -812,7 +812,7 @@
         <span style="font-size:18px;">📍</span>
         <div>
           <strong>Store Address</strong>
-          <span>Grow Up Fitness, Udaipur, Rajasthan, India</span>
+          <span>Shop No. 2, Shreenath Colony, opp. Champion Saloon, Navratan Complex, Pulla Road, Bhuwana, Rajasthan 313001</span>
         </div>
       </div>
 
@@ -820,7 +820,7 @@
         <span style="font-size:18px;">⏰</span>
         <div>
           <strong>Store Timings</strong>
-          <span>Monday – Sunday: 10:00 AM to 10:00 PM</span>
+          <span>Monday – Sunday: 11:00 AM to 8:30 PM</span>
         </div>
       </div>
 
@@ -833,12 +833,12 @@
       </div>
 
       <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
-        <a href="https://maps.google.com/?q=Udaipur,Rajasthan" target="_blank" class="btn-primary">📍 Open in Google Maps</a>
+        <a href="https://maps.google.com/?q=Shop+No.2,+Shreenath+colony,+opp+Champion+Saloon+Navratan+Complex,+Pulla,+Road,+Bhuwana,+Rajasthan+313001" target="_blank" class="btn-primary">📍 Open in Google Maps</a>
         <a href="https://wa.me/919571214461?text=Hi,%20please%20share%20exact%20store%20location" target="_blank" class="btn-ghost">💬 Ask Location on WhatsApp</a>
       </div>
     </div>
     <div class="store-map-side">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d116078.16503179656!2d73.63701829368509!3d24.60842608568565!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3967e56550a14411%3A0xdbd8c28455b868b0!2sUdaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <iframe src="https://www.google.com/maps?q=Shop+No.2,+Shreenath+colony,+opp+Champion+Saloon+Navratan+Complex,+Pulla,+Road,+Bhuwana,+Rajasthan+313001&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
   </div>
 </section>
@@ -1188,7 +1188,6 @@
     }
   }
 
-  // LOAD BRANDS & CERTIFICATES
   async function loadBrandsAndCertificates() {
     const certGrid = document.getElementById("certGrid");
     try {
@@ -1200,7 +1199,6 @@
         return;
       }
 
-      // Filter brands that have a Certificate URL
       const certifiedBrands = allBrands.filter(b => b["Certificate URL"] && String(b["Certificate URL"]).trim() !== "");
 
       if (certifiedBrands.length === 0) {
@@ -1226,7 +1224,6 @@
     }
   }
 
-  // LOAD HAPPY CLIENTS GALLERY
   async function loadGallery() {
     const galleryGrid = document.getElementById("galleryGrid");
     try {
@@ -1639,7 +1636,6 @@
     openCartDrawer();
   }
 
-  /* RENDER PRODUCTS OR NO PRODUCT FOUND WITH FULL FORM */
   function renderProductsGrid(isEmpty = false, queryName = "") {
     const grid = document.getElementById("prodGrid");
     const heading = document.getElementById("sectionTitleHeading");
