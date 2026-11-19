@@ -144,7 +144,7 @@
     background: var(--ember);border-color: var(--ember);color: #ffffff;box-shadow: 0 3px 10px rgba(0, 114, 255, 0.3);
   }
 
-  .nav-links{display:flex;gap:24px;font-size:13px;font-weight:600;letter-spacing:0.5px;}
+  .nav-links{display:flex;gap:20px;font-size:13px;font-weight:600;letter-spacing:0.5px;}
   .nav-links a{opacity:0.8;transition:opacity .2s;cursor:pointer;}
   .nav-links a:hover{opacity:1;color:var(--ember);}
   
@@ -211,7 +211,139 @@
   }
   .reset-filter-btn:hover {border-color: var(--ember);color: var(--ember);background: rgba(0, 114, 255, 0.08);}
 
-  /* CLASSY & NON-IGNORABLE REQUEST FORM */
+  /* CERTIFICATES GRID */
+  .cert-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .cert-card {
+    background: var(--iron-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 18px 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cert-card:hover {
+    border-color: #10b981;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(16, 185, 129, 0.12);
+  }
+  .cert-card img.brand-logo {
+    height: 44px;
+    max-width: 110px;
+    object-fit: contain;
+    margin-bottom: 10px;
+  }
+  .cert-card h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--chalk);
+  }
+  .cert-verified-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-top: 6px;
+  }
+
+  /* HAPPY CLIENTS GALLERY */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .gallery-card {
+    background: var(--iron-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .gallery-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+    border-color: var(--ember);
+  }
+  .gallery-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+  }
+  .gallery-caption {
+    padding: 12px;
+  }
+  .gallery-caption h5 {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--chalk);
+    margin-bottom: 3px;
+  }
+  .gallery-caption p {
+    font-size: 11px;
+    color: var(--steel);
+    line-height: 1.35;
+  }
+
+  /* STORE MAP & LOCATION SECTION */
+  .store-location-box {
+    background: var(--iron-light);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+  }
+  .store-info-side {
+    padding: 32px 26px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .store-info-side h3 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: var(--chalk);
+  }
+  .store-detail-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: var(--steel);
+    line-height: 1.4;
+  }
+  .store-detail-row strong {
+    color: var(--chalk);
+    display: block;
+  }
+  .store-map-side iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    border: 0;
+    display: block;
+  }
+
+  /* REQUEST PRODUCT FORM CARD */
   .request-form-card {
     background: var(--iron-light);
     border: 2px dashed var(--ember);
@@ -276,7 +408,6 @@
   .request-form-card input:focus,
   .request-form-card select:focus,
   .request-form-card textarea:focus { border-color: var(--ember); }
-  .full-width { grid-column: 1 / -1; }
 
   /* MODAL BOXES & DRAWERS */
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10000;align-items:center;justify-content:center;padding:16px;}
@@ -435,14 +566,14 @@
   .variant-chip{background:var(--iron);border:1px solid var(--border-color);color:var(--chalk);padding:6px 12px;font-size:12px;border-radius:var(--radius);cursor:pointer;font-weight:500;}
   .variant-chip.active{border-color:var(--ember);color:var(--ember);background:rgba(0,160,227,0.08);}
 
-  .btn-primary{background:var(--ember);color:#fff;padding:12px 20px;font-weight:800;font-size:12px;border-radius:var(--radius);border:none;cursor:pointer;position:relative;overflow:hidden;}
+  .btn-primary{background:var(--ember);color:#fff;padding:12px 20px;font-weight:800;font-size:12px;border-radius:var(--radius);border:none;cursor:pointer;position:relative;overflow:hidden;display:inline-block;}
   .btn-primary.disabled{background:var(--steel);cursor:not-allowed;opacity:0.6;}
-  .btn-ghost{border:1px solid var(--border-color);color:var(--chalk);padding:12px 20px;font-weight:700;font-size:12px;border-radius:var(--radius);background:none;cursor:pointer;}
+  .btn-ghost{border:1px solid var(--border-color);color:var(--chalk);padding:12px 20px;font-weight:700;font-size:12px;border-radius:var(--radius);background:none;cursor:pointer;display:inline-block;}
   .btn-ghost:hover{background:var(--border-color);border-color:var(--chalk);}
 
-  .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:20000;align-items:center;justify-content:center;}
+  .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:20000;align-items:center;justify-content:center;padding:16px;}
   .lightbox.open{display:flex;}
-  .lightbox img{max-width:92vw;max-height:92vh;object-fit:contain;}
+  .lightbox img{max-width:94vw;max-height:92vh;object-fit:contain;border-radius:6px;}
 
   .why{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;text-align:center;}
   .why .num{font-family:'Bebas Neue';font-size:42px;color:var(--ember);}
@@ -504,7 +635,8 @@
     .modal-gallery .slide-track img{height:260px;}
     .modal-info{padding:20px 16px;}
     .modal-info h2{font-size:22px;}
-    .why{grid-template-columns:repeat(2, 1fr); gap:14px;}
+    .why, .cert-grid, .gallery-grid {grid-template-columns:repeat(2, 1fr); gap:12px;}
+    .store-location-box {grid-template-columns: 1fr;}
     .footer-grid{grid-template-columns:1fr; gap:24px;}
     .form-grid { grid-template-columns: 1fr; }
   }
@@ -528,8 +660,9 @@
     <div class="nav-links">
       <a onclick="handleNavExplore()">Explore</a>
       <a onclick="handleNavBestSellers()">Best Sellers</a>
-      <a href="#why">Why Us</a>
-      <a href="#contact">Contact</a>
+      <a href="#certificates">Certificates</a>
+      <a href="#gallery">Clients</a>
+      <a href="#location">Store</a>
     </div>
 
     <div class="nav-right">
@@ -617,6 +750,96 @@
 
   <div class="prod-grid" id="prodGrid">
     <p class="prod-empty">Loading products…</p>
+  </div>
+</section>
+
+<!-- 03: WHY US -->
+<section class="section reveal" id="why">
+  <div class="section-head">
+    <div><span class="tag">03 — WHY GROW UP FITNESS</span><h2>Built On Trust</h2></div>
+  </div>
+  <div class="why">
+    <div><div class="num">100%</div><h4>Lab Tested</h4><p>Every batch verified for purity.</p></div>
+    <div><div class="num">24H</div><h4>Fast Dispatch</h4><p>Orders shipped within a day.</p></div>
+    <div><div class="num">5000+</div><h4>Happy Lifters</h4><p>Trusted across the community.</p></div>
+    <div><div class="num">COD</div><h4>Cash on Delivery</h4><p>Pay when it arrives.</p></div>
+  </div>
+</section>
+
+<!-- 04: OFFICIAL BRAND CERTIFICATES -->
+<section class="section reveal" id="certificates">
+  <div class="section-head">
+    <div>
+      <span class="tag">04 — 100% AUTHENTIC</span>
+      <h2>Official Brand Certificates</h2>
+    </div>
+    <p>Tap any certificate below to view and verify our official dealership &amp; importer authorization.</p>
+  </div>
+  <div class="cert-grid" id="certGrid">
+    <p class="prod-empty">Loading certificates...</p>
+  </div>
+</section>
+
+<!-- 05: HAPPY CLIENTS & COMMUNITY GALLERY -->
+<section class="section reveal" id="gallery">
+  <div class="section-head">
+    <div>
+      <span class="tag">05 — COMMUNITY WALL</span>
+      <h2>Happy Lifters &amp; Clients</h2>
+    </div>
+    <p>Real results, real customers visiting Grow Up Fitness store in Udaipur.</p>
+  </div>
+  <div class="gallery-grid" id="galleryGrid">
+    <p class="prod-empty">Loading client gallery...</p>
+  </div>
+</section>
+
+<!-- 06: STORE LOCATION & GOOGLE MAP -->
+<section class="section reveal" id="location">
+  <div class="section-head">
+    <div>
+      <span class="tag">06 — VISIT OUR STORE</span>
+      <h2>Find Us In Udaipur</h2>
+    </div>
+    <p>Drop by our retail store for free supplement guidance &amp; instant pickup.</p>
+  </div>
+  <div class="store-location-box">
+    <div class="store-info-side">
+      <h3>GROW UP FITNESS</h3>
+      <p style="color:var(--steel); font-size:13px; margin-bottom:20px;">Your trusted destination for 100% original supplements &amp; fitness nutrition in Udaipur.</p>
+      
+      <div class="store-detail-row">
+        <span style="font-size:18px;">📍</span>
+        <div>
+          <strong>Store Address</strong>
+          <span>Grow Up Fitness, Udaipur, Rajasthan, India</span>
+        </div>
+      </div>
+
+      <div class="store-detail-row">
+        <span style="font-size:18px;">⏰</span>
+        <div>
+          <strong>Store Timings</strong>
+          <span>Monday – Sunday: 10:00 AM to 10:00 PM</span>
+        </div>
+      </div>
+
+      <div class="store-detail-row">
+        <span style="font-size:18px;">📞</span>
+        <div>
+          <strong>Call &amp; WhatsApp Support</strong>
+          <span>+91 95712 14461</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+        <a href="https://maps.google.com/?q=Udaipur,Rajasthan" target="_blank" class="btn-primary">📍 Open in Google Maps</a>
+        <a href="https://wa.me/919571214461?text=Hi,%20please%20share%20exact%20store%20location" target="_blank" class="btn-ghost">💬 Ask Location on WhatsApp</a>
+      </div>
+    </div>
+    <div class="store-map-side">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d116078.16503179656!2d73.63701829368509!3d24.60842608568565!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3967e56550a14411%3A0xdbd8c28455b868b0!2sUdaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
   </div>
 </section>
 
@@ -752,22 +975,10 @@
   </div>
 </div>
 
-<div class="lightbox" id="imageLightbox">
+<div class="lightbox" id="imageLightbox" onclick="closeLightbox()">
   <button class="modal-close" onclick="closeLightbox()">✕</button>
-  <img id="lightboxImg" src="">
+  <img id="lightboxImg" src="" onclick="event.stopPropagation()">
 </div>
-
-<section class="section reveal" id="why">
-  <div class="section-head">
-    <div><span class="tag">03 — WHY GROW UP FITNESS</span><h2>Built On Trust</h2></div>
-  </div>
-  <div class="why">
-    <div><div class="num">100%</div><h4>Lab Tested</h4><p>Every batch verified for purity.</p></div>
-    <div><div class="num">24H</div><h4>Fast Dispatch</h4><p>Orders shipped within a day.</p></div>
-    <div><div class="num">5000+</div><h4>Happy Lifters</h4><p>Trusted across the community.</p></div>
-    <div><div class="num">COD</div><h4>Cash on Delivery</h4><p>Pay when it arrives.</p></div>
-  </div>
-</section>
 
 <section class="section reveal">
   <div class="cta-band">
@@ -785,8 +996,8 @@
       </a>
       <p style="color:var(--steel);font-size:13px;margin-top:12px;max-width:280px;">100% genuine and authentic supplements for people who train hard and expect results.</p>
     </div>
-    <div><h5>SHOP</h5><a href="#categories">Explore</a><a onclick="handleNavBestSellers()" style="cursor:pointer;">Best Sellers</a></div>
-    <div><h5>CONTACT</h5><a href="tel:9571214461">📞 95712 14461</a><a href="https://wa.me/919571214461" target="_blank">WhatsApp Us</a></div>
+    <div><h5>SHOP</h5><a href="#categories">Explore</a><a onclick="handleNavBestSellers()" style="cursor:pointer;">Best Sellers</a><a href="#certificates">Certificates</a></div>
+    <div><h5>CONTACT</h5><a href="tel:9571214461">📞 95712 14461</a><a href="https://wa.me/919571214461" target="_blank">WhatsApp Us</a><a href="#location">Store Location</a></div>
   </div>
   <div class="footer-bottom">
     <span>© 2026 Grow Up Fitness. All rights reserved.</span>
@@ -797,7 +1008,7 @@
 <a href="https://wa.me/919571214461?text=Hi,%20I%20have%20an%20inquiry" target="_blank" class="wa-float">💬</a>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwnwchGGQ-gMv9Z-dR0JTtfx_-WW8MaidbbwaQM3taxExo6rZrbobxy-Ut1Y853HxMO/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwQR9h9MfmCLU5WjNzOlQzPG6bx2gTaO5UP0a0B3ce4hV3iKp1EUr6nAn8GqUEvl3zJ/exec";
   const MERCHANT_UPI = "salvinitinudr-6@okaxis";
   const MERCHANT_NAME = "Grow Up Fitness";
 
@@ -846,7 +1057,6 @@
 
   function handleNavBestSellers() {
     document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
-
     const bestSellers = allProducts.filter(p => isProductBestSeller(p));
     const uniqueMap = new Map();
     const sourceList = bestSellers.length > 0 ? bestSellers : allProducts.slice(0, 8);
@@ -896,7 +1106,6 @@
     } 
     else if (currentScrollY < lastScrollY && (lastScrollY - currentScrollY > 6)) {
       if (headerEl) headerEl.classList.remove("header-hidden");
-      
       if (headerHideTimer) clearTimeout(headerHideTimer);
       headerHideTimer = setTimeout(() => {
         const checkScroll = window.pageYOffset || document.documentElement.scrollTop;
@@ -905,7 +1114,6 @@
         }
       }, 3000);
     }
-
     lastScrollY = currentScrollY;
   }, { passive: true });
 
@@ -943,14 +1151,12 @@
   async function loadProducts() {
     const grid = document.getElementById("prodGrid");
     grid.innerHTML = `<p class="prod-empty">Loading products…</p>`;
-
     const fetchUrl = `${API_URL}?action=getProducts&_t=${new Date().getTime()}`;
 
     for (let attempt = 1; attempt <= 2; attempt++) {
       try {
         const response = await fetch(fetchUrl);
         if (!response.ok) throw new Error("HTTP Error " + response.status);
-        
         const data = await response.json();
         
         if (!Array.isArray(data) || data.length === 0) {
@@ -959,13 +1165,10 @@
         }
 
         allProducts = data;
-        
         const uniqueMap = new Map();
         allProducts.forEach(p => {
           const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
-          if (!uniqueMap.has(key)) {
-            uniqueMap.set(key, p);
-          }
+          if (!uniqueMap.has(key)) uniqueMap.set(key, p);
         });
         displayProducts = Array.from(uniqueMap.values());
 
@@ -975,17 +1178,92 @@
         
         const savedMobile = localStorage.getItem("gufMobile");
         const savedName = localStorage.getItem("gufName");
-        if (savedMobile && savedName) {
-          checkExistingLogin();
-        }
+        if (savedMobile && savedName) checkExistingLogin();
         return;
       } catch (err) {
-        console.warn(`Attempt ${attempt} failed:`, err);
         if (attempt === 2) {
           grid.innerHTML = `<p class="prod-empty">Products load hone me dikkat aa rahi hai.<br><button onclick="loadProducts()" class="btn-primary" style="margin-top:10px; padding:6px 16px; font-size:12px;">Retry Now</button></p>`;
         }
       }
     }
+  }
+
+  // LOAD BRANDS & CERTIFICATES
+  async function loadBrandsAndCertificates() {
+    const certGrid = document.getElementById("certGrid");
+    try {
+      const res = await fetch(`${API_URL}?action=getBrands&_t=${new Date().getTime()}`);
+      allBrands = await res.json();
+      
+      if (!Array.isArray(allBrands) || allBrands.length === 0) {
+        certGrid.innerHTML = `<p class="prod-empty">Certificates coming soon.</p>`;
+        return;
+      }
+
+      // Filter brands that have a Certificate URL
+      const certifiedBrands = allBrands.filter(b => b["Certificate URL"] && String(b["Certificate URL"]).trim() !== "");
+
+      if (certifiedBrands.length === 0) {
+        certGrid.innerHTML = `<p class="prod-empty">Upload certificate image links in Brands sheet to display here.</p>`;
+        return;
+      }
+
+      certGrid.innerHTML = certifiedBrands.map(b => {
+        const bName = b["Brand Name"] || "Authorized Brand";
+        const logoUrl = b["Logo URL"] ? String(b["Logo URL"]).trim() : "";
+        const certUrl = String(b["Certificate URL"]).trim();
+
+        return `
+          <div class="cert-card" onclick="openImageLightboxDirect('${escapeQuotes(certUrl)}')">
+            ${logoUrl ? `<img src="${logoUrl}" class="brand-logo" onerror="this.style.display='none'">` : `<div style="font-size:28px; margin-bottom:8px;">📜</div>`}
+            <h4>${bName}</h4>
+            <div class="cert-verified-pill">🛡️ View Official Certificate</div>
+          </div>
+        `;
+      }).join("");
+    } catch(e) {
+      certGrid.innerHTML = `<p class="prod-empty">Unable to load certificates right now.</p>`;
+    }
+  }
+
+  // LOAD HAPPY CLIENTS GALLERY
+  async function loadGallery() {
+    const galleryGrid = document.getElementById("galleryGrid");
+    try {
+      const res = await fetch(`${API_URL}?action=getGallery&_t=${new Date().getTime()}`);
+      const photos = await res.json();
+
+      if (!Array.isArray(photos) || photos.length === 0) {
+        galleryGrid.innerHTML = `<p class="prod-empty">Client photos coming soon! Add photos in "Gallery" tab of Google Sheet.</p>`;
+        return;
+      }
+
+      galleryGrid.innerHTML = photos.map(item => {
+        const imgUrl = item["Photo URL"] ? String(item["Photo URL"]).trim() : "";
+        const clientName = item["Client Name"] || "Happy Lifter";
+        const caption = item["Caption"] || "100% Genuine Supplement Stack";
+
+        if (!imgUrl) return "";
+
+        return `
+          <div class="gallery-card" onclick="openImageLightboxDirect('${escapeQuotes(imgUrl)}')">
+            <img src="${imgUrl}" alt="${clientName}" onerror="this.style.display='none'">
+            <div class="gallery-caption">
+              <h5>💪 ${clientName}</h5>
+              <p>${caption}</p>
+            </div>
+          </div>
+        `;
+      }).join("");
+    } catch(e) {
+      galleryGrid.innerHTML = `<p class="prod-empty">Community gallery loading...</p>`;
+    }
+  }
+
+  function openImageLightboxDirect(url) {
+    if (!url) return;
+    document.getElementById("lightboxImg").src = url;
+    document.getElementById("imageLightbox").classList.add("open");
   }
 
   function filterByCategory(keyword, btnEl) {
@@ -1030,53 +1308,40 @@
     }
   }
 
-  async function loadBrands() {
+  function openBrandModal() {
     const brandGrid = document.getElementById("brandGrid");
-    try {
-      const res = await fetch(`${API_URL}?action=getBrands&_t=${new Date().getTime()}`);
-      allBrands = await res.json();
-      
-      if (!allBrands || allBrands.length === 0) {
-        brandGrid.innerHTML = `<p style="color:var(--steel); grid-column:1/-1; text-align:center;">No brands found in sheet.</p>`;
-        return;
-      }
+    document.getElementById("brandModal").classList.add("open");
+    if (!allBrands || allBrands.length === 0) {
+      brandGrid.innerHTML = `<p style="color:var(--steel); grid-column:1/-1; text-align:center;">No brands found in sheet.</p>`;
+      return;
+    }
 
-      let brandsHTML = `
-        <div class="brand-card-item all-brands" onclick="showAllProductsFromModal()">
-          <span style="font-size:16px;">🌟</span>
-          <h4>Show All Brands (View All)</h4>
+    let brandsHTML = `
+      <div class="brand-card-item all-brands" onclick="showAllProductsFromModal()">
+        <span style="font-size:16px;">🌟</span>
+        <h4>Show All Brands (View All)</h4>
+      </div>
+    `;
+
+    brandsHTML += allBrands.map(b => {
+      const brandName = b["Brand Name"] || "Brand";
+      const logoUrl = b["Logo URL"] ? b["Logo URL"].trim() : "";
+
+      return `
+        <div class="brand-card-item" onclick="filterByBrand('${escapeQuotes(brandName)}')">
+          ${logoUrl ? `<img src="${logoUrl}" class="brand-logo-img" onerror="this.style.display='none'">` : ''}
+          <span class="brand-card-name">${brandName}</span>
         </div>
       `;
+    }).join("");
 
-      brandsHTML += allBrands.map(b => {
-        const brandName = b["Brand Name"] || "Brand";
-        const logoUrl = b["Logo URL"] ? b["Logo URL"].trim() : "";
-
-        return `
-          <div class="brand-card-item" onclick="filterByBrand('${escapeQuotes(brandName)}')">
-            ${logoUrl ? `<img src="${logoUrl}" class="brand-logo-img" onerror="this.style.display='none'">` : ''}
-            <span class="brand-card-name">${brandName}</span>
-          </div>
-        `;
-      }).join("");
-
-      brandGrid.innerHTML = brandsHTML;
-    } catch(e) {
-      brandGrid.innerHTML = `<p style="color:var(--steel); grid-column:1/-1; text-align:center;">Brands load nahi ho payi.</p>`;
-    }
+    brandGrid.innerHTML = brandsHTML;
   }
 
-  function openBrandModal() {
-    document.getElementById("brandModal").classList.add("open");
-    loadBrands();
-  }
-  function closeBrandModal() {
-    document.getElementById("brandModal").classList.remove("open");
-  }
+  function closeBrandModal() { document.getElementById("brandModal").classList.remove("open"); }
 
   function filterByBrand(brandName) {
     const matched = allProducts.filter(p => (p["Brand"] || "").trim().toLowerCase() === brandName.trim().toLowerCase());
-    
     const uniqueMap = new Map();
     matched.forEach(p => {
       const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
@@ -1096,7 +1361,6 @@
     } else {
       renderProductsGrid(false, "");
     }
-
     document.getElementById("products").scrollIntoView({ behavior: 'smooth' });
   }
 
@@ -1109,14 +1373,11 @@
       const f = (p["Flavour"] || "").trim();
       if (f) {
         const key = f.toLowerCase();
-        if (!flavourMap.has(key)) {
-          flavourMap.set(key, f);
-        }
+        if (!flavourMap.has(key)) flavourMap.set(key, f);
       }
     });
 
     const uniqueFlavours = Array.from(flavourMap.values());
-
     if (uniqueFlavours.length === 0) {
       flvGrid.innerHTML = `<p style="color:var(--steel); grid-column:1/-1; text-align:center;">Koi flavours nahi mile sheet me.</p>`;
       return;
@@ -1156,14 +1417,11 @@
     flvGrid.innerHTML = flvHTML;
   }
 
-  function closeFlavourModal() {
-    document.getElementById("flavourModal").classList.remove("open");
-  }
+  function closeFlavourModal() { document.getElementById("flavourModal").classList.remove("open"); }
 
   function filterByFlavour(flavourName) {
     const q = flavourName.trim().toLowerCase();
     const matched = allProducts.filter(p => (p["Flavour"] || "").trim().toLowerCase() === q);
-    
     const uniqueMap = new Map();
     matched.forEach(p => {
       const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
@@ -1183,7 +1441,6 @@
     } else {
       renderProductsGrid(false, "");
     }
-
     document.getElementById("products").scrollIntoView({ behavior: 'smooth' });
   }
 
@@ -1224,7 +1481,6 @@
     });
 
     displayProducts = matchedProducts;
-    
     const desc = document.getElementById("activeFilterDesc");
     if (desc) desc.innerText = `Search results for: "${val}"`;
     const resetBtn = document.getElementById("btnResetFilter");
@@ -1291,8 +1547,12 @@
         const data = await response.json();
         if (data && data[0] && data[0].Status === "Success") {
           const details = data[0].PostOffice[0];
-          const locStr = `${details.District || details.Block || ""}, ${details.State || ""}`;
-          if(cityInput) cityInput.value = locStr;
+          if (stateId) {
+            if(cityInput) cityInput.value = details.District || details.Block || "";
+            if(stateInput) stateInput.value = details.State || "";
+          } else {
+            if(cityInput) cityInput.value = `${details.District || details.Block || ""}, ${details.State || ""}`;
+          }
           if(statusEl) { statusEl.innerText = "✅ Location auto-filled!"; statusEl.style.color = "#10b981"; }
         } else {
           if(statusEl) { statusEl.innerText = "❌ Invalid Pincode"; statusEl.style.color = "#ef4444"; }
@@ -1379,7 +1639,7 @@
     openCartDrawer();
   }
 
-  /* RENDER PRODUCTS OR NO PRODUCT FOUND WITH FETCHED BRANDS & DROPDOWN */
+  /* RENDER PRODUCTS OR NO PRODUCT FOUND WITH FULL FORM */
   function renderProductsGrid(isEmpty = false, queryName = "") {
     const grid = document.getElementById("prodGrid");
     const heading = document.getElementById("sectionTitleHeading");
@@ -1426,7 +1686,6 @@
         `;
       });
 
-      // Extract brands dynamically from allBrands or unique product brands
       let brandOptionsHTML = "";
       if (Array.isArray(allBrands) && allBrands.length > 0) {
         brandOptionsHTML = allBrands.map(b => `<option value="${b["Brand Name"] || ""}">${b["Brand Name"] || ""}</option>`).join("");
@@ -1594,9 +1853,7 @@
           lastBought: lastBought
         })
       });
-    } catch(e) {
-      console.error(e);
-    }
+    } catch(e) { console.error(e); }
 
     const waText = encodeURIComponent(`Hi Grow Up Fitness, I have submitted a product request:\n\n👤 Name: ${name}\n📞 Phone: ${phone}\n📍 Location: Pincode ${pincode} (${cityState})\n🏷️ Brand: ${brand}\n📦 Requirement: ${requirement}\n🛒 Last Bought From: ${lastBought}\n\nPlease arrange this for me!`);
     window.open(`https://wa.me/919571214461?text=${waText}`, '_blank');
@@ -2108,6 +2365,8 @@
 
   initTheme();
   loadProducts();
+  loadBrandsAndCertificates();
+  loadGallery();
 </script>
 </body>
 </html>
