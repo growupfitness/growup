@@ -143,8 +143,17 @@
   .cat-pill:hover, .cat-pill.active {
     background: var(--ember);border-color: var(--ember);color: #ffffff;box-shadow: 0 3px 10px rgba(0, 114, 255, 0.3);
   }
+  .cat-pill.sale-pill {
+    border-color: rgba(239, 68, 68, 0.45);
+    color: #ef4444;
+  }
+  .cat-pill.sale-pill.active, .cat-pill.sale-pill:hover {
+    background: linear-gradient(135deg, #ef4444, #f59e0b);
+    border-color: #ef4444;
+    color: #fff;
+  }
 
-  .nav-links{display:flex;gap:20px;font-size:13px;font-weight:600;letter-spacing:0.5px;}
+  .nav-links{display:flex;gap:18px;font-size:13px;font-weight:600;letter-spacing:0.5px;}
   .nav-links a{opacity:0.8;transition:opacity .2s;cursor:pointer;}
   .nav-links a:hover{opacity:1;color:var(--ember);}
   
@@ -202,6 +211,19 @@
     background: linear-gradient(135deg, #f59e0b, #ef4444);color: #fff;font-size: 8px;font-weight: 800;
     padding: 3px 7px;border-radius: 20px;text-transform: uppercase;box-shadow: 0 2px 8px rgba(239, 68, 68, 0.35);
     letter-spacing: 0.3px;display: inline-flex;align-items: center;gap: 3px;
+  }
+  .badge-saletag {
+    background: linear-gradient(135deg, #dc2626, #ea580c);color: #fff;font-size: 8.5px;font-weight: 800;
+    padding: 3px 8px;border-radius: 20px;text-transform: uppercase;box-shadow: 0 3px 10px rgba(220, 38, 38, 0.35);
+    letter-spacing: 0.4px;display: inline-flex;align-items: center;gap: 3px;
+  }
+
+  /* COMBO & SALE BANNER BOX */
+  .deals-banner-shell {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(0, 114, 255, 0.08));
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: 10px;
+    padding: 24px 20px;
   }
 
   .reset-filter-btn {
@@ -550,6 +572,7 @@
 
     <div class="nav-links">
       <a onclick="handleNavExplore()">Explore</a>
+      <a href="#deals" style="color:#ef4444; font-weight:800;">Combos &amp; Sale</a>
       <a onclick="handleNavBestSellers()">Best Sellers</a>
       <a href="#certificates">Certificates</a>
       <a href="#gallery">Clients</a>
@@ -575,6 +598,7 @@
   <div class="top-pills-bar">
     <div class="top-pills-container">
       <button class="cat-pill active" id="pillAll" onclick="filterByCategory('all', this)">⚡ All Supplements</button>
+      <button class="cat-pill sale-pill" onclick="filterBySaleOnly(this)">🔥 Combos &amp; Sale</button>
       <button class="cat-pill" onclick="filterByCategory('protein', this)">💪 Proteins</button>
       <button class="cat-pill" onclick="filterByCategory('fat loss protein', this)">🔥 Fat Loss Protein</button>
       <button class="cat-pill" onclick="filterByCategory('pre-workout', this)">💥 Pre Workout</button>
@@ -596,7 +620,24 @@
   <div class="hero-video-content">
     <h1>FUEL THE GRIND</h1>
     <p>Lab-tested protein, pre-workouts and recovery fuel for elite performance.</p>
-    <a onclick="handleNavBestSellers()" class="btn-primary" style="cursor:pointer;">Shop Best Sellers</a>
+    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+      <a onclick="handleNavBestSellers()" class="btn-primary" style="cursor:pointer;">Shop Best Sellers</a>
+      <a href="#deals" class="btn-ghost" style="border-color:#ef4444; color:#ef4444; background:rgba(255,255,255,0.85);">🔥 Combos &amp; Sale</a>
+    </div>
+  </div>
+</section>
+
+<!-- DEDICATED COMBOS & SALE SECTION -->
+<section class="section reveal" id="deals" style="display:none;">
+  <div class="deals-banner-shell">
+    <div class="section-head" style="margin-bottom:18px;">
+      <div>
+        <span class="tag" style="color:#ef4444;">🔥 LIMITED TIME OFFERS</span>
+        <h2>Combo Packs &amp; Special Sale</h2>
+      </div>
+      <p>Daily &amp; weekly combo deals directly from our sheet — grab before offer ends.</p>
+    </div>
+    <div class="prod-grid" id="dealsGrid"></div>
   </div>
 </section>
 
@@ -833,7 +874,6 @@
       <input type="text" id="chkState" placeholder="State *">
     </div>
 
-    <!-- APPLY COUPON SECTION (MRP BASED) -->
     <div class="coupon-box-wrap">
       <label style="font-size:11px; font-weight:700; color:var(--ember); display:block; margin-bottom:6px;">🎟️ Have a Trainer / VIP Coupon Code?</label>
       <div class="coupon-input-row">
@@ -843,7 +883,6 @@
       <div class="coupon-msg" id="couponStatusMsg"></div>
     </div>
 
-    <!-- REWARD POINTS TOGGLE BOX -->
     <div class="rewards-checkout-box" id="rewardRedeemWrap" style="display:none;">
       <label>
         <input type="checkbox" id="useRewardsCheck" onchange="recalculateCheckoutTotal()">
@@ -905,7 +944,7 @@
       </a>
       <p style="color:var(--steel);font-size:13px;margin-top:12px;max-width:280px;">100% genuine and authentic supplements for people who train hard and expect results.</p>
     </div>
-    <div><h5>SHOP</h5><a href="#categories">Explore</a><a onclick="handleNavBestSellers()" style="cursor:pointer;">Best Sellers</a><a href="#certificates">Certificates</a></div>
+    <div><h5>SHOP</h5><a href="#categories">Explore</a><a href="#deals">Combos &amp; Sale</a><a onclick="handleNavBestSellers()" style="cursor:pointer;">Best Sellers</a><a href="#certificates">Certificates</a></div>
     <div><h5>CONTACT</h5><a href="tel:9571214461">📞 95712 14461</a><a href="https://wa.me/919571214461" target="_blank">WhatsApp Us</a><a href="#location">Store Location</a></div>
   </div>
   <div class="footer-bottom">
@@ -917,7 +956,6 @@
 <a href="https://wa.me/919571214461?text=Hi,%20I%20have%20an%20inquiry" target="_blank" class="wa-float">💬</a>
 
 <script>
-  // PASTE YOUR NEW DEPLOYED APPS SCRIPT URL HERE:
   const API_URL = "https://script.google.com/macros/s/AKfycbzvI0oooslOoXHLnaJ5FtpPwAw1VtTrpArusIn9zZpwos1pkZbkOOH4QTaBOhFXg7Bt/exec";
   const MERCHANT_UPI = "salvinitinudr-6@okaxis";
   const MERCHANT_NAME = "Grow Up Fitness";
@@ -935,7 +973,115 @@
   let currentCartTotal = 0;
   let currentCartMrpTotal = 0;
   let appliedRewardDiscount = 0;
-  let activeCoupon = null; // { code: "TRAINER30", discountPct: 30 }
+  let activeCoupon = null;
+
+  function getSaleTagValue(p) {
+    if (!p) return "";
+    return String(p["Sale Tag"] || p["SaleTag"] || p["Offer Tag"] || p["Combo"] || "").trim();
+  }
+
+  function buildProductCardElement(p) {
+    const index = allProducts.findIndex(item => item["Product Name"] === p["Product Name"] && item["Weight / Size"] === p["Weight / Size"]);
+    const images = getImages(p);
+    const rawMrp = String(p["MRP"] || "").replace(/[^0-9.]/g, "");
+    const rawSp = String(p["Selling Price"] || "").replace(/[^0-9.]/g, "");
+    const mrp = Number(rawMrp) || 0;
+    const sellingPrice = Number(rawSp) || 0;
+
+    const hasDiscount = mrp > sellingPrice && sellingPrice > 0;
+    const offPct = hasDiscount ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0;
+    
+    const stockStatus = String(p["Stock Status"] || "").trim().toLowerCase();
+    const isOut = stockStatus === "out of stock";
+    const isBest = isProductBestSeller(p);
+    const saleTagText = getSaleTagValue(p);
+
+    const priceHTML = `<div class="price-wrap">${hasDiscount ? `<span class="mrp-crossed">₹${mrp}</span>` : ""}<span class="price">₹${sellingPrice}</span></div>`;
+    const slidesHTML = images.map(img => `<img src="${img}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'180\' height=\'180\' fill=\'%2364748b\' viewBox=\'0 0 24 24\'><path d=\'M21 16.5l-4.5-4.5-3 3-4.5-4.5L3 16.5V21h18v-4.5zM3 3h18v10.5l-6-6-4.5 4.5-3-3L3 13.5V3z\'/></svg>'">`).join("");
+    const dotsHTML = images.map((img, i) => `<span class="${i === 0 ? 'active' : ''}"></span>`).join("");
+    
+    const pKey = getProductKey(p);
+    const isWishlisted = Array.isArray(wishlist) && wishlist.some(id => String(id).trim() === pKey);
+
+    const card = document.createElement("div");
+    card.className = `prod-card ${isOut ? 'out-of-stock' : ''}`;
+    card.innerHTML = `
+      <div class="card-badges-container">
+        ${saleTagText ? `<div class="badge-saletag">🔥 ${saleTagText}</div>` : ""}
+        ${isOut ? `<div class="badge-outstock">Out of Stock</div>` : (hasDiscount ? `<div class="badge-discount">-${offPct}% OFF</div>` : "")}
+        ${isBest ? `<div class="badge-bestseller">🔥 Best Seller</div>` : ""}
+      </div>
+      <button class="card-heart ${isWishlisted ? 'wishlisted' : ''}" onclick="event.stopPropagation(); toggleWishlist('${escapeQuotes(pKey)}')">${isWishlisted ? '♥' : '♡'}</button>
+      <div class="prod-img" data-slide="0" data-total="${images.length}">
+        <div class="slide-track">${slidesHTML}</div>
+        ${images.length > 1 ? `
+          <button class="arrow left" onclick="cardSlide(event, this, -1)">‹</button>
+          <button class="arrow right" onclick="cardSlide(event, this, 1)">›</button>
+          <div class="dots">${dotsHTML}</div>
+        ` : ""}
+      </div>
+      <div class="prod-body">
+        <div>
+          <span class="cat-label">${p["Brand"] || ""} · ${p["Category"] || ""}</span>
+          <h4>${p["Product Name"] || ""}</h4>
+          <p style="color:var(--chalk);font-size:12px;font-weight:600;margin-bottom:6px;">${p["Weight / Size"] || ""}</p>
+        </div>
+        <div class="prod-price">
+          ${priceHTML}
+          <button class="${isOut ? 'disabled' : ''}">${isOut ? 'Sold Out' : 'View Options'}</button>
+        </div>
+      </div>
+    `;
+    card.addEventListener("click", () => openModal(index >= 0 ? index : 0));
+    return card;
+  }
+
+  function renderDealsSection() {
+    const dealsSection = document.getElementById("deals");
+    const dealsGrid = document.getElementById("dealsGrid");
+    if (!dealsSection || !dealsGrid) return;
+
+    const dealItems = allProducts.filter(p => getSaleTagValue(p) !== "");
+    const uniqueMap = new Map();
+    dealItems.forEach(p => {
+      const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
+      if (!uniqueMap.has(key)) uniqueMap.set(key, p);
+    });
+    const uniqueDeals = Array.from(uniqueMap.values());
+
+    if (uniqueDeals.length === 0) {
+      dealsSection.style.display = "none";
+      return;
+    }
+
+    dealsSection.style.display = "block";
+    dealsGrid.innerHTML = "";
+    uniqueDeals.forEach(item => dealsGrid.appendChild(buildProductCardElement(item)));
+  }
+
+  function filterBySaleOnly(btnEl) {
+    document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+
+    const saleItems = allProducts.filter(p => getSaleTagValue(p) !== "");
+    const uniqueMap = new Map();
+    saleItems.forEach(p => {
+      const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
+      if (!uniqueMap.has(key)) uniqueMap.set(key, p);
+    });
+
+    displayProducts = Array.from(uniqueMap.values());
+    renderProductsGrid(false, "");
+
+    const desc = document.getElementById("activeFilterDesc");
+    if (desc) desc.innerText = "🔥 Showing Active Combos & Sale Offers";
+
+    const resetBtn = document.getElementById("btnResetFilter");
+    if (resetBtn) resetBtn.style.display = "inline-flex";
+
+    const sec = document.getElementById("products");
+    if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+  }
 
   function getProductKey(p) {
     if (!p) return "";
@@ -1077,6 +1223,8 @@
         }
 
         allProducts = data;
+        renderDealsSection();
+
         const uniqueMap = new Map();
         allProducts.forEach(p => {
           const key = (p["Product Name"] || "").trim() + "_" + (p["Weight / Size"] || "").trim();
@@ -1674,57 +1822,7 @@
     grid.innerHTML = "";
 
     displayProducts.forEach((p) => {
-      const index = allProducts.findIndex(item => item["Product Name"] === p["Product Name"] && item["Weight / Size"] === p["Weight / Size"]);
-      const images = getImages(p);
-      const rawMrp = String(p["MRP"] || "").replace(/[^0-9.]/g, "");
-      const rawSp = String(p["Selling Price"] || "").replace(/[^0-9.]/g, "");
-      const mrp = Number(rawMrp) || 0;
-      const sellingPrice = Number(rawSp) || 0;
-
-      const hasDiscount = mrp > sellingPrice && sellingPrice > 0;
-      const offPct = hasDiscount ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0;
-      
-      const stockStatus = String(p["Stock Status"] || "").trim().toLowerCase();
-      const isOut = stockStatus === "out of stock";
-      const isBest = isProductBestSeller(p);
-
-      const priceHTML = `<div class="price-wrap">${hasDiscount ? `<span class="mrp-crossed">₹${mrp}</span>` : ""}<span class="price">₹${sellingPrice}</span></div>`;
-      const slidesHTML = images.map(img => `<img src="${img}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'180\' height=\'180\' fill=\'%2364748b\' viewBox=\'0 0 24 24\'><path d=\'M21 16.5l-4.5-4.5-3 3-4.5-4.5L3 16.5V21h18v-4.5zM3 3h18v10.5l-6-6-4.5 4.5-3-3L3 13.5V3z\'/></svg>'">`).join("");
-      const dotsHTML = images.map((img, i) => `<span class="${i === 0 ? 'active' : ''}"></span>`).join("");
-      
-      const pKey = getProductKey(p);
-      const isWishlisted = Array.isArray(wishlist) && wishlist.some(id => String(id).trim() === pKey);
-
-      const card = document.createElement("div");
-      card.className = `prod-card ${isOut ? 'out-of-stock' : ''}`;
-      card.innerHTML = `
-        <div class="card-badges-container">
-          ${isOut ? `<div class="badge-outstock">Out of Stock</div>` : (hasDiscount ? `<div class="badge-discount">-${offPct}% OFF</div>` : "")}
-          ${isBest ? `<div class="badge-bestseller">🔥 Best Seller</div>` : ""}
-        </div>
-        <button class="card-heart ${isWishlisted ? 'wishlisted' : ''}" onclick="event.stopPropagation(); toggleWishlist('${escapeQuotes(pKey)}')">${isWishlisted ? '♥' : '♡'}</button>
-        <div class="prod-img" data-slide="0" data-total="${images.length}">
-          <div class="slide-track">${slidesHTML}</div>
-          ${images.length > 1 ? `
-            <button class="arrow left" onclick="cardSlide(event, this, -1)">‹</button>
-            <button class="arrow right" onclick="cardSlide(event, this, 1)">›</button>
-            <div class="dots">${dotsHTML}</div>
-          ` : ""}
-        </div>
-        <div class="prod-body">
-          <div>
-            <span class="cat-label">${p["Brand"] || ""} · ${p["Category"] || ""}</span>
-            <h4>${p["Product Name"] || ""}</h4>
-            <p style="color:var(--chalk);font-size:12px;font-weight:600;margin-bottom:6px;">${p["Weight / Size"] || ""}</p>
-          </div>
-          <div class="prod-price">
-            ${priceHTML}
-            <button class="${isOut ? 'disabled' : ''}">${isOut ? 'Sold Out' : 'View Options'}</button>
-          </div>
-        </div>
-      `;
-      card.addEventListener("click", () => openModal(index >= 0 ? index : 0));
-      grid.appendChild(card);
+      grid.appendChild(buildProductCardElement(p));
     });
   }
 
@@ -1821,6 +1919,7 @@
     const stockStatus = String(selectedVar["Stock Status"] || "").trim().toLowerCase();
     const isOut = stockStatus === "out of stock";
     const isWishlisted = Array.isArray(wishlist) && wishlist.some(id => String(id).trim() === pKey);
+    const saleTagText = getSaleTagValue(selectedVar);
 
     const uniqueWeights = [...new Set(allVariants.map(v => v["Weight / Size"]).filter(Boolean))];
     const weightsHTML = uniqueWeights.map(w => {
@@ -1838,6 +1937,7 @@
       <span class="cat-label">${selectedVar["Brand"] || ""} · ${selectedVar["Category"] || ""}</span>
       <h2>${selectedVar["Product Name"]}</h2>
       <p class="sub">${selectedVar["Weight / Size"] || ""} · ${selectedVar["Flavour"] || ""}</p>
+      ${saleTagText ? `<div style="margin-bottom:10px;"><span class="badge-saletag">🔥 ${saleTagText}</span></div>` : ""}
       
       ${uniqueWeights.length > 0 ? `
         <div class="variant-selector">
@@ -2171,7 +2271,6 @@
     wrap.innerHTML = itemsHTML;
   }
 
-  /* CHECKOUT & COUPON SYSTEM (CALCULATES ON MRP) */
   function openCheckoutModal() {
     if (!currentUser) { openLoginModal(); return; }
     closeDrawer('cartDrawer');
@@ -2179,7 +2278,6 @@
     document.getElementById("chkLastName").value = currentUser["User Name"] ? currentUser["User Name"].split(' ').slice(1).join(' ') : "";
     document.getElementById("chkPhone").value = currentUser["Mobile Number"] || "";
 
-    // Reset Coupon & Reward states
     activeCoupon = null;
     appliedRewardDiscount = 0;
     document.getElementById("couponInput").value = "";
@@ -2252,13 +2350,10 @@
   }
 
   function recalculateCheckoutTotal() {
-    // 1. Determine base payable before reward points
     let baseAmount = currentCartTotal;
 
     if (activeCoupon && activeCoupon.discountPct > 0) {
-      // Calculate discount directly on MRP
       const discountedFromMrp = Math.round(currentCartMrpTotal * (1 - activeCoupon.discountPct / 100));
-      // Ensure customer always gets the best lower price
       baseAmount = Math.min(currentCartTotal, discountedFromMrp);
       
       document.getElementById("priceBreakdownRow").style.display = "flex";
@@ -2267,7 +2362,6 @@
       document.getElementById("priceBreakdownRow").style.display = "none";
     }
 
-    // 2. Apply Reward Points if checked
     const chkBox = document.getElementById("useRewardsCheck");
     const userPoints = Number(currentUser["Reward Points"]) || 0;
     if (chkBox && chkBox.checked && userPoints > 0) {
