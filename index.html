@@ -212,202 +212,92 @@
   .reset-filter-btn:hover {border-color: var(--ember);color: var(--ember);background: rgba(0, 114, 255, 0.08);}
 
   /* CERTIFICATES GRID */
-  .cert-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-  }
+  .cert-grid {display: grid;grid-template-columns: repeat(4, 1fr);gap: 16px;}
   .cert-card {
-    background: var(--iron-light);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 18px 14px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
+    background: var(--iron-light);border: 1px solid var(--border-color);border-radius: 8px;
+    padding: 18px 14px;text-align: center;cursor: pointer;transition: all 0.25s ease;
+    display: flex;flex-direction: column;align-items: center;justify-content: space-between;
   }
-  .cert-card:hover {
-    border-color: #10b981;
-    transform: translateY(-3px);
-    box-shadow: 0 10px 24px rgba(16, 185, 129, 0.12);
-  }
-  .cert-card img.brand-logo {
-    height: 44px;
-    max-width: 110px;
-    object-fit: contain;
-    margin-bottom: 10px;
-  }
-  .cert-card h4 {
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 6px;
-    color: var(--chalk);
-  }
+  .cert-card:hover {border-color: #10b981;transform: translateY(-3px);box-shadow: 0 10px 24px rgba(16, 185, 129, 0.12);}
+  .cert-card img.brand-logo {height: 44px;max-width: 110px;object-fit: contain;margin-bottom: 10px;}
+  .cert-card h4 {font-family: 'Inter', sans-serif;font-size: 14px;font-weight: 700;margin-bottom: 6px;color: var(--chalk);}
   .cert-verified-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: rgba(16, 185, 129, 0.12);
-    color: #10b981;
-    font-size: 10px;
-    font-weight: 800;
-    padding: 4px 10px;
-    border-radius: 20px;
-    margin-top: 6px;
+    display: inline-flex;align-items: center;gap: 4px;background: rgba(16, 185, 129, 0.12);
+    color: #10b981;font-size: 10px;font-weight: 800;padding: 4px 10px;border-radius: 20px;margin-top: 6px;
   }
 
   /* HAPPY CLIENTS GALLERY */
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-  }
+  .gallery-grid {display: grid;grid-template-columns: repeat(4, 1fr);gap: 16px;}
   .gallery-card {
-    background: var(--iron-light);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    background: var(--iron-light);border: 1px solid var(--border-color);border-radius: 8px;
+    overflow: hidden;cursor: pointer;transition: transform 0.25s ease, box-shadow 0.25s ease;
   }
-  .gallery-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
-    border-color: var(--ember);
-  }
-  .gallery-card img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-    display: block;
-  }
-  .gallery-caption {
-    padding: 12px;
-  }
-  .gallery-caption h5 {
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--chalk);
-    margin-bottom: 3px;
-  }
-  .gallery-caption p {
-    font-size: 11px;
-    color: var(--steel);
-    line-height: 1.35;
-  }
+  .gallery-card:hover {transform: translateY(-4px);box-shadow: 0 12px 28px rgba(0,0,0,0.12);border-color: var(--ember);}
+  .gallery-card img {width: 100%;height: 220px;object-fit: cover;display: block;}
+  .gallery-caption {padding: 12px;}
+  .gallery-caption h5 {font-family: 'Inter', sans-serif;font-size: 13px;font-weight: 700;color: var(--chalk);margin-bottom: 3px;}
+  .gallery-caption p {font-size: 11px;color: var(--steel);line-height: 1.35;}
 
   /* STORE MAP & LOCATION SECTION */
   .store-location-box {
-    background: var(--iron-light);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    overflow: hidden;
-    display: grid;
-    grid-template-columns: 1fr 1.3fr;
+    background: var(--iron-light);border: 1px solid var(--border-color);border-radius: 10px;
+    overflow: hidden;display: grid;grid-template-columns: 1fr 1.3fr;
   }
-  .store-info-side {
-    padding: 32px 26px;
+  .store-info-side {padding: 32px 26px;display: flex;flex-direction: column;justify-content: center;}
+  .store-info-side h3 {font-size: 28px;margin-bottom: 10px;color: var(--chalk);}
+  .store-detail-row {display: flex;align-items: flex-start;gap: 10px;margin-bottom: 14px;font-size: 13px;color: var(--steel);line-height: 1.4;}
+  .store-detail-row strong {color: var(--chalk);display: block;}
+  .store-map-side iframe {width: 100%;height: 100%;min-height: 320px;border: 0;display: block;}
+
+  /* COUPON BOX IN CHECKOUT */
+  .coupon-box-wrap {
+    background: rgba(0, 114, 255, 0.05);
+    border: 1px dashed var(--ember);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+  }
+  .coupon-input-row {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    gap: 8px;
   }
-  .store-info-side h3 {
-    font-size: 28px;
-    margin-bottom: 10px;
-    color: var(--chalk);
+  .coupon-input-row input {
+    margin-bottom: 0 !important;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 9px 12px !important;
   }
-  .store-detail-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 14px;
-    font-size: 13px;
-    color: var(--steel);
-    line-height: 1.4;
+  .coupon-input-row button {
+    padding: 0 16px;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
-  .store-detail-row strong {
-    color: var(--chalk);
-    display: block;
-  }
-  .store-map-side iframe {
-    width: 100%;
-    height: 100%;
-    min-height: 320px;
-    border: 0;
-    display: block;
+  .coupon-msg {
+    font-size: 11.5px;
+    font-weight: 600;
+    margin-top: 6px;
+    display: none;
   }
 
   /* REQUEST PRODUCT FORM CARD */
   .request-form-card {
-    background: var(--iron-light);
-    border: 2px dashed var(--ember);
-    border-radius: 12px;
-    padding: 32px 24px;
-    margin-top: 35px;
-    box-shadow: 0 16px 40px rgba(0, 114, 255, 0.12);
-    grid-column: 1 / -1;
-    max-width: 650px;
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
-    text-align: left;
-    position: relative;
-    overflow: hidden;
+    background: var(--iron-light);border: 2px dashed var(--ember);border-radius: 12px;
+    padding: 32px 24px;margin-top: 35px;box-shadow: 0 16px 40px rgba(0, 114, 255, 0.12);
+    grid-column: 1 / -1;max-width: 650px;margin-left: auto;margin-right: auto;width: 100%;text-align: left;position: relative;overflow: hidden;
   }
   .request-form-card::before {
-    content: '🎯 PRIORITY ORDER DESK';
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: var(--ember);
-    color: #fff;
-    font-size: 9px;
-    font-weight: 800;
-    padding: 4px 12px;
-    border-bottom-left-radius: 8px;
-    letter-spacing: 1px;
+    content: '🎯 PRIORITY ORDER DESK';position: absolute;top: 0;right: 0;background: var(--ember);
+    color: #fff;font-size: 9px;font-weight: 800;padding: 4px 12px;border-bottom-left-radius: 8px;letter-spacing: 1px;
   }
-  .request-form-card h3 {
-    font-family: 'Inter', sans-serif;
-    font-size: 20px;
-    font-weight: 800;
-    margin-bottom: 6px;
-    color: var(--chalk);
+  .request-form-card h3 {font-family: 'Inter', sans-serif;font-size: 20px;font-weight: 800;margin-bottom: 6px;color: var(--chalk);}
+  .request-form-card p {font-size: 13px;color: var(--steel);margin-bottom: 20px;line-height: 1.4;}
+  .form-grid {display: grid;grid-template-columns: 1fr 1fr;gap: 12px;}
+  .request-form-card input, .request-form-card select, .request-form-card textarea {
+    width: 100%;padding: 12px 14px;background: var(--iron);border: 1px solid var(--border-color);
+    border-radius: var(--radius);color: var(--chalk);font-size: 13px;font-family: 'Inter', sans-serif;margin-bottom: 12px;outline: none;
   }
-  .request-form-card p {
-    font-size: 13px;
-    color: var(--steel);
-    margin-bottom: 20px;
-    line-height: 1.4;
-  }
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  .request-form-card input,
-  .request-form-card select,
-  .request-form-card textarea {
-    width: 100%;
-    padding: 12px 14px;
-    background: var(--iron);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    color: var(--chalk);
-    font-size: 13px;
-    font-family: 'Inter', sans-serif;
-    margin-bottom: 12px;
-    outline: none;
-  }
-  .request-form-card input:focus,
-  .request-form-card select:focus,
-  .request-form-card textarea:focus { border-color: var(--ember); }
+  .request-form-card input:focus, .request-form-card select:focus, .request-form-card textarea:focus { border-color: var(--ember); }
 
   /* MODAL BOXES & DRAWERS */
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10000;align-items:center;justify-content:center;padding:16px;}
@@ -418,12 +308,13 @@
   .login-box {
     max-width: 420px;width: 92vw;background: var(--iron-light);border: 1px solid var(--border-color);
     border-radius: 8px;padding: 28px 22px;box-shadow: 0 16px 40px rgba(0,0,0,0.25);box-sizing: border-box;display: block !important;
+    max-height: 92vh; overflow-y: auto;
   }
   .login-box h2 {font-size: 24px;color: var(--chalk);margin-bottom: 8px;font-family: 'Inter', sans-serif;font-weight: 700;text-transform: none;}
-  .login-box .sub-text {font-size: 13px;color: var(--steel);margin-bottom: 20px;line-height: 1.4;}
+  .login-box .sub-text {font-size: 13px;color: var(--steel);margin-bottom: 16px;line-height: 1.4;}
   .login-box input, .login-box textarea {
-    width: 100%;padding: 12px 14px;background: var(--iron);border: 1px solid var(--border-color);
-    border-radius: var(--radius);color: var(--chalk);font-size: 13px;font-family: 'Inter', sans-serif;margin-bottom: 12px;outline: none;
+    width: 100%;padding: 11px 14px;background: var(--iron);border: 1px solid var(--border-color);
+    border-radius: var(--radius);color: var(--chalk);font-size: 13px;font-family: 'Inter', sans-serif;margin-bottom: 10px;outline: none;
   }
   .login-box input:focus, .login-box textarea:focus {border-color: var(--ember);}
   .login-error {color: #ef4444;font-size: 12px;margin-bottom: 12px;display: none;}
@@ -444,7 +335,7 @@
 
   .rewards-checkout-box {
     background: rgba(245, 158, 11, 0.08);border: 1px dashed #f59e0b;border-radius: 6px;
-    padding: 12px 14px;margin-bottom: 14px;display: flex;align-items: center;justify-content: space-between;gap: 10px;
+    padding: 10px 12px;margin-bottom: 12px;display: flex;align-items: center;justify-content: space-between;gap: 10px;
   }
   .rewards-checkout-box label {font-size: 12px;color: var(--chalk);font-weight: 600;cursor: pointer;display: flex;align-items: center;gap: 8px;}
 
@@ -918,6 +809,7 @@
   </div>
 </div>
 
+<!-- CHECKOUT MODAL WITH COUPON & REWARD POINTS -->
 <div class="modal-overlay" id="checkoutModal">
   <div class="login-box" style="max-width:485px;">
     <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
@@ -931,30 +823,47 @@
 
     <input type="tel" id="chkPhone" placeholder="Phone Number (10 digits) *" maxlength="10">
     <input type="email" id="chkEmail" placeholder="Email Address (Optional)">
-    <textarea id="chkAddress" placeholder="Street Address (House No, Building, Street) *"></textarea>
+    <textarea id="chkAddress" placeholder="Street Address (House No, Building, Street) *" rows="2"></textarea>
     
     <input type="text" id="chkPincode" placeholder="PIN Code (Enter 6 digits) *" maxlength="6" oninput="lookupPincode(this.value, 'chkCity', 'chkState', 'pincodeStatus')">
-    <div id="pincodeStatus" style="font-size:12px; margin-bottom:12px; display:none;">🔍 Fetching city and state...</div>
+    <div id="pincodeStatus" style="font-size:12px; margin-bottom:10px; display:none;">🔍 Fetching city and state...</div>
 
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
       <input type="text" id="chkCity" placeholder="Town / City *">
       <input type="text" id="chkState" placeholder="State *">
     </div>
 
+    <!-- APPLY COUPON SECTION (MRP BASED) -->
+    <div class="coupon-box-wrap">
+      <label style="font-size:11px; font-weight:700; color:var(--ember); display:block; margin-bottom:6px;">🎟️ Have a Trainer / VIP Coupon Code?</label>
+      <div class="coupon-input-row">
+        <input type="text" id="couponInput" placeholder="Enter Code (e.g. TRAINER30)">
+        <button type="button" class="btn-primary" id="applyCouponBtn" onclick="applyPromoCoupon()">Apply</button>
+      </div>
+      <div class="coupon-msg" id="couponStatusMsg"></div>
+    </div>
+
+    <!-- REWARD POINTS TOGGLE BOX -->
     <div class="rewards-checkout-box" id="rewardRedeemWrap" style="display:none;">
       <label>
-        <input type="checkbox" id="useRewardsCheck" onchange="toggleRewardDiscount()">
+        <input type="checkbox" id="useRewardsCheck" onchange="recalculateCheckoutTotal()">
         <span>Use <strong id="availPointsCount">0</strong> Reward Points</span>
       </label>
       <span style="font-size:12px; font-weight:800; color:#f59e0b;" id="rewardSaveText">-₹0</span>
     </div>
 
-    <div style="display:flex; justify-content:space-between; align-items:center; margin:10px 0 14px; font-size:15px; font-weight:800;">
-      <span>Payable Amount:</span>
-      <span style="color:var(--ember); font-size:18px;" id="checkoutPayableText">₹0</span>
+    <div style="border-top:1px dashed var(--border-color); padding-top:10px; margin:8px 0 14px;">
+      <div id="priceBreakdownRow" style="display:none; justify-content:space-between; font-size:12px; color:var(--steel); margin-bottom:4px;">
+        <span>MRP Total:</span>
+        <span style="text-decoration:line-through;" id="checkoutMrpText">₹0</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; font-size:15px; font-weight:800;">
+        <span>Final Payable Amount:</span>
+        <span style="color:var(--ember); font-size:19px;" id="checkoutPayableText">₹0</span>
+      </div>
     </div>
 
-    <button class="btn-primary" onclick="launchUPIPayment()" style="width:100%; margin-top:2px;">Proceed to Pay via UPI</button>
+    <button class="btn-primary" onclick="launchUPIPayment()" style="width:100%;">Proceed to Pay via UPI</button>
   </div>
 </div>
 
@@ -1008,7 +917,8 @@
 <a href="https://wa.me/919571214461?text=Hi,%20I%20have%20an%20inquiry" target="_blank" class="wa-float">💬</a>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwQR9h9MfmCLU5WjNzOlQzPG6bx2gTaO5UP0a0B3ce4hV3iKp1EUr6nAn8GqUEvl3zJ/exec";
+  // PASTE YOUR NEW DEPLOYED APPS SCRIPT URL HERE:
+  const API_URL = "https://https://script.google.com/macros/s/AKfycbzvI0oooslOoXHLnaJ5FtpPwAw1VtTrpArusIn9zZpwos1pkZbkOOH4QTaBOhFXg7Bt/exec";
   const MERCHANT_UPI = "salvinitinudr-6@okaxis";
   const MERCHANT_NAME = "Grow Up Fitness";
 
@@ -1023,7 +933,9 @@
   let isCheckingOut = false;
   let currentUser = null;
   let currentCartTotal = 0;
+  let currentCartMrpTotal = 0;
   let appliedRewardDiscount = 0;
+  let activeCoupon = null; // { code: "TRAINER30", discountPct: 30 }
 
   function getProductKey(p) {
     if (!p) return "";
@@ -2178,15 +2090,18 @@
     const wrap = document.getElementById("cartItemsWrap");
     if (!cart || cart.length === 0) { wrap.innerHTML = `<p class="drawer-empty">Your cart is empty.</p>`; return; }
     let total = 0;
+    let mrpTotal = 0;
     let itemsFoundCount = 0;
 
     let itemsHTML = cart.map(item => {
       const p = findProductByKey(item.id);
       if (!p) return "";
       itemsFoundCount++;
-      const price = Number(p["Selling Price"]) || 0;
+      const price = Number(String(p["Selling Price"] || "").replace(/[^0-9.]/g, "")) || 0;
+      const mrp = Number(String(p["MRP"] || "").replace(/[^0-9.]/g, "")) || price;
       const subtotal = price * item.qty;
       total += subtotal;
+      mrpTotal += (mrp * item.qty);
       const pKey = getProductKey(p);
 
       return `
@@ -2209,6 +2124,7 @@
 
     if (itemsFoundCount === 0) { wrap.innerHTML = `<p class="drawer-empty">Your cart is empty.</p>`; return; }
     currentCartTotal = total;
+    currentCartMrpTotal = mrpTotal;
 
     const waMsg = encodeURIComponent("Hi, I'd like to order:\n" + cart.map(i => {
       const p = findProductByKey(i.id);
@@ -2255,6 +2171,7 @@
     wrap.innerHTML = itemsHTML;
   }
 
+  /* CHECKOUT & COUPON SYSTEM (CALCULATES ON MRP) */
   function openCheckoutModal() {
     if (!currentUser) { openLoginModal(); return; }
     closeDrawer('cartDrawer');
@@ -2262,10 +2179,18 @@
     document.getElementById("chkLastName").value = currentUser["User Name"] ? currentUser["User Name"].split(' ').slice(1).join(' ') : "";
     document.getElementById("chkPhone").value = currentUser["Mobile Number"] || "";
 
+    // Reset Coupon & Reward states
+    activeCoupon = null;
+    appliedRewardDiscount = 0;
+    document.getElementById("couponInput").value = "";
+    document.getElementById("couponInput").disabled = false;
+    document.getElementById("applyCouponBtn").innerText = "Apply";
+    document.getElementById("applyCouponBtn").disabled = false;
+    document.getElementById("couponStatusMsg").style.display = "none";
+
     const pointsWrap = document.getElementById("rewardRedeemWrap");
     const chkBox = document.getElementById("useRewardsCheck");
     chkBox.checked = false;
-    appliedRewardDiscount = 0;
 
     const userPoints = Number(currentUser["Reward Points"]) || 0;
     if (userPoints > 0) {
@@ -2276,26 +2201,86 @@
       pointsWrap.style.display = "none";
     }
 
-    updatePayableTotalDisplay();
+    recalculateCheckoutTotal();
     document.getElementById("checkoutModal").classList.add("open");
   }
 
-  function toggleRewardDiscount() {
+  async function applyPromoCoupon() {
+    const codeInput = document.getElementById("couponInput");
+    const btn = document.getElementById("applyCouponBtn");
+    const msgEl = document.getElementById("couponStatusMsg");
+    const code = codeInput.value.trim().toUpperCase();
+
+    if (!code) {
+      msgEl.style.display = "block";
+      msgEl.style.color = "#ef4444";
+      msgEl.innerText = "Please enter a valid coupon code.";
+      return;
+    }
+
+    btn.innerText = "Checking...";
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(`${API_URL}?action=validateCoupon&code=${encodeURIComponent(code)}&_t=${new Date().getTime()}`);
+      const data = await res.json();
+
+      if (data && data.valid) {
+        activeCoupon = { code: data.code, discountPct: Number(data.discountPct) || 0 };
+        msgEl.style.display = "block";
+        msgEl.style.color = "#10b981";
+        msgEl.innerText = `✅ Applied! ${activeCoupon.discountPct}% OFF on Total MRP (₹${currentCartMrpTotal})`;
+        codeInput.disabled = true;
+        btn.innerText = "Applied ✓";
+        recalculateCheckoutTotal();
+      } else {
+        activeCoupon = null;
+        msgEl.style.display = "block";
+        msgEl.style.color = "#ef4444";
+        msgEl.innerText = `❌ ${data.message || "Invalid or already used coupon."}`;
+        btn.innerText = "Apply";
+        btn.disabled = false;
+        recalculateCheckoutTotal();
+      }
+    } catch (e) {
+      msgEl.style.display = "block";
+      msgEl.style.color = "#ef4444";
+      msgEl.innerText = "❌ Connection error. Try again.";
+      btn.innerText = "Apply";
+      btn.disabled = false;
+    }
+  }
+
+  function recalculateCheckoutTotal() {
+    // 1. Determine base payable before reward points
+    let baseAmount = currentCartTotal;
+
+    if (activeCoupon && activeCoupon.discountPct > 0) {
+      // Calculate discount directly on MRP
+      const discountedFromMrp = Math.round(currentCartMrpTotal * (1 - activeCoupon.discountPct / 100));
+      // Ensure customer always gets the best lower price
+      baseAmount = Math.min(currentCartTotal, discountedFromMrp);
+      
+      document.getElementById("priceBreakdownRow").style.display = "flex";
+      document.getElementById("checkoutMrpText").innerText = `₹${currentCartMrpTotal}`;
+    } else {
+      document.getElementById("priceBreakdownRow").style.display = "none";
+    }
+
+    // 2. Apply Reward Points if checked
     const chkBox = document.getElementById("useRewardsCheck");
     const userPoints = Number(currentUser["Reward Points"]) || 0;
-    if (chkBox.checked && userPoints > 0) {
-      appliedRewardDiscount = Math.min(userPoints, currentCartTotal);
+    if (chkBox && chkBox.checked && userPoints > 0) {
+      appliedRewardDiscount = Math.min(userPoints, baseAmount);
       document.getElementById("rewardSaveText").innerText = `-₹${appliedRewardDiscount}`;
     } else {
       appliedRewardDiscount = 0;
-      document.getElementById("rewardSaveText").innerText = `-₹0`;
+      if (document.getElementById("rewardSaveText")) document.getElementById("rewardSaveText").innerText = `-₹0`;
     }
-    updatePayableTotalDisplay();
-  }
 
-  function updatePayableTotalDisplay() {
-    const finalAmount = Math.max(0, currentCartTotal - appliedRewardDiscount);
+    const finalAmount = Math.max(0, baseAmount - appliedRewardDiscount);
     document.getElementById("checkoutPayableText").innerText = `₹${finalAmount}`;
+    return finalAmount;
   }
 
   function closeCheckoutModal() { document.getElementById("checkoutModal").classList.remove("open"); }
@@ -2318,7 +2303,9 @@
     }
 
     isCheckingOut = true;
-    const finalPayable = Math.max(0, currentCartTotal - appliedRewardDiscount);
+    const finalPayable = recalculateCheckoutTotal();
+    const usedCouponCode = activeCoupon ? `${activeCoupon.code} (${activeCoupon.discountPct}% MRP)` : "";
+
     let itemsCombined = cart.map(item => {
       const p = findProductByKey(item.id);
       return p ? `${p["Product Name"]} (${p["Weight / Size"] || ""}) [${p["Flavour"] || ""}] x${item.qty}` : "";
@@ -2330,12 +2317,14 @@
         body: JSON.stringify({
           action: "saveOrder", firstName: firstName, lastName: lastName, phone: phone,
           email: email, address: address, city: city, state: state, pincode: pincode,
-          amount: finalPayable, items: itemsCombined, pointsUsed: appliedRewardDiscount, fileName: "Sent via WhatsApp"
+          amount: finalPayable, items: itemsCombined, pointsUsed: appliedRewardDiscount,
+          couponUsed: activeCoupon ? activeCoupon.code : "", fileName: "Sent via WhatsApp"
         })
       });
     } catch (err) { console.error(err); }
 
-    const waText = encodeURIComponent(`Hi Grow Up Fitness, order for ₹${finalPayable} (Points used: ${appliedRewardDiscount}).\nName: ${firstName} ${lastName}\nPhone: ${phone}\nPincode: ${pincode}\nAddress: ${address}, ${city}, ${state}`);
+    const couponLine = usedCouponCode ? `\nCoupon Applied: ${usedCouponCode}` : "";
+    const waText = encodeURIComponent(`Hi Grow Up Fitness, order for ₹${finalPayable} (Points used: ${appliedRewardDiscount}).${couponLine}\nName: ${firstName} ${lastName}\nPhone: ${phone}\nPincode: ${pincode}\nAddress: ${address}, ${city}, ${state}`);
     document.getElementById("whatsappProofBtn").href = `https://wa.me/919571214461?text=${waText}`;
 
     const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${finalPayable}&cu=INR&tn=${encodeURIComponent("Order by " + firstName)}`;
@@ -2348,6 +2337,7 @@
 
   function finishOrderProcess() {
     cart = [];
+    activeCoupon = null;
     syncCart();
     renderCartBadge();
     closeProofModal();
