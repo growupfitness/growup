@@ -259,8 +259,7 @@
   .order-item-footer {display: flex;justify-content: space-between;align-items: center;border-top: 1px dashed var(--border-color);padding-top: 8px;margin-top: 2px;}
   .order-status-badge {padding: 3px 8px;border-radius: 4px;font-size: 10px;font-weight: 800;text-transform: uppercase;background: rgba(245, 158, 11, 0.15);color: #f59e0b;}
   .order-status-badge.confirmed {background: rgba(16, 185, 129, 0.15);color: #10b981;}
-  .qr-pay-box {background: #ffffff;padding: 14px;border-radius: 10px;display: inline-block;margin: 10px auto;border: 1px solid var(--border-color);}
-  .upi-copy-pill {display: flex;align-items: center;justify-content: space-between;background: var(--iron);border: 1px dashed var(--ember);padding: 8px 12px;border-radius: 6px;margin: 10px 0 14px;font-size: 12px;font-weight: 700;color: var(--chalk);}
+  .upi-copy-pill {display: flex;align-items: center;justify-content: space-between;background: var(--iron);border: 1px dashed var(--ember);padding: 8px 12px;border-radius: 6px;margin: 12px 0 14px;font-size: 12px;font-weight: 700;color: var(--chalk);}
 
   @media(max-width:768px){
     body { padding-top: 140px; }
@@ -585,7 +584,6 @@
   </div>
 </div>
 
-<!-- CHECKOUT MODAL (SINGLE FULL NAME) -->
 <div class="modal-overlay" id="checkoutModal">
   <div class="login-box" style="max-width:485px;">
     <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
@@ -637,17 +635,18 @@
   </div>
 </div>
 
-<!-- STEP 2: QR CODE + COPY UPI ID + WHATSAPP PROOF -->
+<!-- STEP 2: DIRECT UPI REDIRECT + FALLBACK OPTIONS -->
 <div class="modal-overlay" id="proofModal">
   <div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; padding:14px;">
     <div class="login-box" style="text-align:center; max-width:440px;">
       <button class="modal-close" onclick="closeProofModal()">✕</button>
-      <h2 style="margin-bottom:4px;">Scan &amp; Pay <span id="payModalAmount" style="color:var(--ember);">₹0</span></h2>
-      <p class="sub-text" style="margin-bottom:8px;">Scan QR with any UPI App (GPay, PhonePe, Paytm) or copy our UPI ID:</p>
-      
-      <div class="qr-pay-box">
-        <img id="upiQrImage" src="" alt="UPI QR Code" style="width:190px; height:190px; display:block;">
-      </div>
+      <div style="font-size:34px; margin-bottom:8px;">📲</div>
+      <h2 style="margin-bottom:6px;">Pay <span id="payModalAmount" style="color:var(--ember);">₹0</span> via UPI</h2>
+      <p class="sub-text" style="margin-bottom:12px;">Payment app open ho gaya hoga. Agar open nahi hua toh neeche tap karein:</p>
+
+      <a href="#" id="directUpiAppBtn" class="btn-primary" style="display:block; text-align:center; margin-bottom:10px;">
+        ⚡ Open UPI App (Amount Auto-Filled)
+      </a>
 
       <div class="upi-copy-pill">
         <span id="upiIdText">salvinitinudr-6@okaxis</span>
@@ -1452,7 +1451,8 @@
   function openModal(index) {
     const baseProduct = allProducts[index];
     if (!baseProduct) return;
-    const allVariants = allProducts.filter(p => p["Product Name"] === baseProduct["Product Name"]);
+    const productName = baseProduct["Product Name"];
+    const allVariants = allProducts.filter(p => p["Product Name"] === productName);
     currentSelectedVariant = baseProduct;
     modalImages = getImages(currentSelectedVariant);
     modalIndex = 0;
@@ -1531,7 +1531,6 @@
   function openLoginModal() { document.getElementById("loginModal").classList.add("open"); }
   function closeLoginModal() { document.getElementById("loginModal").classList.remove("open"); document.getElementById("loginError").style.display = "none"; }
 
-  /* FIXED: SINGLE-CLICK LOCK ON LOGIN */
   async function submitLogin() {
     if (isLoggingIn) return;
     const mobile = document.getElementById("loginMobile").value.trim();
@@ -1830,7 +1829,6 @@
     });
   }
 
-  /* FIXED: SINGLE FULL NAME + QR CODE PAYMENT (NO SECURITY BLOCK) */
   async function launchUPIPayment() {
     if (isCheckingOut) return;
     const fullName = document.getElementById("chkFullName").value.trim();
@@ -1878,17 +1876,21 @@
     const waText = encodeURIComponent(`Hi Grow Up Fitness, order for ₹${finalPayable} (Points used: ${appliedRewardDiscount}).${couponLine}\nName: ${fullName}\nPhone: ${phone}\nPincode: ${pincode}\nAddress: ${address}, ${city}, ${state}`);
     document.getElementById("whatsappProofBtn").href = `https://wa.me/919571214461?text=${waText}`;
 
-    // Generate Live UPI QR Code
-    const upiData = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${finalPayable}&cu=INR&tn=${encodeURIComponent("Order by " + fullName)}`;
+    const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${finalPayable}&cu=INR&tn=${encodeURIComponent("Order by " + fullName)}`;
     document.getElementById("payModalAmount").innerText = `₹${finalPayable}`;
-    document.getElementById("upiQrImage").src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiData)}`;
+    document.getElementById("directUpiAppBtn").href = upiLink;
 
     closeCheckoutModal();
     document.getElementById("proofModal").classList.add("open");
 
-    isCheckingOut = false;
-    payBtn.disabled = false;
-    payBtn.innerText = "Proceed to Pay via UPI";
+    // Auto-trigger UPI payment app with pre-filled amount
+    window.location.href = upiLink;
+
+    setTimeout(() => {
+      isCheckingOut = false;
+      payBtn.disabled = false;
+      payBtn.innerText = "Proceed to Pay via UPI";
+    }, 2000);
   }
 
   function finishOrderProcess() {
