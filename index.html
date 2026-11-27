@@ -12,7 +12,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://growupfitness.vercel.app/">
 <meta property="og:title" content="Grow Up Fitness — Fuel The Grind">
-<meta property="og:description" content="100% Genuine &amp; Importer Certified Supplements. Lab-tested protein, pre-workouts and recovery fuel. Order directly via WhatsApp.">
+<meta property="og:description" content="100% Genuine &amp; Importer Certified Supplements. Lab-tested protein, pre-workouts and recovery fuel. Order directly via UPI &amp; WhatsApp.">
 <meta property="og:image" content="https://growupfitness.vercel.app/growup-logo-square.png">
 <meta property="og:image:secure_url" content="https://growupfitness.vercel.app/growup-logo-square.png">
 <meta property="og:image:type" content="image/png">
@@ -259,7 +259,7 @@
   .order-item-footer {display: flex;justify-content: space-between;align-items: center;border-top: 1px dashed var(--border-color);padding-top: 8px;margin-top: 2px;}
   .order-status-badge {padding: 3px 8px;border-radius: 4px;font-size: 10px;font-weight: 800;text-transform: uppercase;background: rgba(245, 158, 11, 0.15);color: #f59e0b;}
   .order-status-badge.confirmed {background: rgba(16, 185, 129, 0.15);color: #10b981;}
-  .wa-summary-box {background: var(--iron);border: 1px solid var(--border-color);border-radius: 6px;padding: 10px 12px;margin: 10px 0 14px;text-align: left;font-size: 12px;color: var(--steel);line-height: 1.45;}
+  .upi-copy-pill {display: flex;align-items: center;justify-content: space-between;background: var(--iron);border: 1px dashed var(--ember);padding: 8px 12px;border-radius: 6px;margin: 12px 0 14px;font-size: 12px;font-weight: 700;color: var(--chalk);}
 
   @media(max-width:768px){
     body { padding-top: 140px; }
@@ -626,28 +626,35 @@
         <span style="text-decoration:line-through;" id="checkoutMrpText">₹0</span>
       </div>
       <div style="display:flex; justify-content:space-between; align-items:center; font-size:15px; font-weight:800;">
-        <span>Order Total:</span>
+        <span>Final Payable Amount:</span>
         <span style="color:var(--ember); font-size:19px;" id="checkoutPayableText">₹0</span>
       </div>
     </div>
 
-    <button class="btn-primary" id="proceedPayBtn" onclick="launchUPIPayment()" style="width:100%;">Confirm Order on WhatsApp</button>
+    <button class="btn-primary" id="proceedPayBtn" onclick="launchUPIPayment()" style="width:100%;">Proceed to Pay via UPI</button>
   </div>
 </div>
 
-<!-- STEP 2: WHATSAPP ORDER CONFIRMATION -->
+<!-- STEP 2: PHONEPE UPI DIRECT REDIRECT + BACKUP OPTIONS -->
 <div class="modal-overlay" id="proofModal">
   <div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; padding:14px;">
     <div class="login-box" style="text-align:center; max-width:440px;">
       <button class="modal-close" onclick="closeProofModal()">✕</button>
-      <div style="font-size:34px; margin-bottom:8px;">💬</div>
-      <h2 style="margin-bottom:6px;">Order Saved — <span id="payModalAmount" style="color:var(--ember);">₹0</span></h2>
-      <p class="sub-text" style="margin-bottom:10px;">Tap below to send your order details on WhatsApp. Hum aapko QR &amp; payment details bhej denge—payment ke baad screenshot yahin bhej dein:</p>
+      <div style="font-size:34px; margin-bottom:8px;">📲</div>
+      <h2 style="margin-bottom:6px;">Pay <span id="payModalAmount" style="color:var(--ember);">₹0</span> via UPI</h2>
+      <p class="sub-text" style="margin-bottom:12px;">Payment app open ho gaya hoga. Agar open nahi hua toh neeche tap karein:</p>
 
-      <div class="wa-summary-box" id="waOrderPreviewBox"></div>
+      <a href="#" id="directUpiAppBtn" class="btn-primary" style="display:block; text-align:center; margin-bottom:10px;">
+        ⚡ Open UPI App (Amount Auto-Filled)
+      </a>
+
+      <div class="upi-copy-pill">
+        <span id="upiIdText">Q327996912@ybl</span>
+        <button type="button" onclick="copyUpiId()" id="copyUpiBtn" style="background:var(--ember); color:#fff; border:none; padding:5px 10px; border-radius:4px; font-size:11px; font-weight:700; cursor:pointer;">📋 Copy UPI</button>
+      </div>
 
       <a href="#" id="whatsappProofBtn" target="_blank" class="btn-primary" style="display:block; text-align:center; margin-bottom:10px; background:#25D366;">
-        🟢 Send Order on WhatsApp
+        🟢 Send Payment Screenshot on WhatsApp
       </a>
 
       <button class="btn-ghost" onclick="finishOrderProcess()" style="width:100%;">Done / Close</button>
@@ -689,6 +696,8 @@
 
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbxt0AdZN7ZoDFK9WF2Z2hfpbZ-mb_oH1IrfWM9mYP9OTQlEh7HD9TqlfpRysXOX329C/exec";
+  const MERCHANT_UPI = "Q327996912@ybl";
+  const MERCHANT_NAME = "Grow Up Fitness";
 
   let allProducts = [];
   let displayProducts = [];
@@ -1309,7 +1318,7 @@
               ${parsed.qty ? `<span class="meta-tag">Qty: ${parsed.qty}</span>` : ''}
             </div>
             <div class="order-item-footer">
-              <div><span style="font-size:10px; color:var(--steel); display:block;">Order Amount</span><span style="font-size:15px; font-weight:800; color:var(--chalk);">₹${totalAmount || 'Pending'}</span></div>
+              <div><span style="font-size:10px; color:var(--steel); display:block;">Paid Amount</span><span style="font-size:15px; font-weight:800; color:var(--chalk);">₹${totalAmount || 'Paid'}</span></div>
               ${matchedProduct ? `<button class="btn-ghost" style="padding:5px 12px; font-size:11px;" onclick="reorderProduct('${escapeQuotes(pidToOrder)}')">↻ Re-order</button>` : ''}
             </div>
           </div>
@@ -1701,11 +1710,11 @@
     }).join("");
     if (itemsFoundCount === 0) { wrap.innerHTML = `<p class="drawer-empty">Your cart is empty.</p>`; return; }
     currentCartTotal = total; currentCartMrpTotal = mrpTotal;
-    const waMsg = encodeURIComponent("Hi, I'd like to confirm my order:\n" + cart.map(i => {
+    const waMsg = encodeURIComponent("Hi, I'd like to order:\n" + cart.map(i => {
       const p = findProductByKey(i.id);
       return p ? `- ${p["Product Name"]} (${p["Weight / Size"] || ""}) [${p["Flavour"] || ""}] x${i.qty}` : "";
-    }).filter(Boolean).join("\n") + `\n\nOrder Total: ₹${total}`);
-    wrap.innerHTML = itemsHTML + `<div class="drawer-footer"><div class="drawer-total"><span>Order Total</span><span style="color:var(--ember);">₹${total}</span></div><button class="btn-primary" onclick="openCheckoutModal()" style="width:100%; margin-bottom:8px;">Proceed to WhatsApp Confirmation</button><a href="https://wa.me/919571214461?text=${waMsg}" target="_blank" class="btn-ghost" style="display:block;text-align:center;">Quick WhatsApp Order</a></div>`;
+    }).filter(Boolean).join("\n") + `\n\nTotal: ₹${total}`);
+    wrap.innerHTML = itemsHTML + `<div class="drawer-footer"><div class="drawer-total"><span>Total Payable</span><span style="color:var(--ember);">₹${total}</span></div><button class="btn-primary" onclick="openCheckoutModal()" style="width:100%; margin-bottom:8px;">Proceed to Checkout</button><a href="https://wa.me/919571214461?text=${waMsg}" target="_blank" class="btn-ghost" style="display:block;text-align:center;">Checkout on WhatsApp</a></div>`;
   }
 
   function renderWishlistDrawer() {
@@ -1812,6 +1821,14 @@
   function closeCheckoutModal() { document.getElementById("checkoutModal").classList.remove("open"); }
   function closeProofModal() { document.getElementById("proofModal").classList.remove("open"); }
 
+  function copyUpiId() {
+    navigator.clipboard.writeText(MERCHANT_UPI).then(() => {
+      const btn = document.getElementById("copyUpiBtn");
+      btn.innerText = "✅ Copied!";
+      setTimeout(() => { btn.innerText = "📋 Copy UPI"; }, 2000);
+    });
+  }
+
   async function launchUPIPayment() {
     if (isCheckingOut) return;
     const fullName = document.getElementById("chkFullName").value.trim();
@@ -1850,28 +1867,30 @@
         body: JSON.stringify({
           action: "saveOrder", firstName, lastName, phone, email, address, city, state, pincode,
           amount: finalPayable, items: itemsCombined, pointsUsed: appliedRewardDiscount,
-          couponUsed: activeCoupon ? activeCoupon.code : "", fileName: "WhatsApp Confirmation"
+          couponUsed: activeCoupon ? activeCoupon.code : "", fileName: "Sent via WhatsApp"
         })
       });
     } catch (err) { console.error(err); }
 
     const couponLine = usedCouponCode ? `\nCoupon Applied: ${usedCouponCode}` : "";
-    const waText = encodeURIComponent(`Hi Grow Up Fitness, please confirm my order:\n\n📦 Items: ${itemsCombined}\n💰 Order Amount: ₹${finalPayable} (Points used: ${appliedRewardDiscount})${couponLine}\n👤 Name: ${fullName}\n📞 Phone: ${phone}\n📍 Address: ${address}, ${city}, ${state} - ${pincode}\n\nPlease share QR / payment details so I can pay and send screenshot.`);
-
-    document.getElementById("payModalAmount").innerText = `₹${finalPayable}`;
-    document.getElementById("waOrderPreviewBox").innerHTML = `
-      <div><strong style="color:var(--chalk);">Items:</strong> ${itemsCombined}</div>
-      <div><strong style="color:var(--chalk);">Address:</strong> ${fullName}, ${address}, ${city}, ${state} - ${pincode}</div>
-      <div><strong style="color:var(--chalk);">Next Step:</strong> WhatsApp par order bhejein, QR/payment details lein, aur pay karke screenshot bhej dein.</div>
-    `;
+    const waText = encodeURIComponent(`Hi Grow Up Fitness, order for ₹${finalPayable} (Points used: ${appliedRewardDiscount}).${couponLine}\nName: ${fullName}\nPhone: ${phone}\nPincode: ${pincode}\nAddress: ${address}, ${city}, ${state}`);
     document.getElementById("whatsappProofBtn").href = `https://wa.me/919571214461?text=${waText}`;
+
+    const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${finalPayable}&cu=INR&tn=${encodeURIComponent("Order by " + fullName)}`;
+    document.getElementById("payModalAmount").innerText = `₹${finalPayable}`;
+    document.getElementById("upiIdText").innerText = MERCHANT_UPI;
+    document.getElementById("directUpiAppBtn").href = upiLink;
 
     closeCheckoutModal();
     document.getElementById("proofModal").classList.add("open");
 
-    isCheckingOut = false;
-    payBtn.disabled = false;
-    payBtn.innerText = "Confirm Order on WhatsApp";
+    window.location.href = upiLink;
+
+    setTimeout(() => {
+      isCheckingOut = false;
+      payBtn.disabled = false;
+      payBtn.innerText = "Proceed to Pay via UPI";
+    }, 2000);
   }
 
   function finishOrderProcess() {
@@ -1880,7 +1899,7 @@
     syncCart();
     renderCartBadge();
     closeProofModal();
-    alert("Order recorded! Please send your payment screenshot on WhatsApp for confirmation.");
+    alert("Order completed! Thank you for shopping with Grow Up Fitness.");
   }
 
   ["cartDrawer", "wishlistDrawer", "loginModal", "checkoutModal", "proofModal", "productModal", "brandModal", "flavourModal", "orderHistoryDrawer"].forEach(id => {
