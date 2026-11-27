@@ -259,7 +259,7 @@
   .order-item-footer {display: flex;justify-content: space-between;align-items: center;border-top: 1px dashed var(--border-color);padding-top: 8px;margin-top: 2px;}
   .order-status-badge {padding: 3px 8px;border-radius: 4px;font-size: 10px;font-weight: 800;text-transform: uppercase;background: rgba(245, 158, 11, 0.15);color: #f59e0b;}
   .order-status-badge.confirmed {background: rgba(16, 185, 129, 0.15);color: #10b981;}
-  .upi-copy-pill {display: flex;align-items: center;justify-content: space-between;background: var(--iron);border: 1px dashed var(--ember);padding: 8px 12px;border-radius: 6px;margin: 12px 0 14px;font-size: 12px;font-weight: 700;color: var(--chalk);}
+  .upi-copy-pill {display: flex;align-items: center;justify-content: space-between;background: var(--iron);border: 1px dashed var(--ember);padding: 8px 12px;border-radius: 6px;margin: 10px 0 12px;font-size: 12px;font-weight: 700;color: var(--chalk);}
 
   @media(max-width:768px){
     body { padding-top: 140px; }
@@ -631,29 +631,30 @@
       </div>
     </div>
 
-    <button class="btn-primary" id="proceedPayBtn" onclick="launchUPIPayment()" style="width:100%;">Proceed to Pay via UPI</button>
+    <button class="btn-primary" id="proceedPayBtn" onclick="launchUPIPayment()" style="width:100%;">Place Order &amp; Pay</button>
   </div>
 </div>
 
+<!-- STEP 2: HYBRID PAYMENT + INSTANT WHATSAPP CONFIRMATION -->
 <div class="modal-overlay" id="proofModal">
   <div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; padding:14px;">
     <div class="login-box" style="text-align:center; max-width:440px;">
       <button class="modal-close" onclick="closeProofModal()">✕</button>
-      <div style="font-size:34px; margin-bottom:8px;">📲</div>
-      <h2 style="margin-bottom:6px;">Pay <span id="payModalAmount" style="color:var(--ember);">₹0</span> via UPI</h2>
-      <p class="sub-text" style="margin-bottom:12px;">Payment app open ho gaya hoga. Agar open nahi hua toh neeche tap karein:</p>
+      <div style="font-size:34px; margin-bottom:6px;">✅</div>
+      <h2 style="margin-bottom:4px;">Order Saved — <span id="payModalAmount" style="color:var(--ember);">₹0</span></h2>
+      <p class="sub-text" style="margin-bottom:12px;">Pay via UPI app below OR send order directly on WhatsApp to confirm:</p>
 
-      <a href="#" id="directUpiAppBtn" class="btn-primary" style="display:block; text-align:center; margin-bottom:10px;">
-        ⚡ Open UPI App (Amount Auto-Filled)
+      <a href="#" id="directUpiAppBtn" class="btn-primary" style="display:block; text-align:center; margin-bottom:8px;">
+        ⚡ Pay via UPI App (Amount Auto-Filled)
       </a>
 
       <div class="upi-copy-pill">
-        <span id="upiIdText">Q327996912@ybl</span>
+        <span id="upiIdText">paytm.s2si7qx@pty</span>
         <button type="button" onclick="copyUpiId()" id="copyUpiBtn" style="background:var(--ember); color:#fff; border:none; padding:5px 10px; border-radius:4px; font-size:11px; font-weight:700; cursor:pointer;">📋 Copy UPI</button>
       </div>
 
       <a href="#" id="whatsappProofBtn" target="_blank" class="btn-primary" style="display:block; text-align:center; margin-bottom:10px; background:#25D366;">
-        🟢 Send Payment Screenshot on WhatsApp
+        🟢 Confirm Order / Send Screenshot on WhatsApp
       </a>
 
       <button class="btn-ghost" onclick="finishOrderProcess()" style="width:100%;">Done / Close</button>
@@ -695,8 +696,8 @@
 
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbzvI0oooslOoXHLnaJ5FtpPwAw1VtTrpArusIn9zZpwos1pkZbkOOH4QTaBOhFXg7Bt/exec";
-  const MERCHANT_UPI = "Q327996912@ybl";
-  const MERCHANT_NAME = "Grow Up Fitness";
+  const MERCHANT_UPI = "paytm.s2si7qx@pty";
+  const MERCHANT_NAME = "GROWUP FITNESS";
 
   let allProducts = [];
   let displayProducts = [];
@@ -1872,7 +1873,7 @@
     } catch (err) { console.error(err); }
 
     const couponLine = usedCouponCode ? `\nCoupon Applied: ${usedCouponCode}` : "";
-    const waText = encodeURIComponent(`Hi Grow Up Fitness, order for ₹${finalPayable} (Points used: ${appliedRewardDiscount}).${couponLine}\nName: ${fullName}\nPhone: ${phone}\nPincode: ${pincode}\nAddress: ${address}, ${city}, ${state}`);
+    const waText = encodeURIComponent(`Hi Grow Up Fitness, I have placed an order:\n\n📦 Items: ${itemsCombined}\n💰 Payable Amount: ₹${finalPayable} (Points used: ${appliedRewardDiscount})${couponLine}\n👤 Name: ${fullName}\n📞 Phone: ${phone}\n📍 Address: ${address}, ${city}, ${state} - ${pincode}\n\nPlease confirm my order!`);
     document.getElementById("whatsappProofBtn").href = `https://wa.me/919571214461?text=${waText}`;
 
     const upiLink = `upi://pay?pa=${MERCHANT_UPI}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${finalPayable}&cu=INR&tn=${encodeURIComponent("Order by " + fullName)}`;
@@ -1888,7 +1889,7 @@
     setTimeout(() => {
       isCheckingOut = false;
       payBtn.disabled = false;
-      payBtn.innerText = "Proceed to Pay via UPI";
+      payBtn.innerText = "Place Order & Pay";
     }, 2000);
   }
 
